@@ -1,4 +1,18 @@
 /**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+/**
  * \class Matrix4
  * \ingroup HachitMath
  *
@@ -7,25 +21,21 @@
  * A collection of 16 floats arranged in a two dimensional grid.
  */
 
-#ifndef MATRIX4_H
-#define MATRIX4_H
+#pragma once
 
 #define _USE_MATH_DEFINES
 
-//DLL Header
-#include "HachitMath/HachitMathDLL.h"
+#include <ht_platform.h>
+#include <ht_vector3.h>
+#include <ht_vector4.h>
 
-//Project Headers
-#include "HachitMath/Vector3.h"
-#include "HachitMath/Vector4.h"
-
-namespace Hachit
+namespace Hatchit
 {
 	namespace Math
 	{
 		class Matrix3;
 
-		class HACHIT_MATH_API Matrix4
+		class HT_API Matrix4
 		{
 		public:
 			Matrix4();
@@ -39,8 +49,8 @@ namespace Hachit
 
 			static Matrix4 getIdentityMatrix();
 
-			static Matrix4 getOrthographicProjection(float left, float right, float bottom, float top, float near, float far);
-			static Matrix4 getPerspectiveProjection(float fov, float aspect, float near, float far);
+			static Matrix4 getOrthographicProjection(float left, float right, float bottom, float top, float _near, float _far);
+			static Matrix4 getPerspectiveProjection(float fov, float aspect, float _near, float _far);
 
 			static Matrix4 getLookAtView(Vector3 eye, Vector3 center, Vector3 up);
 
@@ -65,4 +75,3 @@ namespace Hachit
 		};
 	}
 }
-#endif

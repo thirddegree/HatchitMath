@@ -1,4 +1,18 @@
 /**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+/**
  * \class Matrix3
  * \ingroup HachitMath
  *
@@ -7,22 +21,18 @@
  * A collection of 9 floats arranged in a two dimensional grid.
  */
 
-#ifndef MATRIX3_H
-#define MATRIX3_H
+#pragma once
 
-//DLL Header
-#include "HachitMath/HachitMathDLL.h"
+#include <ht_platform.h>
+#include <ht_vector3.h>
 
-//Project Headers
-#include "HachitMath/Vector3.h"
-
-namespace Hachit
+namespace Hatchit
 {
 	namespace Math
 	{
 		class Matrix4;
 
-		class HACHIT_MATH_API Matrix3
+		class HT_API Matrix3
 		{
 		public:
 			Matrix3();
@@ -52,4 +62,3 @@ namespace Hachit
 		};
 	}
 }
-#endif
