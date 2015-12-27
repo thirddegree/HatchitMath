@@ -54,19 +54,21 @@ namespace Hachit
 			void setY(float y);
 
 			//Static functions
-			/**Executes the Dot product on two Vector2s as v * u
+
+			/** Executes the Dot product on two Vector2s as v * u
 			 * \param v The first Vector2
 			 * \param u The second Vector2
 			 * \return The Dot product of v and u as a float
 			 */
 			static float Dot(Vector2 v, Vector2 u);
-			/**Normalizes a Vector2
+			/** Normalizes a Vector2
 			 * \param v The Vector2 to normalize
 			 * \return A normalized version of v
 			 */
 			static Vector2 Normalize(Vector2 v);
 
 			//Operators
+
 			/** Performs the dot procduct between this Vector2 and another Vector2
 			 * \param u The other Vector2
 			 * \return The dot product between this vector and u
@@ -94,14 +96,14 @@ namespace Hachit
 		};
 
 		/** An insertion operator for a Vector2 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Vector2 to interface with the ostream
-		*/
+		 * \param output The ostream to output to
+		 * \param h The Vector2 to interface with the ostream
+		 */
 		HACHIT_MATH_API std::ostream& operator<< (std::ostream& output, Vector2& h);
 		/** An extraction operator for a Vector2 to interace with an istream
-		* \param output The istream to input from
-		* \param h The Vector2 to be filled by the istream
-		*/
+		 * \param output The istream to input from
+		 * \param h The Vector2 to be filled by the istream
+		 */
 		HACHIT_MATH_API std::istream& operator>> (std::istream& input, Vector2& h);
 	}
 }
