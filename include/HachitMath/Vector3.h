@@ -34,7 +34,7 @@ namespace Hachit
 			Vector3(float x, float y, float z);
 			///Create a copy of an existing Vector3
 			Vector3(const Vector3& other);
-			///Create a Vector3 with the first three elements of a given Vector4
+			///Create a Vector3 with the first three elements of a given Vector4 all divided by the 4th element
 			Vector3(Vector4& v4);
 
 			//Destructor
@@ -131,7 +131,7 @@ namespace Hachit
 			 * This operation affects the elements in this Vector3
 			 * \param s The scalar to add this Vector3 by
 			 * \return This Vector3 after all the elements have been added by s
-			  */
+			 */
 			Vector3 operator+= (float s);
 
 			/** Compares the magnitue of this Vector3 to another given Vector3
@@ -140,25 +140,25 @@ namespace Hachit
 			 */
 			bool operator>(Vector3 u);
 			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has a smaller magnitude than the other Vector3
-			*/
+			 * \param u The other Vector3
+			 * \return True if this Vector3 has a smaller magnitude than the other Vector3
+			 */
 			bool operator<(Vector3 u);
 			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has the same magnitude of the other Vector3
-			*/
+			 * \param u The other Vector3
+			 * \return True if this Vector3 has the same magnitude of the other Vector3
+			 */
 			bool operator==(Vector3 u);
 			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 does not have the same magnitude as the other Vector3
-			*/
+			 * \param u The other Vector3
+			 * \return True if this Vector3 does not have the same magnitude as the other Vector3
+			 */
 			bool operator!=(Vector3 u);
 
 			/** Executes the Dot product this Vector3 and another as this * other
-			* \param u The other Vector3
-			* \return The Dot product of this * u as a float
-			*/
+			 * \param u The other Vector3
+			 * \return The Dot product of this * u as a float
+			 */
 			float operator* (Vector3 u);
 
 			/** Adds all of the elements from a given vector to this one
@@ -167,26 +167,26 @@ namespace Hachit
 			 */
 			Vector3 operator+ (Vector3 u);
 			/** Subtracts all of the elements from this vector by a given vector
-			* \param u The other Vector3
-			* \return A new vector with the differences of all the pairs of elemens
-			*/
+			 * \param u The other Vector3
+			 * \return A new vector with the differences of all the pairs of elemens
+			 */
 			Vector3 operator- (Vector3 u);
 			/** Adds all of the elements from a given vector to this one
-			* \param u The other Vector3
-			* \return This vector with the sums of all the pairs of elements
-			*/
+			 * \param u The other Vector3
+			 * \return This vector with the sums of all the pairs of elements
+			 */
 			Vector3 operator+= (Vector3 u);
 			/** Subtracts all of the elements from this vector by a given one
-			* \param u The other Vector3
-			* \return This vector with the differences of all the pairs of elements
-			*/
+			 * \param u The other Vector3
+			 * \return This vector with the differences of all the pairs of elements
+			 */
 			Vector3 operator-= (Vector3 u);
 
 			/** Fetches an element of this Vector at the index i
-			* \param i The index of the element to fetch
-			* \return A float that is stored in this Vector2 at the index i
-			* This will throw an index out of range exception if you go beyond an index if 1
-			*/
+			 * \param i The index of the element to fetch
+			 * \return A float that is stored in this Vector2 at the index i
+			 * This will throw an index out of range exception if you go beyond an index if 1
+			 */
 			float& operator[] (int i);
 
 			///Returns a Vector4 with the first three elements from this vector and the last one being 0

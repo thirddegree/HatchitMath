@@ -34,6 +34,14 @@ Vector4::Vector4(Vector3 v, float w)
 	this->vector[3] = w;
 }
 
+Vector4::Vector4(const Vector4 & other)
+{
+	this->vector[0] = other.vector[0];
+	this->vector[1] = other.vector[1];
+	this->vector[2] = other.vector[2];
+	this->vector[3] = other.vector[3];
+}
+
 /*
 	Destructor
 */
@@ -69,6 +77,13 @@ float& Vector4::operator[](int i)
 	return vector[i];
 }
 
+//Typecasting Operators
+
+Vector4::operator Vector3()
+{
+	return Vector3((*this));
+}
+
 //Extraction
 std::ostream& Hachit::Math::operator<<(std::ostream& output, Vector4& v4)
 {
@@ -88,14 +103,4 @@ std::istream& Hachit::Math::operator>> (std::istream& input, Vector4& v4)
 	v4.setW(w);
 
 	return input;
-}
-
-//Typecasting Operators
-
-Vector4::operator Vector3()
-{
-	if (vector[3] == 0)
-		vector[3] = 1.0f;
-
-	return Vector3(vector[0] / vector[3], vector[1] / vector[3], vector[2] / vector[3]);
 }
