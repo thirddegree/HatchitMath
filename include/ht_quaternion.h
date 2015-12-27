@@ -1,4 +1,18 @@
 /**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+/**
  * \class Quaternion
  * \ingroup HachitMath
  *
@@ -8,29 +22,24 @@
  * It is designed to represent rotations.
  */
 
-#ifndef QUATERNION_H
-#define QUATERNION_H
+#pragma once
 
 //Pre-Include Defines
 #define _USE_MATH_DEFINES
 
-//DLL Header
-#include "HachitMath/HachitMathDLL.h"
+#include <ht_platform.h>
+#include <ht_vector3.h>
+#include <ht_vector4.h>
+#include <ht_matrix3.h>
 
-//System Level Headers
 #include <iostream>
 #include <cmath>
 
-//Project Header
-#include "HachitMath/Vector3.h"
-#include "HachitMath/Vector4.h"
-#include "HachitMath/Matrix3.h"
-
-namespace Hachit
+namespace Hatchit
 {
 	namespace Math
 	{
-		class HACHIT_MATH_API Quaternion
+		class HT_API Quaternion
 		{
 		public:
 			Quaternion();
@@ -69,4 +78,3 @@ namespace Hachit
 		};
 	}
 }
-#endif

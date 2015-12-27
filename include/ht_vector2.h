@@ -1,4 +1,18 @@
 /**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+/**
  * \class Vector2
  * \ingroup HachitMath
  *
@@ -7,21 +21,17 @@
  * A collection of 2 floats: X and Y
  */
 
-#ifndef VECTOR2_H
-#define VECTOR2_H
+#pragma once
 
-//DLL Header
-#include "HachitMath/HachitMathDLL.h"
-
-//System Level Headers
+#include <ht_platform.h>
 #include <iostream>
 #include <cmath>
 
-namespace Hachit
+namespace Hatchit
 {
 	namespace Math
 	{
-		class HACHIT_MATH_API Vector2
+		class HT_API Vector2
 		{
 		public:
 			//Constructors
@@ -99,12 +109,11 @@ namespace Hachit
 		 * \param output The ostream to output to
 		 * \param h The Vector2 to interface with the ostream
 		 */
-		HACHIT_MATH_API std::ostream& operator<< (std::ostream& output, Vector2& h);
+		HT_API std::ostream& operator<< (std::ostream& output, Vector2& h);
 		/** An extraction operator for a Vector2 to interace with an istream
 		 * \param output The istream to input from
 		 * \param h The Vector2 to be filled by the istream
 		 */
-		HACHIT_MATH_API std::istream& operator>> (std::istream& input, Vector2& h);
+		HT_API std::istream& operator>> (std::istream& input, Vector2& h);
 	}
 }
-#endif
