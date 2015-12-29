@@ -32,13 +32,33 @@ namespace Hatchit
 		class HT_API Ray
 		{
 		public:
+			//Constructors
+			/** Create a ray with an origin as 0,0,0 and a given direction
+			 * \param direction The direction as a Vector3
+			 */
 			Ray(Vector3 direction);
+			/** Create a ray with a given origin and direction
+			 * \param origin The origin as a Vector3
+			 * \param direction The direction as a Vector3
+			 */
 			Ray(Vector3 origin, Vector3 direction);
 
+			/** Returns the origin of the ray
+			 * \return The origin as a Vector3
+			 */
 			Vector3 getOrigin();
+			/** Returns the direction of the ray
+			 * \return The direction as a Vector3
+			 */
 			Vector3 getDirection();
 
+			/** Sets the origin of the ray
+			 * \param origin The given origin as a Vector3
+			 */
 			void setOrigin(Vector3 origin);
+			/** Sets the direction of the ray
+			 * \param direction The given direction as a Vector3
+			 */
 			void setDirection(Vector3 direction);
 
 		private:

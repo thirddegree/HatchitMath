@@ -39,11 +39,21 @@ namespace Hatchit
 			//Constructors
 			///Create a Vector4 with all 4 elements being 0
 			Vector4();
-			///Create a Vector4 with the elements x, y, z, w
+			/** Create a Vector4 with the given elements x, y, z, w
+			 * \param x The first element of the vector
+			 * \param y The second element of the vector
+			 * \param z The third element of the vector
+			 * \param w The fourth element of the vector
+			 */
 			Vector4(float x, float y, float z, float w);
-			///Create a Vector4 with the first 3 elements from a Vector3 and the last element w
+			/** Create a Vector4 with the first 3 elements from a Vector3 and the last element w
+			 * \param v The first three elements as a Vector3
+			 * \param w The fourth element of the vector
+			 */
 			Vector4(Vector3 v, float w);
-			///Create a copy of an existing Vector4
+			/** Create a copy of an existing Vector4
+			 * \param other The other vector to make a copy of
+			 */
 			Vector4(const Vector4& other);
 
 			//Destructor
@@ -60,19 +70,29 @@ namespace Hatchit
 			float getW();
 
 			/** Returns the magnitude of the vector
-			* \return The magnitude as a float
-			*/
+		 	 * \return The magnitude as a float
+			 */
 			float getMagnitude();
-			///Returns this Vector3 as a pointer to an array of floats
+			/** Returns this Vector3 as a pointer to an array of floats
+			 * \return This vector as an array of floats
+			 */
 			float* getAsArray();
 
-			///Sets the X element to x
+			/** Sets the first element
+			 * \param x The float you want to be the first element of this vector
+			 */
 			void setX(float x);
-			///Sets the Y element to y
+			/** Sets the second element
+			 * \param y The float you want to be the second element of this vector
+			 */
 			void setY(float y);
-			///Sets the Z element to z
+			/** Sets the third element
+			 * \param z The float you want to be the third element of this vector
+			 */
 			void setZ(float z);
-			///Sets the W element to w
+			/** Sets the fourth element
+			 * \param w The float you want to be the fourth element of this vector
+			 */
 			void setW(float w);
 
 			/** Fetches an element of this Vector at the index i
@@ -98,6 +118,6 @@ namespace Hatchit
 		* \param output The ostream to output to
 		* \param h The Vector3 to interface with the ostream
 		*/
-        HT_API std::istream& operator>> (std::istream& input, Vector4& h);
+    HT_API std::istream& operator>> (std::istream& input, Vector4& h);
 	}
 }

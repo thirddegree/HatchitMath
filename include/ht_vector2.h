@@ -55,12 +55,18 @@ namespace Hatchit
 			 * \return The magnitude as a float
 			 */
 			float getMagnitude();
-			///Returns this Vector2 a pointer to an array of floats
+			/** Returns this Vector3 as a pointer to an array of floats
+			 * \return This vector as an array of floats
+			 */
 			float* getAsArray();
 
-			///Sets the X element to x
+			/** Sets the first element
+			 * \param x The float you want to be the first element of this vector
+			 */
 			void setX(float x);
-			///Sets the Y element to y
+			/** Sets the second element
+			 * \param y The float you want to be the second element of this vector
+			 */
 			void setY(float y);
 
 			//Static functions
