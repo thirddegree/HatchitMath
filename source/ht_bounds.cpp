@@ -68,9 +68,6 @@ namespace Hatchit {
         Vector3 Bounds::getMinBound(){ return minBound; }
         Vector3 Bounds::getMaxBound(){ return maxBound; }
 
-        void Bounds::setMinBound(Vector3 minBound){ this->minBound = minBound; }
-        void Bounds::setMaxBound(Vector3 maxBound){ this->maxBound = maxBound; }
-
         //For collisions
         Vector3 Bounds::getPositive(Vector3 normal)
         {
@@ -123,4 +120,3 @@ namespace Hatchit {
 
     }
 }
-
