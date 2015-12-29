@@ -134,11 +134,11 @@ namespace Hatchit
 		 * \param output The ostream to output to
 		 * \param h The Quaterion to interface with the ostream
 		 */
-		HT_API std::ostream& operator<< (std::ostream& output, Quaterion& h);
+		HT_API std::ostream& operator<< (std::ostream& output, Quaternion& h);
 		/** An extraction operator for a Quaterion to interace with an istream
 		 * \param output The istream to input from
 		 * \param h The Quaterion to be filled by the istream
 		 */
-		HT_API std::istream& operator>> (std::istream& input, Quaterion& h);
+		HT_API std::istream& operator>> (std::istream& input, Quaternion& h);
 	}
 }
