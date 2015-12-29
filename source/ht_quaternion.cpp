@@ -81,6 +81,10 @@ namespace Hatchit {
             q[3] = cosf(halfAngle);
         }
 
+        Quaternion::~Quaternion(void)
+        {
+        }
+
         Quaternion Quaternion::getInverse()
         {
             return Quaternion(-q[0], -q[1], -q[2], q[3]);
@@ -215,16 +219,6 @@ namespace Hatchit {
             input >> q[0] >> q[1] >> q[2] >> q[3];
             return input;
         }
-
-        /*
-        Destructors
-        */
-
-        Quaternion::~Quaternion(void)
-        {
-        }
-
-
     }
 
 }

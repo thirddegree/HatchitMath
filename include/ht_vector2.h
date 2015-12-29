@@ -46,9 +46,9 @@ namespace Hatchit
 			virtual ~Vector2();
 
 			//Accessors & Mutators
-			///Returns the X element \return The X element
+			///Returns the first element \return The first element
 			float getX();
-			///Returns the Y element \return The Y element
+			///Returns the second element \return The second element
 			float getY();
 
 			/** Returns the magnitude

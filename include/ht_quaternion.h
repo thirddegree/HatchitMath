@@ -19,7 +19,8 @@
  * \brief A 4 dimensional representation of rotation
  *
  * This quaternion is represented similarly to a Vector4 with X, Y, Z and W.
- * It is designed to represent rotations.
+ * It is designed to represent rotations. Some Quaternion implementations
+ * like to use W as the first element but here W is used as the fourth element.
  */
 
 #pragma once
@@ -42,39 +43,102 @@ namespace Hatchit
 		class HT_API Quaternion
 		{
 		public:
+			//Constructors
+			///Creates an identity Quaterion with elements 0,0,0,1
 			Quaternion();
+			/** Creates a Quaterion with elements set to the given values
+			 * \param x The first element
+			 * \param y The second element
+			 * \param z The third element
+			 * \param w The fourth element
+			 */
 			Quaternion(float x, float y, float z, float w);
+			/** Creates a Quaternion based off the Euler rotation described by a
+			 * Vector3
+			 * \param v The Vector3 used to describe a Euler rotation
+			 */
 			Quaternion(Vector3 v);
+			/** Creates a Quaterion based on the Angle-Axis rotation described by
+			 * a Vector4 where x,y,z is the axis and w is the angle
+			 * \param v The Vector4 used to describe an Angle-Axis rotation
+			 */
 			Quaternion(Vector4 v);
 
-			~Quaternion();
+			virtual ~Quaternion();
 
+			/** Returns an identity Quaterion with the elements 0,0,0,1
+       * \return An identity Quaterion
+			 */
 			static Quaternion getQuaternionIdentity();
 
+			/** Returns an Quaterion that is the inverse of this one
+			 * \return The inverse of this Quaterion
+			 */
 			Quaternion getInverse();
+			/** Returns this Quaterion's rotation in Angle-Axis form with a Vector4
+			 * \return The rotation described by this Quaterion in Angle-Axis form
+			 */
 			Vector4 getAxisAngle();
+			/** Returns this Quaterion's rotation in Matrix form
+			 * \return The rotation described by this quaterion in Matrix3 form
+			 */
 			Matrix3 getRotationMatrix();
 
 			//Accessors and mutators
+
+			///Returns the first element \return The first element
 			float getX();
+			///Returns the second element \return The second element
 			float getY();
+			///Returns the third element \return The third element
 			float getZ();
+			///Returns the fourth element \return The fourth element
 			float getW();
 
+			/** Sets the first element
+			 * \param x The float you want to be the first element of this vector
+			 */
 			void setX(float x);
+			/** Sets the second element
+			 * \param y The float you want to be the second element of this vector
+			 */
 			void setY(float y);
+			/** Sets the third element
+			 * \param z The float you want to be the third element of this vector
+			 */
 			void setZ(float z);
+			/** Sets the fourth element
+			 * \param w The float you want to be the fourth element of this vector
+			 */
 			void setW(float w);
 
+			/** Fetches an element of this Quaterion at the index i
+			 * \param i The index of the element to fetch
+			 * \return A float that is stored in this Quaterion at the index i
+			 * This will throw an index out of range exception if you go beyond an index if 1
+			 */
 			float& operator[] (int i);
-			Quaternion operator* (Quaternion other);
 
-			friend std::ostream& operator<< (std::ostream& output, Quaternion& h);
-			friend std::istream& operator>> (std::istream& input, Quaternion& h);
+			/** Multiplies this quaterion with another and returns the product
+			 * \param other The other quaternion to multiply into this one
+			 * \return The product of this quaterion multiplied by the other one
+			 */
+			Quaternion operator* (Quaternion other);
 
 		private:
 			float q[4];
 			void normalize();
 		};
+
+		/** An insertion operator for a Quaterion to interace with an ostream
+		 * \param output The ostream to output to
+		 * \param h The Quaterion to interface with the ostream
+		 */
+		HT_API std::ostream& operator<< (std::ostream& output, Quaterion& h);
+		/** An extraction operator for a Quaterion to interace with an istream
+		 * \param output The istream to input from
+		 * \param h The Quaterion to be filled by the istream
+		 */
+		HT_API std::istream& operator>> (std::istream& input, Quaterion& h);
 	}
 }

@@ -43,6 +43,10 @@ namespace Hatchit
 			 */
 			Ray(Vector3 origin, Vector3 direction);
 
+			virtual ~Ray();
+
+			//Accessors & Mutators
+
 			/** Returns the origin of the ray
 			 * \return The origin as a Vector3
 			 */

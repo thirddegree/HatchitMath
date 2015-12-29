@@ -52,11 +52,11 @@ namespace Hatchit
 			virtual ~Vector3();
 
 			//Accessors & Mutators
-			///Returns the X element \return The X element
+			///Returns the first element \return The first element
 			float getX();
-			///Returns the Y element \return The Y element
+			///Returns the second element \return The second element
 			float getY();
-			///Returns the Z element \return The Z element
+			///Returns the third element \return The third element
 			float getZ();
 
 			/** Returns the magnitude of the vector
@@ -203,7 +203,7 @@ namespace Hatchit
 
 			/** Fetches an element of this Vector at the index i
 			 * \param i The index of the element to fetch
-			 * \return A float that is stored in this Vector2 at the index i
+			 * \return A float that is stored in this Vector3 at the index i
 			 * This will throw an index out of range exception if you go beyond an index if 1
 			 */
 			float& operator[] (int i);
