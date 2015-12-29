@@ -111,16 +111,7 @@ namespace Hatchit {
 
         float* Matrix3::getAsArray()
         {
-            int index = 0;
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    rawMatrix[index] = matrix[i][j];
-                    index++;
-                }
-            }
-            return rawMatrix;
+            return &matrix[0][0];
         }
 
         /*

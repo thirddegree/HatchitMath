@@ -1,5 +1,3 @@
-#include <string>
-
 #include <gtest/gtest.h>
 #include "ht_vector2.h"
 

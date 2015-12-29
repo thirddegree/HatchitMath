@@ -61,7 +61,7 @@ namespace Hatchit {
 
         Matrix4 Matrix4::getLookAtView(Vector3 eye, Vector3 center, Vector3 up)
         {
-            //Calculate axes 
+            //Calculate axes
             Vector3 zAxis = Vector3::Normalize((eye - center));
             Vector3 xAxis = Vector3::Normalize(Vector3::Cross(up, zAxis));
             Vector3 yAxis = Vector3::Cross(zAxis, xAxis);
@@ -263,16 +263,7 @@ namespace Hatchit {
 
         float* Matrix4::getAsArray()
         {
-            int index = 0;
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    rawMatrix[index] = matrix[i][j];
-                    index++;
-                }
-            }
-            return rawMatrix;
+            return &matrix[0][0];
         }
 
         /*
@@ -352,4 +343,3 @@ namespace Hatchit {
 
     }
 }
-

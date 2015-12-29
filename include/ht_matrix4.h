@@ -70,7 +70,6 @@ namespace Hatchit
 			~Matrix4();
 
 		private:
-			float rawMatrix[16];
 			float matrix[4][4];
 		};
 	}
