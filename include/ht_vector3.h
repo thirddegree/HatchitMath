@@ -90,15 +90,15 @@ namespace Hatchit
 			 */
 			static Vector3 Cross(Vector3 v, Vector3 u);
 			/** Executes the Dot product on two Vector3s as v * u
-			* \param v The first Vector3
-			* \param u The second Vector3
-			* \return The Dot product of v and u as a float
-			*/
+			 * \param v The first Vector3
+			 * \param u The second Vector3
+			 * \return The Dot product of v and u as a float
+			 */
 			static float Dot(Vector3 v, Vector3 u);
 			/** Normalizes a Vector3
-			* \param v The Vector3 to normalize
-			* \return A normalized version of v
-			*/
+			 * \param v The Vector3 to normalize
+			 * \return A normalized version of v
+			 */
 			static Vector3 Normalize(Vector3 v);
 
 			//Operators
