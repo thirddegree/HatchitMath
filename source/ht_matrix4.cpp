@@ -23,56 +23,51 @@ namespace Hatchit {
         Statics
         */
 
-        Matrix4 Matrix4::getIdentityMatrix()
-        {
-            return Matrix4();
-        }
-
-        Matrix4 Matrix4::getOrthographicProjection(float left, float right, float bottom, float top, float _near, float _far)
+        Matrix4 Matrix4::GetOrthographicProjection(float left, float right, float bottom, float top, float near, float far)
         {
             float a = 2 / (right - left);
             float b = 2 / (top - bottom);
-            float c = -2 / (_far - _near);
+            float c = -2 / (far - near);
             float d = -1 * ((right + left) / (right - left));
             float e = -1 * ((top + bottom) / (top - bottom));
-            float f = (_far + _near) / (_far - _near);
+            float f = (far + near) / (far - near);
 
             return Matrix4(a, 0, 0, 0,
-                0, b, 0, 0,
-                0, 0, c, 0,
-                d, e, f, 1);
+                           0, b, 0, 0,
+                           0, 0, c, 0,
+                           d, e, f, 1);
         }
 
-        Matrix4 Matrix4::getPerspectiveProjection(float fov, float aspect, float _near, float _far)
+        Matrix4 Matrix4::GetPerspectiveProjection(float fov, float aspect, float near, float far)
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
-            float depth = _far - _near;
-            float q = -(_far + _near) / depth;
-            float qn = -2 * (_far * _near) / depth;
+            float depth = far - near;
+            float q = -(far + near) / depth;
+            float qn = -2 * (far * near) / depth;
 
             float h = 1 / tanf(0.5f * fov);
             float w = h / aspect;
 
             return Matrix4(w, 0, 0, 0,
-                0, h, 0, 0,
-                0, 0, q, -1,
-                0, 0, qn, 0);
+                           0, h, 0, 0,
+                           0, 0, q, -1,
+                           0, 0, qn, 0);
         }
 
-        Matrix4 Matrix4::getLookAtView(Vector3 eye, Vector3 center, Vector3 up)
+        Matrix4 Matrix4::GetLookAtView(Vector3 lookAt, Vector3 center, Vector3 up)
         {
             //Calculate axes
-            Vector3 zAxis = Vector3::Normalize((eye - center));
+            Vector3 zAxis = Vector3::Normalize((lookAt - center));
             Vector3 xAxis = Vector3::Normalize(Vector3::Cross(up, zAxis));
             Vector3 yAxis = Vector3::Cross(zAxis, xAxis);
 
             //Create view matrix;
             return Matrix4(xAxis.getX(), yAxis.getX(), zAxis.getX(), 0,
-                xAxis.getY(), yAxis.getY(), zAxis.getY(), 0,
-                xAxis.getZ(), yAxis.getZ(), zAxis.getZ(), 0,
-                Vector3::Dot(xAxis * -1, eye),
-                Vector3::Dot(yAxis * -1, eye),
-                Vector3::Dot(zAxis * -1, eye),
+                           xAxis.getY(), yAxis.getY(), zAxis.getY(), 0,
+                           xAxis.getZ(), yAxis.getZ(), zAxis.getZ(), 0,
+                Vector3::Dot(xAxis * -1, lookAt),
+                Vector3::Dot(yAxis * -1, lookAt),
+                Vector3::Dot(zAxis * -1, lookAt),
                 1);
         }
 
@@ -120,7 +115,7 @@ namespace Hatchit {
             matrix[0][0] = one.getX();    matrix[0][1] = one.getY();    matrix[0][2] = one.getZ();   matrix[0][3] = 0;
             matrix[1][0] = two.getX();    matrix[1][1] = two.getY();    matrix[1][2] = two.getZ();   matrix[1][3] = 0;
             matrix[2][0] = three.getX();  matrix[2][1] = three.getY();  matrix[2][2] = three.getZ(); matrix[2][3] = 0;
-            matrix[3][0] = four.getX();   matrix[3][1] = four.getY();   matrix[3][2] = four.getZ();  matrix[3][3] = 0;
+            matrix[3][0] = four.getX();   matrix[3][1] = four.getY();   matrix[3][2] = four.getZ();  matrix[3][3] = 1;
         }
 
         Matrix4::Matrix4(Vector4 one,
@@ -339,7 +334,5 @@ namespace Hatchit {
         {
 
         }
-
-
     }
 }

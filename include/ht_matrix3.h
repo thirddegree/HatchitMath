@@ -91,7 +91,6 @@ namespace Hatchit
 			 *  0,  0,  0, 1
 			 */
 			operator Matrix4();
-
 			/** Fetches a row of this Matrix at the index i
 			 * The subsequent row can also use this operator so you can access values
 			 * in this matrix with two [] operators: myMatrix[0][1].
