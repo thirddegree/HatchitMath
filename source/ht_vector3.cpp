@@ -139,7 +139,7 @@ namespace Hatchit {
         }
         Vector3 Vector3::operator+(float s)
         {
-            return Vector3(vector[0] + s, vector[1] / s, vector[2] + s);
+            return Vector3(vector[0] + s, vector[1] + s, vector[2] + s);
         }
 
         Vector3 Vector3::operator*=(float s)
@@ -269,4 +269,3 @@ namespace Hatchit {
 
     }
 }
-

@@ -163,14 +163,14 @@ namespace Hatchit
 			 * \return True if this Vector3 has a smaller magnitude than the other Vector3
 			 */
 			bool operator<(Vector3 u);
-			/** Compares the magnitue of this Vector3 to another given Vector3
+			/** Compares the values of this Vector3 to another given Vector3
 			 * \param u The other Vector3
-			 * \return True if this Vector3 has the same magnitude of the other Vector3
+			 * \return True if this Vector3 has the same values of the other Vector3
 			 */
 			bool operator==(Vector3 u);
-			/** Compares the magnitue of this Vector3 to another given Vector3
+			/** Compares the values of this Vector3 to another given Vector3
 			 * \param u The other Vector3
-			 * \return True if this Vector3 does not have the same magnitude as the other Vector3
+			 * \return True if this Vector3 does not have the same values as the other Vector3
 			 */
 			bool operator!=(Vector3 u);
 
