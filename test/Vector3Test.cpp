@@ -37,6 +37,16 @@ TEST(Vector3, Magnitude)
   ASSERT_NEAR(vector.getMagnitude(), 7.07107f, 0.00001f);
 }
 
+TEST(Vector3, GetAsArray)
+{
+    Vector3 vector(2,3,4);
+    float* array = vector.getAsArray();
+
+    ASSERT_EQ(array[0], 2);
+    ASSERT_EQ(array[1], 3);
+    ASSERT_EQ(array[2], 4);
+}
+
 TEST(Vector3, SettingElementValues)
 {
   Vector3 vector(3,4,5);

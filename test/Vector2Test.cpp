@@ -32,6 +32,15 @@ TEST(Vector2, Magnitude)
   ASSERT_EQ(vector.getMagnitude(), 5);
 }
 
+TEST(Vector2, GetAsArray)
+{
+    Vector2 vector(2,3);
+    float* array = vector.getAsArray();
+
+    ASSERT_EQ(array[0], 2);
+    ASSERT_EQ(array[1], 3);
+}
+
 TEST(Vector2, SettingElementValues)
 {
   Vector2 vector(3,4);
