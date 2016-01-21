@@ -127,9 +127,9 @@ namespace Hatchit {
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    float value = (matrix[j][0] * m[0][i]) +
-                        (matrix[j][1] * m[1][i]) +
-                        (matrix[j][2] * m[2][i]);
+                    float value = (matrix[i][0] * m[0][j]) +
+                                  (matrix[i][1] * m[1][j]) +
+                                  (matrix[i][2] * m[2][j]);
                     product[index] = value;
 
                     index++;
@@ -145,9 +145,9 @@ namespace Hatchit {
         {
             float x, y, z;
 
-            x = (matrix[0][0] * vec.getX()) + (matrix[1][0] * vec.getY()) + (matrix[2][0] * vec.getZ());
-            y = (matrix[0][1] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[2][1] * vec.getZ());
-            z = (matrix[0][2] * vec.getX()) + (matrix[1][2] * vec.getY()) + (matrix[2][2] * vec.getZ());
+            x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ());
+            y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ());
+            z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ());
 
             return Vector3(x, y, z);
         }
@@ -155,9 +155,9 @@ namespace Hatchit {
         Matrix3::operator Matrix4()
         {
             Matrix4 mat(matrix[0][0], matrix[0][1], matrix[0][2], 0,
-                matrix[1][0], matrix[1][1], matrix[1][2], 0,
-                matrix[2][0], matrix[2][1], matrix[2][2], 0,
-                0, 0, 0, 1);
+                        matrix[1][0], matrix[1][1], matrix[1][2], 0,
+                        matrix[2][0], matrix[2][1], matrix[2][2], 0,
+                        0, 0, 0, 1);
 
             return mat;
         }
