@@ -23,14 +23,14 @@ namespace Hatchit {
         Statics
         */
 
-        Matrix4 Matrix4::GetOrthographicProjection(float left, float right, float bottom, float top, float near, float far)
+        Matrix4 Matrix4::GetOrthographicProjection(float left, float right, float bottom, float top, float _near, float _far)
         {
             float a = 2 / (right - left);
             float b = 2 / (top - bottom);
-            float c = -2 / (far - near);
+            float c = -2 / (_far - _near);
             float d = -1 * ((right + left) / (right - left));
             float e = -1 * ((top + bottom) / (top - bottom));
-            float f = (far + near) / (far - near);
+            float f = (_far + _near) / (_far - _near);
 
             return Matrix4(a, 0, 0, 0,
                            0, b, 0, 0,
@@ -38,12 +38,12 @@ namespace Hatchit {
                            d, e, f, 1);
         }
 
-        Matrix4 Matrix4::GetPerspectiveProjection(float fov, float aspect, float near, float far)
+        Matrix4 Matrix4::GetPerspectiveProjection(float fov, float aspect, float _near, float _far)
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
-            float depth = far - near;
-            float q = -(far + near) / depth;
-            float qn = -2 * (far * near) / depth;
+            float depth = _far - _near;
+            float q = -(_far + _near) / depth;
+            float qn = -2 * (_far * _near) / depth;
 
             float h = 1 / tanf(0.5f * fov);
             float w = h / aspect;

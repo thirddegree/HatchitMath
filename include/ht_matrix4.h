@@ -52,7 +52,7 @@ namespace Hatchit
 			 * \param far The far plane
 			 * \return The resulting orthographic projection in a Matrix4
 			 */
-			static Matrix4 GetOrthographicProjection(float left, float right, float bottom, float top, float near, float far);
+			static Matrix4 GetOrthographicProjection(float left, float right, float bottom, float top, float _near, float _far);
 			/** Generates a perspective projection from the given values
 			 * \param fov The field of view
 			 * \param aspect The aspect ratio
@@ -60,7 +60,7 @@ namespace Hatchit
 			 * \param far The far plane
 			 * \return The resulting perspective projection in a Matrix4
 			 */
-			static Matrix4 GetPerspectiveProjection(float fov, float aspect, float near, float far);
+			static Matrix4 GetPerspectiveProjection(float fov, float aspect, float _near, float _far);
 			/** Generates a view matrix from the given values
 			 * \param lookAt The point for the camera to look at
 			 * \param center The point that the camera is located
