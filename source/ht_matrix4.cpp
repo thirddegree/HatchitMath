@@ -280,9 +280,9 @@ namespace Hatchit {
                 for (int j = 0; j < 4; j++)
                 {
                     float value = (matrix[i][0] * m[0][j]) +
-                        (matrix[i][1] * m[1][j]) +
-                        (matrix[i][2] * m[2][j]) +
-                        (matrix[i][3] * m[3][j]);
+                                  (matrix[i][1] * m[1][j]) +
+                                  (matrix[i][2] * m[2][j]) +
+                                  (matrix[i][3] * m[3][j]);
                     product[index] = value;
 
                     index++;
@@ -298,9 +298,9 @@ namespace Hatchit {
         {
             float x, y, z;
 
-            x = (matrix[0][0] * vec.getX()) + (matrix[1][0] * vec.getY()) + (matrix[2][0] * vec.getZ()) + (matrix[3][0]);
-            y = (matrix[0][1] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[2][1] * vec.getZ()) + (matrix[3][1]);
-            z = (matrix[0][2] * vec.getX()) + (matrix[1][2] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[3][2]);
+            x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3]);
+            y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3]);
+            z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3]);
 
             return Vector3(x, y, z);
         }
@@ -309,10 +309,10 @@ namespace Hatchit {
         {
             float x, y, z, w;
 
-            x = (matrix[0][0] * vec.getX()) + (matrix[1][0] * vec.getY()) + (matrix[2][0] * vec.getZ()) + (matrix[3][0] * vec.getW());
-            y = (matrix[0][1] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[2][1] * vec.getZ()) + (matrix[3][1] * vec.getW());
-            z = (matrix[0][2] * vec.getX()) + (matrix[1][2] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[3][2] * vec.getW());
-            w = (matrix[0][3] * vec.getX()) + (matrix[1][3] * vec.getY()) + (matrix[2][3] * vec.getZ()) + (matrix[3][3] * vec.getW());
+            x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3] * vec.getW());
+            y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3] * vec.getW());
+            z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3] * vec.getW());
+            w = (matrix[3][0] * vec.getX()) + (matrix[3][1] * vec.getY()) + (matrix[3][2] * vec.getZ()) + (matrix[3][3] * vec.getW());
 
             return Vector4(x, y, z, w);
         }
@@ -320,8 +320,8 @@ namespace Hatchit {
         Matrix4::operator Matrix3()
         {
             Matrix3 mat(matrix[0][0], matrix[0][1], matrix[0][2],
-                matrix[1][0], matrix[1][1], matrix[1][2],
-                matrix[2][0], matrix[2][1], matrix[2][2]);
+                        matrix[1][0], matrix[1][1], matrix[1][2],
+                        matrix[2][0], matrix[2][1], matrix[2][2]);
 
             return mat;
         }
