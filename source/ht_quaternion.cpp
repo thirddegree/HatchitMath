@@ -41,6 +41,7 @@ namespace Hatchit {
         //Assuming from euler angles
         Quaternion::Quaternion(Vector3 v)
         {
+            //Thanks to: http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/
             //Attitude = X rotation = pitch
             //Heading = Y rotation = yaw
             //Bank = Z rotation = roll
@@ -54,20 +55,21 @@ namespace Hatchit {
             float bankCos = cosf(v[2] / 2.0f);
             float bankSin = sinf(v[2] / 2.0f);
 
-            //we need to multiply a bunch of quaternions together for each axis
-            Quaternion xQ(attitudeSin, 0, 0, attitudeCos);
-            Quaternion yQ(0, headingSin, 0, headingCos);
-            Quaternion zQ(0, 0, bankSin, bankCos);
+            float x,y,z,w;
 
-            //Note: this order matters!
-            Quaternion product = xQ * yQ * zQ;
+            w = (headingCos * attitudeCos * bankCos) -
+                (headingSin * attitudeSin * bankSin);
+            x = (headingSin * attitudeSin * bankCos) +
+                (headingCos * attitudeCos * bankSin);
+            y = (headingSin * attitudeCos * bankCos) +
+                (headingCos * attitudeSin * bankSin);
+            z = (headingCos * attitudeSin * bankCos) +
+                (headingSin * attitudeCos * bankSin);
 
-            q[0] = product[0];
-            q[1] = product[1];
-            q[2] = product[2];
-            q[3] = product[3];
-
-            normalize();
+            q[0] = x;
+            q[1] = y;
+            q[2] = z;
+            q[3] = w;
         }
 
         //Assuming from Angle-Axis
@@ -137,8 +139,8 @@ namespace Hatchit {
             float m21 = 2 * ((y * z) - (x * w));
 
             Matrix3 rotationMat(m00, m01, m02,
-                m10, m11, m12,
-                m20, m21, m22);
+                                m10, m11, m12,
+                                m20, m21, m22);
 
             return rotationMat;
         }

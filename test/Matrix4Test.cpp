@@ -198,12 +198,6 @@ TEST(Matrix4, Matrix4MultiplicationOperator)
 
   Matrix4 result = mat1 * mat2;
 
-  for(int i = 0; i < 4; i++){
-    for(int j = 0; j  < 4; j++)
-      std::cout << result[i][j] << ',';
-    std::cout << std::endl;
-  }
-
   ASSERT_EQ(result[0][0], 60);
   ASSERT_EQ(result[0][1], 48);
   ASSERT_EQ(result[0][2], 65);
