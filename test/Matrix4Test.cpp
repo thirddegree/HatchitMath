@@ -268,3 +268,17 @@ TEST(Matrix4, Matrix3ConversionOperator)
     }
   }
 }
+
+TEST(Matrix4Static, OrthographicProjection)
+{
+  float left = 50;
+  float right = 50;
+  float bottom = 25;
+  float top = 25;
+  float _near = 0.1f;
+  float _far = 100;
+
+  Matrix4 ortho = Matrix4::GetOrthographicProjection(left, right, bottom, top, _near, _far);
+
+  ASSERT_NEAR(ortho[0][0], 2/(right - left), 0.00001f);
+}
