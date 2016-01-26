@@ -285,18 +285,18 @@ TEST(Matrix4Static, OrthographicProjection)
   ASSERT_NEAR(ortho[0][2], 0.0f, 0.00001f);
   ASSERT_NEAR(ortho[0][3], 0.0f, 0.00001f);
 
-  ASSERT_NEAR(ortho[1][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[1][0], 0.0f, 0.00001f);
   ASSERT_NEAR(ortho[1][1], 0.04f, 0.00001f);
-  ASSERT_NEAR(ortho[1][2], 0.00f, 0.00001f);
-  ASSERT_NEAR(ortho[1][3], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[1][2], 0.0f, 0.00001f);
+  ASSERT_NEAR(ortho[1][3], 0.0f, 0.00001f);
 
-  ASSERT_NEAR(ortho[2][0], 0.00f, 0.00001f);
-  ASSERT_NEAR(ortho[2][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[2][0], 0.0f, 0.00001f);
+  ASSERT_NEAR(ortho[2][1], 0.0f, 0.00001f);
   ASSERT_NEAR(ortho[2][2], -0.02002f, 0.00001f);
-  ASSERT_NEAR(ortho[2][3], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[2][3], 0.0f, 0.00001f);
 
-  ASSERT_NEAR(ortho[3][0], 0.00f, 0.00001f);
-  ASSERT_NEAR(ortho[3][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[3][0], 0.0f, 0.00001f);
+  ASSERT_NEAR(ortho[3][1], 0.0f, 0.00001f);
   ASSERT_NEAR(ortho[3][2], -1.002002f, 0.00001f);
   ASSERT_NEAR(ortho[3][3], 1.0f, 0.00001f);
 }
@@ -315,18 +315,47 @@ TEST(Matrix4Static, GetPerspectiveProjection)
   ASSERT_NEAR(persp[0][2], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[0][3], 0.0f, 0.00001f);
 
-  ASSERT_NEAR(persp[1][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[1][0], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[1][1], 0.61737f, 0.00001f);
-  ASSERT_NEAR(persp[1][2], 0.00f, 0.00001f);
-  ASSERT_NEAR(persp[1][3], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[1][2], 0.0f, 0.00001f);
+  ASSERT_NEAR(persp[1][3], 0.0f, 0.00001f);
 
-  ASSERT_NEAR(persp[2][0], 0.00f, 0.00001f);
-  ASSERT_NEAR(persp[2][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[2][0], 0.0f, 0.00001f);
+  ASSERT_NEAR(persp[2][1], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[2][2], -1.002002f, 0.00001f);
   ASSERT_NEAR(persp[2][3], -1.0f, 0.00001f);
 
-  ASSERT_NEAR(persp[3][0], 0.00f, 0.00001f);
-  ASSERT_NEAR(persp[3][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[3][0], 0.0f, 0.00001f);
+  ASSERT_NEAR(persp[3][1], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[3][2], -0.2002f, 0.00001f);
   ASSERT_NEAR(persp[3][3], 0.0f, 0.00001f);
+}
+
+TEST(Matrix4Static, GetLookAtView)
+{
+  Vector3 eye(5,5,5);
+  Vector3 center(15,20,25);
+  Vector3 up(0,1,0);
+
+  Matrix4 lookAt = Matrix4::GetLookAtView(eye,center,up);
+
+  ASSERT_NEAR(lookAt[0][0], -0.894427f, 0.00001f);
+  ASSERT_NEAR(lookAt[0][1], -0.249136f, 0.00001f);
+  ASSERT_NEAR(lookAt[0][2], -0.371391f, 0.00001f);
+  ASSERT_NEAR(lookAt[0][3], 0.0f, 0.00001f);
+
+  ASSERT_NEAR(lookAt[1][0], 0.0f, 0.00001f);
+  ASSERT_NEAR(lookAt[1][1], 0.830455f, 0.00001f);
+  ASSERT_NEAR(lookAt[1][2], -0.557086f, 0.00001f);
+  ASSERT_NEAR(lookAt[1][3], 0.0f, 0.00001f);
+
+  ASSERT_NEAR(lookAt[2][0], 0.447214f, 0.00001f);
+  ASSERT_NEAR(lookAt[2][1], -0.498273f, 0.00001f);
+  ASSERT_NEAR(lookAt[2][2], -0.742781f, 0.00001f);
+  ASSERT_NEAR(lookAt[2][3], 0.0f, 0.00001f);
+
+  ASSERT_NEAR(lookAt[3][0], 2.236068f, 0.00001f);
+  ASSERT_NEAR(lookAt[3][1], -0.415227f, 0.00001f);
+  ASSERT_NEAR(lookAt[3][2], 8.356291f, 0.00001f);
+  ASSERT_NEAR(lookAt[3][3], 1.0f, 0.00001f);
 }
