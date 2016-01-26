@@ -24,6 +24,7 @@ if(UNIX)
 endif(UNIX)
 
 set_property(TARGET HatchitMath PROPERTY FOLDER "lib")
+target_compile_definitions(HatchitMath PRIVATE HT_NONCLIENT_BUILD)
 
 install(TARGETS HatchitMath
 		LIBRARY DESTINATION ${PROJECT_BINARY_DIR}

@@ -272,8 +272,8 @@ TEST(Matrix4, Matrix3ConversionOperator)
 TEST(Matrix4Static, OrthographicProjection)
 {
   float left = 50;
-  float right = 50;
-  float bottom = 25;
+  float right = -50;
+  float bottom = -25;
   float top = 25;
   float _near = 0.1f;
   float _far = 100;
