@@ -30,7 +30,7 @@ namespace Hatchit {
             float c = -2 / (_far - _near);
             float d = -1 * ((right + left) / (right - left));
             float e = -1 * ((top + bottom) / (top - bottom));
-            float f = (_far + _near) / (_far - _near);
+            float f = -1 * ((_far + _near) / (_far - _near));
 
             return Matrix4(a, 0, 0, 0,
                            0, b, 0, 0,

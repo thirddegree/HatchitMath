@@ -271,8 +271,8 @@ TEST(Matrix4, Matrix3ConversionOperator)
 
 TEST(Matrix4Static, OrthographicProjection)
 {
-  float left = 50;
-  float right = -50;
+  float left = -50;
+  float right = 50;
   float bottom = -25;
   float top = 25;
   float _near = 0.1f;
@@ -280,5 +280,24 @@ TEST(Matrix4Static, OrthographicProjection)
 
   Matrix4 ortho = Matrix4::GetOrthographicProjection(left, right, bottom, top, _near, _far);
 
-  ASSERT_NEAR(ortho[0][0], 2/(right - left), 0.00001f);
+  ASSERT_NEAR(ortho[0][0], 0.02f, 0.00001f);
+  ASSERT_NEAR(ortho[0][1], 0.0f, 0.00001f);
+  ASSERT_NEAR(ortho[0][2], 0.0f, 0.00001f);
+  ASSERT_NEAR(ortho[0][3], 0.0f, 0.00001f);
+
+  ASSERT_NEAR(ortho[1][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[1][1], 0.04f, 0.00001f);
+  ASSERT_NEAR(ortho[1][2], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[1][3], 0.00f, 0.00001f);
+
+  ASSERT_NEAR(ortho[2][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[2][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[2][2], -0.02002f, 0.00001f);
+  ASSERT_NEAR(ortho[2][3], 0.00f, 0.00001f);
+
+  ASSERT_NEAR(ortho[3][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[3][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(ortho[3][2], -1.002002f, 0.00001f);
+  ASSERT_NEAR(ortho[3][3], 1.0f, 0.00001f);
+
 }
