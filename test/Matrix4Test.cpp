@@ -299,5 +299,34 @@ TEST(Matrix4Static, OrthographicProjection)
   ASSERT_NEAR(ortho[3][1], 0.00f, 0.00001f);
   ASSERT_NEAR(ortho[3][2], -1.002002f, 0.00001f);
   ASSERT_NEAR(ortho[3][3], 1.0f, 0.00001f);
+}
 
+TEST(Matrix4Static, GetPerspectiveProjection)
+{
+  float fov = 90.0f;
+  float aspect = 16.0f / 9.0f;
+  float _near = 0.1f;
+  float _far = 100.0f;
+
+  Matrix4 persp = Matrix4::GetPerspectiveProjection(fov, aspect, _near, _far);
+
+  ASSERT_NEAR(persp[0][0], .34727f, 0.00001f);
+  ASSERT_NEAR(persp[0][1], 0.0f, 0.00001f);
+  ASSERT_NEAR(persp[0][2], 0.0f, 0.00001f);
+  ASSERT_NEAR(persp[0][3], 0.0f, 0.00001f);
+
+  ASSERT_NEAR(persp[1][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[1][1], 0.61737f, 0.00001f);
+  ASSERT_NEAR(persp[1][2], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[1][3], 0.00f, 0.00001f);
+
+  ASSERT_NEAR(persp[2][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[2][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[2][2], -1.002002f, 0.00001f);
+  ASSERT_NEAR(persp[2][3], -1.0f, 0.00001f);
+
+  ASSERT_NEAR(persp[3][0], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[3][1], 0.00f, 0.00001f);
+  ASSERT_NEAR(persp[3][2], -0.2002f, 0.00001f);
+  ASSERT_NEAR(persp[3][3], 0.0f, 0.00001f);
 }
