@@ -18,9 +18,9 @@
  *
  * \brief A 4 dimensional representation of rotation
  *
- * This quaternion is represented similarly to a Vector4 with X, Y, Z and W.
- * It is designed to represent rotations. Some Quaternion implementations
- * like to use W as the first element but here W is used as the fourth element.
+ * This quaternion is represented similarly to a Vector4 but with W,X,Y,Z.
+ * This is to match the mathematical representation: a + bi + cj + dk
+ * It is designed to represent rotations. 
  */
 
 #pragma once
