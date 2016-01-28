@@ -24,4 +24,4 @@ script:
     - cd _builds
     - cmake .. -DBUILD_TEST=TRUE
     - make
-    - ctest -VV
+    - test_bin

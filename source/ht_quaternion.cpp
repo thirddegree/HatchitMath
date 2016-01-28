@@ -24,18 +24,18 @@ namespace Hatchit {
 
         Quaternion::Quaternion()
         {
-            q[0] = 0;
+            q[0] = 1;
             q[1] = 0;
             q[2] = 0;
-            q[3] = 1;
+            q[3] = 0;
         }
 
-        Quaternion::Quaternion(float x, float y, float z, float w)
+        Quaternion::Quaternion(float w, float x, float y, float z)
         {
-            q[0] = x;
-            q[1] = y;
-            q[2] = z;
-            q[3] = w;
+            q[0] = w;
+            q[1] = x;
+            q[2] = y;
+            q[3] = z;
         }
 
         //Assuming from euler angles
@@ -55,7 +55,7 @@ namespace Hatchit {
             float bankCos = cosf(v[2] / 2.0f);
             float bankSin = sinf(v[2] / 2.0f);
 
-            float x,y,z,w;
+            float w,x,y,z;
 
             w = (headingCos * attitudeCos * bankCos) -
                 (headingSin * attitudeSin * bankSin);
@@ -66,10 +66,10 @@ namespace Hatchit {
             z = (headingCos * attitudeSin * bankCos) +
                 (headingSin * attitudeCos * bankSin);
 
-            q[0] = x;
-            q[1] = y;
-            q[2] = z;
-            q[3] = w;
+            q[0] = w;
+            q[1] = x;
+            q[2] = y;
+            q[3] = z;
         }
 
         //Assuming from Angle-Axis
@@ -77,10 +77,10 @@ namespace Hatchit {
         {
             float halfAngle = v[3] / 2.0f;
 
-            q[0] = v[0] * sinf(halfAngle);
-            q[1] = v[1] * sinf(halfAngle);
-            q[2] = v[2] * sinf(halfAngle);
-            q[3] = cosf(halfAngle);
+            q[0] = cosf(halfAngle);
+            q[1] = v[0] * sinf(halfAngle);
+            q[2] = v[1] * sinf(halfAngle);
+            q[3] = v[2] * sinf(halfAngle);
         }
 
         Quaternion::~Quaternion(void)
@@ -89,7 +89,7 @@ namespace Hatchit {
 
         Quaternion Quaternion::getInverse()
         {
-            return Quaternion(-q[0], -q[1], -q[2], q[3]);
+            return Quaternion(q[0], -q[1], -q[2], -q[3]);
         }
 
         Quaternion Quaternion::getQuaternionIdentity()
@@ -99,31 +99,31 @@ namespace Hatchit {
 
         Vector4 Quaternion::getAxisAngle()
         {
-            float xsq = powf(q[0], 2);
-            float ysq = powf(q[1], 2);
-            float zsq = powf(q[2], 2);
+            float xsq = powf(q[1], 2);
+            float ysq = powf(q[2], 2);
+            float zsq = powf(q[3], 2);
 
             float scale = sqrtf(xsq + ysq + zsq);
 
-            float x = q[0] / scale;
-            float y = q[1] / scale;
-            float z = q[2] / scale;
-            float angle = acos(q[3]) * 2.0f;
+            float x = q[1] / scale;
+            float y = q[2] / scale;
+            float z = q[3] / scale;
+            float angle = acos(q[0]) * 2.0f;
 
             return Vector4(x, y, z, angle);
         }
 
         Matrix3 Quaternion::getRotationMatrix()
         {
-            float x = q[0];
-            float y = q[1];
-            float z = q[2];
-            float w = q[3];
+            float w = q[0];
+            float x = q[1];
+            float y = q[2];
+            float z = q[3];
 
+            float wsq = powf(w, 2);
             float xsq = powf(x, 2);
             float ysq = powf(y, 2);
             float zsq = powf(z, 2);
-            float wsq = powf(w, 2);
 
             float m00 = 1 - (2 * (ysq + zsq));
             float m11 = 1 - (2 * (xsq + zsq));
@@ -147,12 +147,12 @@ namespace Hatchit {
 
         void Quaternion::normalize()
         {
-            float xsq = powf(q[0], 2);
-            float ysq = powf(q[1], 2);
-            float zsq = powf(q[2], 2);
-            float wsq = powf(q[3], 2);
+            float wsq = powf(q[0], 2);
+            float xsq = powf(q[1], 2);
+            float ysq = powf(q[2], 2);
+            float zsq = powf(q[3], 2);
 
-            float magSq = (xsq + ysq + zsq + wsq);
+            float magSq = (wsq + xsq + ysq + zsq);
             if (fabsf(magSq) > 0.00001f &&
                 fabsf(magSq - 1.0f) > 0.00001f)
             {
@@ -168,15 +168,15 @@ namespace Hatchit {
         Accessors and Mutators
         */
 
-        float Quaternion::getX(){ return q[0]; }
-        float Quaternion::getY(){ return q[1]; }
-        float Quaternion::getZ(){ return q[2]; }
-        float Quaternion::getW(){ return q[3]; }
+        float Quaternion::getW(){ return q[0]; }
+        float Quaternion::getX(){ return q[1]; }
+        float Quaternion::getY(){ return q[2]; }
+        float Quaternion::getZ(){ return q[3]; }
 
-        void Quaternion::setX(float x){ q[0] = x; }
-        void Quaternion::setY(float y){ q[1] = y; }
-        void Quaternion::setZ(float z){ q[2] = z; }
-        void Quaternion::setW(float w){ q[3] = w; }
+        void Quaternion::setW(float w){ q[0] = w; }
+        void Quaternion::setX(float x){ q[1] = x; }
+        void Quaternion::setY(float y){ q[2] = y; }
+        void Quaternion::setZ(float z){ q[3] = z; }
 
         /*
         Operators
@@ -187,25 +187,22 @@ namespace Hatchit {
             return q[i];
         }
 
-        Quaternion Quaternion::operator*(Quaternion other)
+        Quaternion Quaternion::operator*(Quaternion o)
         {
-            Quaternion product;
+            float thisScalar = q[0];
+            float otherScalar = o[0];
 
-            Vector3 qVec(q[0], q[1], q[2]);
-            Vector3 pVec(other[0], other[1], other[2]);
+            Vector3 thisVector = Vector3(q[1], q[2], q[3]);
+            Vector3 otherVector = Vector3(o[1], o[2], o[3]);
 
-            float qScalar = q[3];
-            float pScalar = other[3];
+            float prodScalar = (thisScalar * otherScalar) -
+                               (Vector3::Dot(thisVector, otherVector));
 
-            Vector3 productVec = (qVec * pScalar) + (pVec * qScalar) + (Vector3::Cross(pVec, qVec));
-            float productScalar = (qScalar * pScalar) - Vector3::Dot(pVec, qVec);
+            Vector3 prodVector = Vector3::Cross(thisVector, otherVector) +
+                                 (otherVector * thisScalar) +
+                                 (thisVector * otherScalar);
 
-            product[0] = productVec[0];
-            product[1] = productVec[1];
-            product[2] = productVec[2];
-            product[3] = productScalar;
-
-            return product;
+            return Quaternion(prodScalar, prodVector[0], prodVector[1], prodVector[2]);
         }
 
         //Extraction

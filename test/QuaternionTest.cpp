@@ -24,20 +24,20 @@ TEST(Quaternion, DefaultConstructor)
 {
   Quaternion quat;
 
+  ASSERT_EQ(quat.getW(), 1);
   ASSERT_EQ(quat.getX(), 0);
   ASSERT_EQ(quat.getY(), 0);
   ASSERT_EQ(quat.getZ(), 0);
-  ASSERT_EQ(quat.getW(), 1);
 }
 
 TEST(Quaternion, ParamaterizedFloatConstructor)
 {
   Quaternion quat(4,3,2,1);
 
-  ASSERT_EQ(quat.getX(), 4);
-  ASSERT_EQ(quat.getY(), 3);
-  ASSERT_EQ(quat.getZ(), 2);
-  ASSERT_EQ(quat.getW(), 1);
+  ASSERT_EQ(quat.getW(), 4);
+  ASSERT_EQ(quat.getX(), 3);
+  ASSERT_EQ(quat.getY(), 2);
+  ASSERT_EQ(quat.getZ(), 1);
 }
 
 TEST(Quaterion, EulerAnglesConstructor)
@@ -46,10 +46,10 @@ TEST(Quaterion, EulerAnglesConstructor)
   Vector3 euler(M_PI/2,0,M_PI/2);
   Quaternion quat(euler);
 
+  ASSERT_NEAR(quat.getW(), .5f, 0.00001f);
   ASSERT_NEAR(quat.getX(), .5f, 0.00001f);
   ASSERT_NEAR(quat.getY(), .5f, 0.00001f);
   ASSERT_NEAR(quat.getZ(), .5f, 0.00001f);
-  ASSERT_NEAR(quat.getW(), .5f, 0.00001f);
 }
 
 TEST(Quaternion, AxisAngleConstructor)
@@ -61,10 +61,10 @@ TEST(Quaternion, AxisAngleConstructor)
 
   Quaternion quat(angleAxis);
 
+  ASSERT_NEAR(quat.getW(), 0.7071f, 0.00001f);
   ASSERT_NEAR(quat.getX(), 0.7071f, 0.00001f);
   ASSERT_NEAR(quat.getY(), 0.0f, 0.00001f);
   ASSERT_NEAR(quat.getZ(), 0.0f, 0.00001f);
-  ASSERT_NEAR(quat.getW(), 0.7071f, 0.00001f);
 }
 
 TEST(Quaternion, Inversion)
@@ -72,10 +72,10 @@ TEST(Quaternion, Inversion)
   Quaternion quat(4,3,2,1);
   Quaternion inverse = quat.getInverse();
 
-  ASSERT_EQ(inverse.getX(), -4);
-  ASSERT_EQ(inverse.getY(), -3);
-  ASSERT_EQ(inverse.getZ(), -2);
-  ASSERT_EQ(inverse.getW(), 1);
+  ASSERT_EQ(inverse.getW(), 4);
+  ASSERT_EQ(inverse.getX(), -3);
+  ASSERT_EQ(inverse.getY(), -2);
+  ASSERT_EQ(inverse.getZ(), -1);
 }
 
 TEST(Quaterion, GetAxisAngle)
@@ -100,29 +100,31 @@ TEST(Quaternion, GetRotationMatrix)
 
   Matrix3 mat = quat.getRotationMatrix();
 
-  ASSERT_NEAR(mat[0][0], 1, 0.0001f);
-  ASSERT_NEAR(mat[0][1], 0, 0.0001f);
+  ASSERT_NEAR(mat[0][0], 0, 0.0001f);
+  ASSERT_NEAR(mat[0][1], 1, 0.0001f);
   ASSERT_NEAR(mat[0][2], 0, 0.0001f);
 
-  ASSERT_NEAR(mat[1][0], 0, 0.0001f);
+  ASSERT_NEAR(mat[1][0], -1, 0.0001f);
   ASSERT_NEAR(mat[1][1], 0, 0.0001f);
-  ASSERT_NEAR(mat[1][2], 1, 0.0001f);
+  ASSERT_NEAR(mat[1][2], 0, 0.0001f);
 
   ASSERT_NEAR(mat[2][0], 0, 0.0001f);
-  ASSERT_NEAR(mat[2][1], -1, 0.0001f);
-  ASSERT_NEAR(mat[2][2], 0, 0.0001f);
+  ASSERT_NEAR(mat[2][1], 0, 0.0001f);
+  ASSERT_NEAR(mat[2][2], 1, 0.0001f);
 }
 
 //TODO: Finish
 TEST(Quaternion, MultiplicationOperator)
 {
-  Quaternion quat1(3, 4, 3, -sinf(M_PI));
-  Quaternion quat2(3.9f, -1, -3, 4);
+  Quaternion quat1(-sinf(M_PI),3, 4, 3);
+  Quaternion quat2(4, 3.9f, -1, -3);
 
   Quaternion product = quat1 * quat2;
 
-  //std::cout << product << std::endl;
+  std::cout << product << std::endl;
 
-  //ASSERT_NEAR(product[0], 3, 0.00001f);
-
+  ASSERT_NEAR(product[0], 1.3f, 0.00001f);
+  ASSERT_NEAR(product[1], 3.0f, 0.00001f);
+  ASSERT_NEAR(product[2], 36.7f, 0.00001f);
+  ASSERT_NEAR(product[3], -6.6f, 0.00001f);
 }

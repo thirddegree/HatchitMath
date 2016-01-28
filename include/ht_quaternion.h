@@ -52,7 +52,7 @@ namespace Hatchit
 			 * \param z The third element
 			 * \param w The fourth element
 			 */
-			Quaternion(float x, float y, float z, float w);
+			Quaternion(float w, float x, float y, float z);
 			/** Creates a Quaternion based off the Euler rotation described by a
 			 * Vector3
 			 * \param v The Vector3 used to describe a Euler rotation
@@ -86,15 +86,19 @@ namespace Hatchit
 
 			//Accessors and mutators
 
+			///Returns the fourth element \return The fourth element
+			float getW();
 			///Returns the first element \return The first element
 			float getX();
 			///Returns the second element \return The second element
 			float getY();
 			///Returns the third element \return The third element
 			float getZ();
-			///Returns the fourth element \return The fourth element
-			float getW();
 
+			/** Sets the fourth element
+			 * \param w The float you want to be the fourth element of this vector
+			 */
+			void setW(float w);
 			/** Sets the first element
 			 * \param x The float you want to be the first element of this vector
 			 */
@@ -107,10 +111,6 @@ namespace Hatchit
 			 * \param z The float you want to be the third element of this vector
 			 */
 			void setZ(float z);
-			/** Sets the fourth element
-			 * \param w The float you want to be the fourth element of this vector
-			 */
-			void setW(float w);
 
 			/** Fetches an element of this Quaterion at the index i
 			 * \param i The index of the element to fetch
