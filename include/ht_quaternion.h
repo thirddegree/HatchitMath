@@ -44,7 +44,7 @@ namespace Hatchit
 		{
 		public:
 			//Constructors
-			///Creates an identity Quaterion with elements 0,0,0,1
+			///Creates an identity Quaterion with elements 1,0,0,0
 			Quaternion();
 			/** Creates a Quaterion with elements set to the given values
 			 * \param x The first element
@@ -66,7 +66,7 @@ namespace Hatchit
 
 			virtual ~Quaternion();
 
-			/** Returns an identity Quaterion with the elements 0,0,0,1
+			/** Returns an identity Quaterion with the elements 1,0,0,0
        * \return An identity Quaterion
 			 */
 			static Quaternion getQuaternionIdentity();
@@ -86,29 +86,29 @@ namespace Hatchit
 
 			//Accessors and mutators
 
-			///Returns the fourth element \return The fourth element
+			///Returns the fourth element \return The first element
 			float getW();
-			///Returns the first element \return The first element
+			///Returns the first element \return The second element
 			float getX();
-			///Returns the second element \return The second element
+			///Returns the second element \return The third element
 			float getY();
-			///Returns the third element \return The third element
+			///Returns the third element \return The fourth element
 			float getZ();
 
 			/** Sets the fourth element
-			 * \param w The float you want to be the fourth element of this vector
+			 * \param w The float you want to be the first element of this vector
 			 */
 			void setW(float w);
 			/** Sets the first element
-			 * \param x The float you want to be the first element of this vector
+			 * \param x The float you want to be the second element of this vector
 			 */
 			void setX(float x);
 			/** Sets the second element
-			 * \param y The float you want to be the second element of this vector
+			 * \param y The float you want to be the third element of this vector
 			 */
 			void setY(float y);
 			/** Sets the third element
-			 * \param z The float you want to be the third element of this vector
+			 * \param z The float you want to be the fourth element of this vector
 			 */
 			void setZ(float z);
 
