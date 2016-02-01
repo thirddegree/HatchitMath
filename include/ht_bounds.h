@@ -15,7 +15,7 @@
 
 /**
  * \class Bounds
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A mathematical representation of an Axis Aligned Box
  *

@@ -14,7 +14,7 @@
 
 /**
  * \class Vector2
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A two dimensional vector
  *

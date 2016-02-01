@@ -14,7 +14,7 @@
 
 
 /**
- * \defgroup HachitMath
+ * \defgroup HacthitMath
  */
 
 #pragma once

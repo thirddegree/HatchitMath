@@ -14,7 +14,7 @@
 
 /**
  * \class Matrix3
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A 3x3 Matrix
  *

@@ -14,7 +14,7 @@
 
 /**
  * \class Matrix4
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A 4x4 Matrix
  *

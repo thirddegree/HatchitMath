@@ -14,7 +14,7 @@
 
 /**
  * \class Quaternion
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A 4 dimensional representation of rotation
  *

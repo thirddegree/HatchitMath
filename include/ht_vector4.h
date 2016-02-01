@@ -14,7 +14,7 @@
 
 /**
  * \class Vector4
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A four dimensional vector
  *

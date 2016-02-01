@@ -15,7 +15,7 @@
 
 /**
  * \class Vector3
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A three dimensional vector
  *

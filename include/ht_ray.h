@@ -14,7 +14,7 @@
 
 /**
  * \class Ray
- * \ingroup HachitMath
+ * \ingroup HatchitMath
  *
  * \brief A ray described by an origin and a direction
  *
