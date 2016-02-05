@@ -7,10 +7,19 @@ project(HatchitMath)
 file(GLOB HATCHIT_MATH_HEADERS "include/*.h")
 file(GLOB HATCHIT_MATH_SOURCE "source/*.cpp")
 
-#C++ 11
-if(UNIX)
-	set(CMAKE_CXX_FLAGS "-std=c++11 -g ${CMAKE_CXX_FLAGS}")
-endif(UNIX)
+# Compiler flag
+include (CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+    if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -g -msse")
+    else()
+        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -msse")
+    endif()
+else()
+    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
 
 include_directories("include")
 include_directories(SYSTEM)
