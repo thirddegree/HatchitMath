@@ -26,32 +26,42 @@ namespace Hatchit {
         */
         Vector3::Vector3()
         {
-            this->vector[0] = 0;
-            this->vector[1] = 0;
-            this->vector[2] = 0;
         }
 
         Vector3::Vector3(float x, float y, float z)
         {
-            this->vector[0] = x;
-            this->vector[1] = y;
-            this->vector[2] = z;
+			__m128 xx = _mm_load_ss(&x);
+			__m128 xy = _mm_load_ss(&y);
+			__m128 xz = _mm_load_ss(&z);
+			__m128 xw; // 0
+
+			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
         Vector3::Vector3(const Vector3& other)
         {
-            this->vector[0] = other.vector[0];
-            this->vector[1] = other.vector[1];
-            this->vector[2] = other.vector[2];
+			__m128 xx = _mm_load_ss(&other.m_vec_array[0]);
+			__m128 xy = _mm_load_ss(&other.m_vec_array[1]);
+			__m128 xz = _mm_load_ss(&other.m_vec_array[2]);
+			__m128 xw; // 0
+
+			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
         Vector3::Vector3(Vector4& v4)
         {
             float invV4W = 1 / v4[3];
 
-            this->vector[0] = v4[0] * invV4W;
-            this->vector[1] = v4[1] * invV4W;
-            this->vector[2] = v4[2] * invV4W;
+            float x = v4[0] * invV4W;
+            float y = v4[1] * invV4W;
+            float z = v4[2] * invV4W;
+
+			__m128 xx = _mm_load_ss(&x);
+			__m128 xy = _mm_load_ss(&y);
+			__m128 xz = _mm_load_ss(&z);
+			__m128 xw; // 0
+
+			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
 
@@ -68,16 +78,64 @@ namespace Hatchit {
         Accessors & Mutators
         */
 
-        float Vector3::getX(){ return vector[0]; }
-        float Vector3::getY(){ return vector[1]; }
-        float Vector3::getZ(){ return vector[2]; }
+		float Vector3::getX()
+		{
+			float x;
+			_mm_store_ss(&x, m_vector);
 
-        float Vector3::getMagnitude(){ return sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2])); }
-        float* Vector3::getAsArray(){ return vector; }
+			return x;
+		}
+		float Vector3::getY()
+		{
+			float y;
+			_mm_store_ss(&y, _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(1, 1, 1, 1)));
 
-        void Vector3::setX(float x){ Vector3::vector[0] = x; }
-        void Vector3::setY(float y){ Vector3::vector[1] = y; }
-        void Vector3::setZ(float z){ Vector3::vector[2] = z; }
+			return y;
+		}
+		float Vector3::getZ()
+		{
+			float z;
+			_mm_store_ss(&z, _mm_movehl_ps(m_vector, m_vector));
+
+			return z;
+		}
+
+		//TODO: Redo with SSE Optimizations
+		float Vector3::getMagnitude()
+		{
+			Scalar mag = (*this) * (*this);
+			mag = _mm_sqrt_ps(mag);
+
+			return (float)mag;
+		}
+		
+		float* Vector3::getAsArray()
+		{
+			_mm_store_ps(m_vec_array, m_vector);
+			return m_vec_array;
+		}
+
+		void Vector3::setX(float x)
+		{
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(temp[3], temp[2], temp[1], x);
+		}
+		void Vector3::setY(float y)
+		{
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(temp[3], temp[2], y, temp[0]);
+		}
+		void Vector3::setZ(float z)
+		{
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(temp[3], z, temp[1], temp[0]);
+		}
 
         /*
         Static Functions
@@ -88,21 +146,25 @@ namespace Hatchit {
         {
             Vector3 output;
 
-            output.vector[0] = v.vector[1] * u.vector[2] - v.vector[2] * u.vector[1];
-            output.vector[1] = v.vector[2] * u.vector[0] - v.vector[0] * u.vector[2];
-            output.vector[2] = v.vector[0] * u.vector[1] - v.vector[1] * u.vector[0];
+			__m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+			__m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+			__m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+			__m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
 
+			__m128 val = _mm_add_ps(_mm_mul_ps(x00, x10), _mm_mul_ps(x01, x11));
+
+			output.m_vector = val;
             return output;
         }
 
         //Dot product between two vectors
         float Vector3::Dot(Vector3 v, Vector3 u)
         {
-            float output;
-
-            output = v * u;
-
-            return output;
+			__m128 temp;
+			__m128 sq = _mm_mul_ps(v.m_vector, u.m_vector);
+			temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 1, 0, 2)));
+			temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
+			return (float)Scalar(temp);
         }
 
         //Normalize a vector
@@ -113,9 +175,10 @@ namespace Hatchit {
             if (magnitude == 0)
                 magnitude = 1;
 
-            Vector3 normalizedVec(v.vector[0] / magnitude,
-                v.vector[1] / magnitude,
-                v.vector[2] / magnitude);
+			Vector3 normalizedVec;
+
+			float invMag = 1 / magnitude;
+			normalizedVec.m_vector = _mm_mul_ps(v.m_vector, Scalar(invMag));
 
             return normalizedVec;
         }
@@ -127,122 +190,144 @@ namespace Hatchit {
         //Scalar operators
         Vector3 Vector3::operator*(float s)
         {
-            return Vector3(vector[0] * s, vector[1] * s, vector[2] * s);
+			Vector3 vec;
+
+			__m128 product = _mm_mul_ps(m_vector, Scalar(s));
+
+			vec.m_vector = product;
+
+			return vec;
         }
         Vector3 Vector3::operator/(float s)
         {
-            return Vector3(vector[0] / s, vector[1] / s, vector[2] / s);
+			Vector3 vec;
+
+			//Do division only once and then multiply by the inverse
+			float invS = 1 / s; 
+			__m128 product = _mm_mul_ps(m_vector, Scalar(invS));
+
+			vec.m_vector = product;
+
+			return vec;
         }
         Vector3 Vector3::operator-(float s)
         {
-            return Vector3(vector[0] - s, vector[1] - s, vector[2] - s);
+			Vector3 vec;
+
+			__m128 product = _mm_sub_ps(m_vector, Scalar(s));
+
+			vec.m_vector = product;
+
+			return vec;
         }
         Vector3 Vector3::operator+(float s)
         {
-            return Vector3(vector[0] + s, vector[1] + s, vector[2] + s);
+			Vector3 vec;
+
+			__m128 product = _mm_add_ps(m_vector, Scalar(s));
+
+			vec.m_vector = product;
+
+			return vec;
         }
 
         Vector3 Vector3::operator*=(float s)
         {
-            vector[0] *= s;
-            vector[1] *= s;
-            vector[2] *= s;
+			m_vector = _mm_mul_ps(m_vector, Scalar(s));
 
             return (*this);
         }
         Vector3 Vector3::operator/=(float s)
         {
-            vector[0] /= s;
-            vector[1] /= s;
-            vector[2] /= s;
+			//Do division only once and then multiply by the inverse
+			float invS = 1 / s;
 
-            return (*this);
+			m_vector = _mm_mul_ps(m_vector, Scalar(invS));
+
+			return (*this);
         }
         Vector3 Vector3::operator-=(float s)
         {
-            vector[0] -= s;
-            vector[1] -= s;
-            vector[2] -= s;
+			m_vector = _mm_sub_ps(m_vector, Scalar(s));
 
-            return (*this);
+			return (*this);
         }
         Vector3 Vector3::operator+=(float s)
         {
-            vector[0] += s;
-            vector[1] += s;
-            vector[2] += s;
+			m_vector = _mm_add_ps(m_vector, Scalar(s));
 
-            return (*this);
+			return (*this);
         }
 
         bool Vector3::operator>(Vector3 u){ return getMagnitude() > u.getMagnitude(); }
         bool Vector3::operator<(Vector3 u){ return getMagnitude() < u.getMagnitude(); }
         bool Vector3::operator==(Vector3 u)
         {
-            if (vector[0] != u[0])
-                return false;
-            if (vector[1] != u[1])
-                return false;
-            if (vector[2] != u[2])
-                return false;
-
-            return true;
+			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 7;
         }
         bool Vector3::operator!=(Vector3 u)
         {
-            if (vector[0] != u[0])
-                return true;
-            if (vector[1] != u[1])
-                return true;
-            if (vector[2] != u[2])
-                return true;
-
-            return false;
+			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 7;
         }
 
         //Vector operators
         float Vector3::operator* (Vector3 u)
         {
-            return (vector[0] * u.vector[0] + vector[1] * u.vector[1] + vector[2] * u.vector[2]);
+			__m128 temp;
+			__m128 sq = _mm_mul_ps(m_vector, u.m_vector);
+			temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 1, 0, 2)));
+			temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
+			return (float)Scalar(temp);
         }
         Vector3 Vector3::operator+(Vector3 u)
         {
-            return Vector3(vector[0] + u.vector[0], vector[1] + u.vector[1], vector[2] + u.vector[2]);
+			Vector3 vec;
+
+			__m128 sum = _mm_add_ps(m_vector, u.m_vector);
+
+			vec.m_vector = sum;
+
+			return vec;
         }
         Vector3 Vector3::operator-(Vector3 u)
         {
-            return Vector3(vector[0] - u.vector[0], vector[1] - u.vector[1], vector[2] - u.vector[2]);
+			Vector3 vec;
+
+			__m128 diff = _mm_sub_ps(m_vector, u.m_vector);
+
+			vec.m_vector = diff;
+
+			return vec;
         }
         Vector3 Vector3::operator+=(Vector3 u)
         {
-            vector[0] += u[0];
-            vector[1] += u[1];
-            vector[2] += u[2];
+			m_vector = _mm_add_ps(m_vector, u.m_vector);
 
-            return (*this);
+			return (*this);
         }
         Vector3 Vector3::operator-=(Vector3 u)
         {
-            vector[0] -= u[0];
-            vector[1] -= u[1];
-            vector[2] -= u[2];
+			m_vector = _mm_sub_ps(m_vector, u.m_vector);
 
-            return (*this);
+			return (*this);
         }
 
         float& Vector3::operator[](int i)
         {
-            return vector[i];
+			_mm_store_ps(m_vec_array, m_vector);
+			return m_vec_array[i];
         }
 
         Vector3::operator Vector4()
         {
-            return Vector4(vector[0], vector[1], vector[2], 1.0f);
+			_mm_store_ps(m_vec_array, m_vector);
+            return Vector4(m_vec_array[0], m_vec_array[1], m_vec_array[2], 1.0f);
         }
 
         Vector3::operator Vector2()
         {
-            return Vector2(vector[0], vector[1]);
+			_mm_store_ps(m_vec_array, m_vector);
+            return Vector2(m_vec_array[0], m_vec_array[1]);
         }
 
 

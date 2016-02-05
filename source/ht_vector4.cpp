@@ -25,7 +25,7 @@ namespace Hatchit {
 
         Vector4::Vector4()
         {
-			this->vector = _mm_set1_ps(0);
+
         }
 
         Vector4::Vector4(float x, float y, float z, float w)
@@ -56,18 +56,23 @@ namespace Hatchit {
             // in this single call the result will give us the correct memory layout we want.
             //
             // movelh(unpack(XX,XY), unpack(XW,XZ) -> r0=x, r1=y, r2=z, r3=w
-			this->vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
+			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
 
         }
 
         Vector4::Vector4(Vector3 v, float w)
         {
-			this->vector = _mm_set_ps(w, v[2], v[1], v[0]);
+			__m128 xx = _mm_load_ss(&v[0]);
+			__m128 xy = _mm_load_ss(&v[1]);
+			__m128 xz = _mm_load_ss(&v[2]);
+			__m128 xw = _mm_load_ss(&w);
+
+			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
         Vector4::Vector4(const Vector4 & other)
         {
-			this->vector = other.vector;
+			this->m_vector = other.m_vector;
         }
 
         /*
@@ -85,55 +90,72 @@ namespace Hatchit {
 
         float Vector4::getX()
 		{ 
-			_mm_store_ps(vals, vector);
-			return vals[0];
+			float x;
+			_mm_store_ss(&x, m_vector);
+
+			return x;
 		}
         float Vector4::getY()
 		{
-			_mm_store_ps(vals, vector);
-			return vals[1];
+			float y;
+			_mm_store_ss(&y, _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(1, 1, 1, 1)));
+
+			return y;
 		}
         float Vector4::getZ()
 		{
-			_mm_store_ps(vals, vector);
-			return vals[2];
+			float z;
+			_mm_store_ss(&z, _mm_movehl_ps(m_vector, m_vector));
+
+			return z;
 		}
         float Vector4::getW()
 		{
-			_mm_store_ps(vals, vector);
-			return vals[3];
+			float w;
+			_mm_store_ss(&w, _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(3, 3, 3, 3)));
+
+			return w;
 		}
 
+		//TODO: Redo with SSE Optimizations
         float Vector4::getMagnitude()
 		{
-			return sqrt((vals[0] * vals[0]) + (vals[1] * vals[1]) + (vals[2] * vals[2]) + (vals[3] * vals[3]));
+			return sqrt((m_vec_array[0] * m_vec_array[0]) + (m_vec_array[1] * m_vec_array[1]) + (m_vec_array[2] * m_vec_array[2]) + (m_vec_array[3] * m_vec_array[3]));
 		}
 
         float* Vector4::getAsArray()
 		{
-			_mm_store_ps(vals, vector);
-			return vals;
+			_mm_store_ps(m_vec_array, m_vector);
+			return m_vec_array;
 		}
 
         void Vector4::setX(float x)
 		{ 
-			vals[0] = x;
-			vector = _mm_load_ps(vals);
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(temp[3], temp[2], temp[1], x);
 		}
         void Vector4::setY(float y)
 		{
-			vals[1] = y;
-			vector = _mm_load_ps(vals);
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(temp[3], temp[2], y, temp[0]);
 		}
         void Vector4::setZ(float z)
 		{
-			vals[2] = z;
-			vector = _mm_load_ps(vals);
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(temp[3], z, temp[1], temp[0]);
 		}
         void Vector4::setW(float w)
 		{
-			vals[3] = w;
-			vector = _mm_load_ps(vals);
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+
+			m_vector = _mm_set_ps(w, temp[2], temp[1], temp[0]);
 		}
 
         /*
@@ -142,8 +164,8 @@ namespace Hatchit {
 
         float& Vector4::operator[](int i)
         {
-			_mm_store_ps(vals, vector);
-            return vals[i];
+			_mm_store_ps(m_vec_array, m_vector);
+            return m_vec_array[i];
         }
 
         //Typecasting Operators

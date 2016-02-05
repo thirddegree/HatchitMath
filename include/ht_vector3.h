@@ -27,6 +27,7 @@
 #include <ht_platform.h>
 #include <iostream>
 #include <ostream>
+#include <ht_scalar.h>
 
 namespace Hatchit
 {
@@ -214,7 +215,8 @@ namespace Hatchit
 			operator Vector2();
 
 		private:
-			float vector[3];
+			_MM_ALIGN16 float m_vec_array[3];
+			__m128 m_vector;
 		};
 
 		/** An insertion operator for a Vector3 to interace with an ostream

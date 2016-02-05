@@ -107,8 +107,8 @@ namespace Hatchit
 			operator Vector3();
 
 		private:
-			_MM_ALIGN16 float vals[4];
-			__m128 vector;
+			_MM_ALIGN16 float m_vec_array[4];
+			__m128 m_vector;
 		};
 
 		/** An insertion operator for a Vector3 to interace with an ostream
