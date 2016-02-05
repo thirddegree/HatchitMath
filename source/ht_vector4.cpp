@@ -30,7 +30,34 @@ namespace Hatchit {
 
         Vector4::Vector4(float x, float y, float z, float w)
         {
-			this->vector = _mm_set_ps(x,y,z,w);
+            //NOTE:
+            //_mm_load_ss:
+            // Takes float val and store into __m128 like so:
+            // r0 = *val, r1=0.0, r2=0.0, r3=0.0
+            __m128 xx = _mm_load_ss(&x);
+            __m128 xy = _mm_load_ss(&y);
+            __m128 xz = _mm_load_ss(&z);
+            __m128 xw = _mm_load_ss(&w);
+
+            //NOTE:
+            // _mm_unpacklo_ps:
+            // Selects the lowest two single-precision values from (a, b)
+            // Thus, _mm_unpacklo_ps(xx,yy) --> r0=a0, r1=b0, r2=a1, r3=b1
+            //
+            // Using this, we can then take the  values (XX,XY) and (XZ,XW)
+            // and combine them each into two single values
+            // After doing so:
+            // __m128 unpack(XX,XY) -> r0=x, r1=y, r2=0.0, r3=0.0
+            // __m128 unpack(XZ,XW) -> r0=z, r1=w, r2=0.0, r3=0.0
+            //
+            // _mm_movelh_ps:
+            // Moves the lower two single-precision values
+            // Finally we can combine the results of the previous unpacks,
+            // in this single call the result will give us the correct memory layout we want.
+            //
+            // movelh(unpack(XX,XY), unpack(XW,XZ) -> r0=x, r1=y, r2=z, r3=w
+			this->vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
+
         }
 
         Vector4::Vector4(Vector3 v, float w)
