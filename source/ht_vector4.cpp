@@ -62,7 +62,7 @@ namespace Hatchit {
 
         Vector4::Vector4(Vector3 v, float w)
         {
-			this->vector = _mm_set_ps(v[0], v[1], v[2], w);
+			this->vector = _mm_set_ps(w, v[2], v[1], v[0]);
         }
 
         Vector4::Vector4(const Vector4 & other)
@@ -108,6 +108,7 @@ namespace Hatchit {
 		{
 			return sqrt((vals[0] * vals[0]) + (vals[1] * vals[1]) + (vals[2] * vals[2]) + (vals[3] * vals[3]));
 		}
+
         float* Vector4::getAsArray()
 		{
 			_mm_store_ps(vals, vector);

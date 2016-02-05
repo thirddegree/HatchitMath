@@ -16,6 +16,8 @@
 #include "ht_vector2.h"
 #include "ht_vector3.h"
 #include "ht_vector4.h"
+#include <cfloat>
+#include <iostream>
 
 using namespace Hatchit;
 using namespace Math;
@@ -66,7 +68,10 @@ TEST(Vector4, Magnitude)
 {
   //Magnitude of this vector should be ~9.27362 according to wolfram alpha
   Vector4 vector(3,4,5,6);
-  ASSERT_NEAR(vector.getMagnitude(), 9.27362f, 0.00001f);
+
+  std::cout << vector.getMagnitude() << std::endl;
+
+  ASSERT_NEAR(vector.getMagnitude(), 9.27362184f, FLT_EPSILON);
 }
 
 TEST(Vector4, GetAsArray)

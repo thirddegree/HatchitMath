@@ -63,6 +63,13 @@
             //GCC 4 has unique keywords for showing/hiding symbols
             //the same keyword is used for both import and export
             #define HT_API __attribute__((__visibility__("default")))
+            
+            //Define MSVC compatible __forceinline keyword
+            //for use with GCC compiler.
+            #ifndef __forceinline
+            #define __forceinline __attribute__((always_inline))
+            #endif
+
         #else
             #define HT_API
         #endif
@@ -78,6 +85,26 @@
 #define NOEXCEPT noexcept
 #else
 #define NOEXCEPT 
+#endif
+
+#ifdef HT_SYS_WINDOWS
+#include <malloc.h>
+    #ifndef ALIGN_ALLOC
+    #define ALIGN_ALLOC(x,y) _aligned_malloc(y,x)
+    #endif
+
+    #ifndef ALIGN_FREE
+    #define ALIGN_FREE(x) _aligned_free(x)
+    #endif
+#else
+#include <cstdlib>
+    #ifndef ALIGN_ALLOC
+    #define ALIGN_ALLOC(x,y) aligned_alloc(x,y)
+    #endif
+
+    #ifndef ALIGN_FREE
+    #define ALIGN_FREE(x) free(x)
+    #endif
 #endif
 
 //////////////////////////////
