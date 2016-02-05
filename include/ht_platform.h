@@ -97,7 +97,7 @@
     #define ALIGN_FREE(x) _aligned_free(x)
     #endif
 #else
-#include <stdlib.h>
+#include <cstdlib>
     #ifndef ALIGN_ALLOC
     #define ALIGN_ALLOC(x,y) aligned_alloc(x,y)
     #endif
