@@ -3,12 +3,10 @@ compiler: clang
 addons:
     apt:
         sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
-        packages: ['cmake','clang-3.6', 'g++-4.9']
+        packages: ['clang-3.6', 'g++-4.9']
 
 before_install:
-   - sudo add-apt-repository ppa:kalakris/cmake
    - sudo apt-get update -qq
-   - sudo apt-get install cmake
    - sudo apt-get install cmake-data
 
 install:
