@@ -4,14 +4,14 @@ addons:
     apt:
         sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
         packages: ['clang-3.6']
-		
+
 install:
    - sudo apt-get install libgtest-dev
    - cd /usr/src/gtest
    - sudo cmake .
    - sudo make
    - sudo mv libgtest* /usr/lib/
-   - cd "${TRAVIS_BUILD_DIR}"
+   - cd "${TRAVIS_BUILD_DIR}""
 
 script:
     - mkdir _builds
@@ -19,3 +19,4 @@ script:
     - cmake .. -DBUILD_TEST=TRUE
     - make
     - test_bin
+    
