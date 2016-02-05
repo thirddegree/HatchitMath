@@ -1,24 +1,11 @@
-language:
-   - cpp
-
-include:
-  - os: linux	  
-    compiler: clang
-    addons:
-      apt:
+language: cpp  
+compiler: clang
+addons:
+    apt:
         sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
         packages: ['clang-3.6']
-    env: COMPILER=clang++-3.6
-
-before_install:
-   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-   - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
-   - sudo apt-get update -qq
-   - sudo apt-get install cmake-data
-
+		
 install:
-   - sudo apt-get install -qq g++-4.9
-   - export CXX="g++-4.9"
    - sudo apt-get install libgtest-dev
    - cd /usr/src/gtest
    - sudo cmake .
