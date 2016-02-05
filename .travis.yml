@@ -3,7 +3,7 @@ compiler: clang
 addons:
     apt:
         sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
-        packages: ['clang-3.6']
+        packages: ['cmake','clang-3.6', 'g++-4.9']
 
 install:
    - sudo apt-get install libgtest-dev
