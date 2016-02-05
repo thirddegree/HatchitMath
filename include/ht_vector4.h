@@ -24,6 +24,7 @@
 #pragma once
 
 #include <ht_platform.h>
+#include <ht_intrin.h>
 #include <iostream>
 #include <cmath>
 
@@ -106,7 +107,7 @@ namespace Hatchit
 			operator Vector3();
 
 		private:
-			__declspec(align(16)) float vals[4];
+			_MM_ALIGN16 float vals[4];
 			__m128 vector;
 		};
 

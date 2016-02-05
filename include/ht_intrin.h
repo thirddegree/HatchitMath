@@ -22,6 +22,16 @@
 #include <x86intrin.h>
 #endif
 
+#ifdef HT_SYS_WINDOWS
+    #ifndef _MM_ALIGN16
+    #define _MM_ALIGN16 __declspec(align(16))
+    #endif
+#else
+    #ifndef _MM_ALIGN16
+    #define _MM_ALIGN16 __attribute__((aligned(16)))
+    #endif
+#endif
+
 namespace Hatchit {
 
     namespace Math {
