@@ -98,15 +98,8 @@
     #endif
 #else
 #include <cstdlib>
-void* call_posix_memalign(unsigned long long x, size_t y)
-{
-	void** ret;
-	posix_memalign(ret, x, y);
-	return ret;
-}
-
     #ifndef ALIGN_ALLOC
-	#define ALIGN_ALLOC(x,y) call_posix_memalign(x, y)
+	#define ALIGN_ALLOC(x,y) aligned_alloc(x, y)
     #endif
 
     #ifndef ALIGN_FREE
