@@ -99,7 +99,7 @@
 #else
 #include <cstdlib>
     #ifndef ALIGN_ALLOC
-    #define ALIGN_ALLOC(x,y) posix_memalign(x,16,y)
+    #define ALIGN_ALLOC(x,y) posix_memalign((void**)&x,16,y)
     #endif
 
     #ifndef ALIGN_FREE
