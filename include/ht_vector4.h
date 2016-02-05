@@ -106,7 +106,8 @@ namespace Hatchit
 			operator Vector3();
 
 		private:
-			float vector[4];
+			__declspec(align(16)) float vals[4];
+			__m128 vector;
 		};
 
 		/** An insertion operator for a Vector3 to interace with an ostream
@@ -118,6 +119,6 @@ namespace Hatchit
 		* \param output The ostream to output to
 		* \param h The Vector3 to interface with the ostream
 		*/
-    HT_API std::istream& operator>> (std::istream& input, Vector4& h);
+		HT_API std::istream& operator>> (std::istream& input, Vector4& h);
 	}
 }

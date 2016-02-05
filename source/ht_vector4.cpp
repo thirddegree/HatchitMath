@@ -25,34 +25,22 @@ namespace Hatchit {
 
         Vector4::Vector4()
         {
-            this->vector[0] = 0;
-            this->vector[1] = 0;
-            this->vector[2] = 0;
-            this->vector[3] = 0;
+			this->vector = _mm_set1_ps(0);
         }
 
         Vector4::Vector4(float x, float y, float z, float w)
         {
-            this->vector[0] = x;
-            this->vector[1] = y;
-            this->vector[2] = z;
-            this->vector[3] = w;
+			this->vector = _mm_set_ps(x,y,z,w);
         }
 
         Vector4::Vector4(Vector3 v, float w)
         {
-            this->vector[0] = v[0];
-            this->vector[1] = v[1];
-            this->vector[2] = v[2];
-            this->vector[3] = w;
+			this->vector = _mm_set_ps(v[0], v[1], v[2], w);
         }
 
         Vector4::Vector4(const Vector4 & other)
         {
-            this->vector[0] = other.vector[0];
-            this->vector[1] = other.vector[1];
-            this->vector[2] = other.vector[2];
-            this->vector[3] = other.vector[3];
+			this->vector = other.vector;
         }
 
         /*
@@ -68,18 +56,57 @@ namespace Hatchit {
         Accessors and Mutators
         */
 
-        float Vector4::getX(){ return vector[0]; }
-        float Vector4::getY(){ return vector[1]; }
-        float Vector4::getZ(){ return vector[2]; }
-        float Vector4::getW(){ return vector[3]; }
+        float Vector4::getX()
+		{ 
+			_mm_store_ps(vals, vector);
+			return vals[0];
+		}
+        float Vector4::getY()
+		{
+			_mm_store_ps(vals, vector);
+			return vals[1];
+		}
+        float Vector4::getZ()
+		{
+			_mm_store_ps(vals, vector);
+			return vals[2];
+		}
+        float Vector4::getW()
+		{
+			_mm_store_ps(vals, vector);
+			return vals[3];
+		}
 
-        float Vector4::getMagnitude(){ return sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2]) + (vector[3] * vector[3])); }
-        float* Vector4::getAsArray(){ return vector; }
+        float Vector4::getMagnitude()
+		{
+			return sqrt((vals[0] * vals[0]) + (vals[1] * vals[1]) + (vals[2] * vals[2]) + (vals[3] * vals[3]));
+		}
+        float* Vector4::getAsArray()
+		{
+			_mm_store_ps(vals, vector);
+			return vals;
+		}
 
-        void Vector4::setX(float x){ this->vector[0] = x; }
-        void Vector4::setY(float y){ this->vector[1] = y; }
-        void Vector4::setZ(float z){ this->vector[2] = z; }
-        void Vector4::setW(float w){ this->vector[3] = w; }
+        void Vector4::setX(float x)
+		{ 
+			vals[0] = x;
+			vector = _mm_load_ps(vals);
+		}
+        void Vector4::setY(float y)
+		{
+			vals[1] = y;
+			vector = _mm_load_ps(vals);
+		}
+        void Vector4::setZ(float z)
+		{
+			vals[2] = z;
+			vector = _mm_load_ps(vals);
+		}
+        void Vector4::setW(float w)
+		{
+			vals[3] = w;
+			vector = _mm_load_ps(vals);
+		}
 
         /*
         Operators
@@ -87,7 +114,8 @@ namespace Hatchit {
 
         float& Vector4::operator[](int i)
         {
-            return vector[i];
+			_mm_store_ps(vals, vector);
+            return vals[i];
         }
 
         //Typecasting Operators
@@ -110,10 +138,7 @@ namespace Hatchit {
             float x, y, z, w;
             input >> x >> y >> z >> w;
 
-            v4.setX(x);
-            v4.setY(y);
-            v4.setZ(z);
-            v4.setW(w);
+			v4 = Vector4(x, y, z, w);
 
             return input;
         }
