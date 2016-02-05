@@ -33,7 +33,7 @@ namespace Hatchit {
 			__m128 xx = _mm_load_ss(&x);
 			__m128 xy = _mm_load_ss(&y);
 			__m128 xz = _mm_load_ss(&z);
-			__m128 xw; // 0
+			__m128 xw = _mm_load_ps1(0);
 
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
@@ -43,7 +43,7 @@ namespace Hatchit {
 			__m128 xx = _mm_load_ss(&other.m_vec_array[0]);
 			__m128 xy = _mm_load_ss(&other.m_vec_array[1]);
 			__m128 xz = _mm_load_ss(&other.m_vec_array[2]);
-			__m128 xw; // 0
+			__m128 xw = _mm_load_ps1(0);
 
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
@@ -59,7 +59,7 @@ namespace Hatchit {
 			__m128 xx = _mm_load_ss(&x);
 			__m128 xy = _mm_load_ss(&y);
 			__m128 xz = _mm_load_ss(&z);
-			__m128 xw; // 0
+			__m128 xw = _mm_load_ps1(0);
 
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
