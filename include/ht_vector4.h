@@ -57,6 +57,14 @@ namespace Hatchit
 			 */
 			Vector4(const Vector4& other);
 
+			//Custom allocation/deallocation
+			///Allocate a 16byte aligned array of Vector4s
+			void* operator new(size_t _size);
+			///Delete an array of Vector4s
+			void  operator delete(void* p);
+			///Fetch the Vector4's SSE intrinsic __m128
+			operator const __m128(void) const;
+
 			//Destructor
 			virtual ~Vector4();
 

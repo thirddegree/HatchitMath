@@ -64,6 +64,25 @@ namespace Hatchit {
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
+		void* Vector3::operator new(size_t _size)
+		{
+			//NOTE:
+			//This is a macro defined in ht_platform.h
+			//The parameter input style used here, matches the GCC
+			//cstdlib aligned_alloc function. The macro
+			//switches the inputs for the call to MSVC _aligned_malloc
+			return ALIGN_ALLOC(sizeof(__m128), _size);
+		}
+
+		void Vector3::operator delete(void* p)
+		{
+			ALIGN_FREE(p);
+		}
+
+		Vector3::operator const __m128(void) const
+		{
+			return m_vector;
+		}
 
         /*
         Destructor
@@ -100,7 +119,6 @@ namespace Hatchit {
 			return z;
 		}
 
-		//TODO: Redo with SSE Optimizations
 		float Vector3::getMagnitude()
 		{
 			Scalar mag = (*this) * (*this);

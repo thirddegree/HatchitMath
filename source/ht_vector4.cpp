@@ -75,6 +75,26 @@ namespace Hatchit {
 			this->m_vector = other.m_vector;
         }
 
+		void* Vector4::operator new(size_t _size)
+		{
+			//NOTE:
+			//This is a macro defined in ht_platform.h
+			//The parameter input style used here, matches the GCC
+			//cstdlib aligned_alloc function. The macro
+			//switches the inputs for the call to MSVC _aligned_malloc
+			return ALIGN_ALLOC(sizeof(__m128), _size);
+		}
+
+			void Vector4::operator delete(void* p)
+		{
+			ALIGN_FREE(p);
+		}
+
+		Vector4::operator const __m128(void) const
+		{
+			return m_vector;
+		}
+
         /*
         Destructor
         */
@@ -117,7 +137,6 @@ namespace Hatchit {
 			return w;
 		}
 
-		//TODO: Redo with SSE Optimizations
         float Vector4::getMagnitude()
 		{
 			return sqrt((m_vec_array[0] * m_vec_array[0]) + (m_vec_array[1] * m_vec_array[1]) + (m_vec_array[2] * m_vec_array[2]) + (m_vec_array[3] * m_vec_array[3]));

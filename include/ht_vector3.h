@@ -49,6 +49,14 @@ namespace Hatchit
 			///Create a Vector3 with the first three elements of a given Vector4 all divided by the 4th element
 			Vector3(Vector4& v4);
 
+			//Custom allocation/deallocation
+			///Allocate a 16byte aligned array of Vector3s
+			void* operator new(size_t _size);
+			///Delete an array of Vector3s
+			void  operator delete(void* p);
+			///Fetch the Vector3's SSE intrinsic __m128
+			operator const __m128(void) const;
+
 			//Destructor
 			virtual ~Vector3();
 
