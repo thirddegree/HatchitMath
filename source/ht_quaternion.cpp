@@ -120,7 +120,6 @@ namespace Hatchit {
             float y = q[2];
             float z = q[3];
 
-            float wsq = powf(w, 2);
             float xsq = powf(x, 2);
             float ysq = powf(y, 2);
             float zsq = powf(z, 2);

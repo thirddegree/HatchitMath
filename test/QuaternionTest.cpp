@@ -24,6 +24,12 @@ TEST(Quaternion, DefaultConstructor)
 {
   Quaternion quat;
 
+#ifdef _ISOC11_SOURCE
+  std::cout << "C11 SUPPORT FOUND" << std::endl;
+#else
+  std::cout << "C11 SUPPORT NOT FOUND!!!!!!!" << std::endl;
+#endif
+
   ASSERT_EQ(quat.getW(), 1);
   ASSERT_EQ(quat.getX(), 0);
   ASSERT_EQ(quat.getY(), 0);
