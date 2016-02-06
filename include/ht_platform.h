@@ -87,26 +87,6 @@
 #define NOEXCEPT 
 #endif
 
-#ifdef HT_SYS_WINDOWS
-#include <malloc.h>
-    #ifndef ALIGN_ALLOC
-    #define ALIGN_ALLOC(x,y) _aligned_malloc(y,x)
-    #endif
-
-    #ifndef ALIGN_FREE
-    #define ALIGN_FREE(x) _aligned_free(x)
-    #endif
-#else
-#include <stdlib.h>
-    #ifndef ALIGN_ALLOC
-	#define ALIGN_ALLOC(x,y) aligned_alloc(x, y)
-    #endif
-
-    #ifndef ALIGN_FREE
-    #define ALIGN_FREE(x) free(x)
-    #endif
-#endif
-
 //////////////////////////////
 // BYTE typedef
 //////////////////////////////

@@ -15,7 +15,7 @@
 #include <ht_vector2.h>
 #include <ht_vector3.h>
 #include <ht_vector4.h>
-
+#include <ht_malloc.h>
 
 namespace Hatchit {
 
@@ -57,17 +57,12 @@ namespace Hatchit {
 
 		void* Vector4::operator new(size_t _size)
 		{
-			//NOTE:
-			//This is a macro defined in ht_platform.h
-			//The parameter input style used here, matches the GCC
-			//cstdlib aligned_alloc function. The macro
-			//switches the inputs for the call to MSVC _aligned_malloc
-			return ALIGN_ALLOC(sizeof(__m128), _size);
+		    return aligned_malloc(sizeof(__m128), _size);
 		}
 
 		void Vector4::operator delete(void* p)
 		{
-			ALIGN_FREE(p);
+			aligned_free(p);
 		}
 
 		Vector4::operator const __m128(void) const
