@@ -1,9 +1,14 @@
+sudo: required
+dist: precise
 language: cpp  
 compiler: g++
 addons:
     apt:
-        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
-        packages: ['clang-3.7', 'g++-5', 'gcc-5']
+        sources: 
+          - 'ubuntu-toolchain-r-test'
+        packages: 
+          - 'g++-5'
+env: COMPILER=g++-5
 
 before_install:
    - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
@@ -23,7 +28,7 @@ install:
 script:
     - mkdir _builds
     - cd _builds
-    - cmake .. -DBUILD_TEST=TRUE
+    - cmake -DBUILD_TEST=TRUE -DCMAKE_CXX_COMPILER=$COMPILER ..
     - make
     - test_bin
     
