@@ -352,7 +352,7 @@ namespace Hatchit {
         //Extraction
         std::ostream& operator<<(std::ostream& output, Vector3& v)
         {
-            output << v.getX() << std::endl << v.getY() << std::endl << v.getZ() << std::endl;
+            output << v.getX() << " " << v.getY() << " " << v.getZ();
             return output;
         }
 
