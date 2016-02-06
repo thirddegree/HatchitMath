@@ -118,7 +118,7 @@ namespace Hatchit {
 
 		float* Vector4::getAsArray()
 		{
-			_MM_ALIGN16 float vec_array[4];
+			static _MM_ALIGN16 float vec_array[4];
 			_mm_store_ps(vec_array, m_vector);
 			return vec_array;
 		}
@@ -313,8 +313,7 @@ namespace Hatchit {
 
 		float& Vector4::operator[](int i)
 		{
-			_MM_ALIGN16 float vec_array[4];
-			_mm_store_ps(vec_array, m_vector);
+			float* vec_array = getAsArray();
 			return vec_array[i];
 		}
 

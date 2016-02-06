@@ -1,5 +1,6 @@
 # Build directories
 [Bb]uild/
+_[Bb]uild/
 
 # Compiled Object files
 *.slo

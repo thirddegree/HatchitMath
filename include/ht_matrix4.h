@@ -33,6 +33,7 @@
 #include <ht_platform.h>
 #include <ht_vector3.h>
 #include <ht_vector4.h>
+#include <cmath>
 
 namespace Hatchit
 {

@@ -30,36 +30,40 @@ namespace Hatchit {
 
         Vector3::Vector3(float x, float y, float z)
         {
+			float zero = 0;
+
 			__m128 xx = _mm_load_ss(&x);
 			__m128 xy = _mm_load_ss(&y);
 			__m128 xz = _mm_load_ss(&z);
-			__m128 xw = _mm_load_ps1(0);
+			__m128 xw = _mm_load_ss(&zero);
 
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
         Vector3::Vector3(const Vector3& other)
         {
+			float zero = 0;
 			__m128 xx = _mm_load_ss(&other.m_vec_array[0]);
 			__m128 xy = _mm_load_ss(&other.m_vec_array[1]);
 			__m128 xz = _mm_load_ss(&other.m_vec_array[2]);
-			__m128 xw = _mm_load_ps1(0);
+			__m128 xw = _mm_load_ss(&zero);
 
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
 
         Vector3::Vector3(Vector4& v4)
         {
-            float invV4W = 1 / v4[3];
+            		float invV4W = 1 / v4[3];
 
-            float x = v4[0] * invV4W;
-            float y = v4[1] * invV4W;
-            float z = v4[2] * invV4W;
+            		float x = v4[0] * invV4W;
+            		float y = v4[1] * invV4W;
+            		float z = v4[2] * invV4W;
+			float w = 0;
 
 			__m128 xx = _mm_load_ss(&x);
 			__m128 xy = _mm_load_ss(&y);
 			__m128 xz = _mm_load_ss(&z);
-			__m128 xw = _mm_load_ps1(0);
+			__m128 xw = _mm_load_ss(&w);
 
 			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
         }
