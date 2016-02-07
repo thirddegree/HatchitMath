@@ -40,7 +40,7 @@ namespace Hatchit {
             __m128 temp = _mm_shuffle_ps(_val, _val, 0);
             __m128 vcmp = _mm_cmpeq_ps(temp, _val);
             int mask = _mm_movemask_ps(vcmp);
-            assert((mask == 0xffff));
+            //assert((mask == 7));
 #endif  
             m_data = _val;           
         }
