@@ -100,7 +100,7 @@ namespace Hatchit {
 		float Vector4::getW()
 		{
 			float w;
-			_mm_store_ss(&w, _mm_movehl_ps(m_vector, m_vector));
+			_mm_store_ss(&w, _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(3, 3, 3, 3)));
 
 			return w;
 		}
