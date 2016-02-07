@@ -26,7 +26,6 @@ install:
 script:
     - mkdir _builds
     - cd _builds
-    - cat /proc/cpuinfo
     - cmake -DBUILD_TEST=TRUE -DCMAKE_CXX_COMPILER=$COMPILER ..
     - make
     - test_bin
