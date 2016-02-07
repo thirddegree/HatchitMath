@@ -154,7 +154,10 @@ namespace Hatchit {
 			__m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
 			__m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
 
-			__m128 val = _mm_add_ps(_mm_mul_ps(x00, x10), _mm_mul_ps(x01, x11));
+			__m128 a = _mm_mul_ps(x00, x10);
+			__m128 b = _mm_mul_ps(x01, x11);
+
+			__m128 val = _mm_sub_ps(a, b);
 
 			output.m_vector = val;
             return output;
