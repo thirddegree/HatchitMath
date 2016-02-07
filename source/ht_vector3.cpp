@@ -26,6 +26,8 @@ namespace Hatchit {
         */
         Vector3::Vector3()
         {
+			float zero;
+			this->m_vector = _mm_load_ps1(&zero);
         }
 
         Vector3::Vector3(float x, float y, float z)
@@ -42,30 +44,13 @@ namespace Hatchit {
 
         Vector3::Vector3(const Vector3& other)
         {
-			float zero = 0;
-			__m128 xx = _mm_load_ss(&other.m_vec_array[0]);
-			__m128 xy = _mm_load_ss(&other.m_vec_array[1]);
-			__m128 xz = _mm_load_ss(&other.m_vec_array[2]);
-			__m128 xw = _mm_load_ss(&zero);
-
-			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
+			this->m_vector = other.m_vector;
         }
 
         Vector3::Vector3(Vector4& v4)
         {
-            		float invV4W = 1 / v4[3];
-
-            		float x = v4[0] * invV4W;
-            		float y = v4[1] * invV4W;
-            		float z = v4[2] * invV4W;
-			float w = 0;
-
-			__m128 xx = _mm_load_ss(&x);
-			__m128 xy = _mm_load_ss(&y);
-			__m128 xz = _mm_load_ss(&z);
-			__m128 xw = _mm_load_ss(&w);
-
-			this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
+            //We'll just ignore the last element of the __m128 so just do a copy by value
+			this->m_vector = (__m128)v4;
         }
 
 		void* Vector3::operator new(size_t _size)
@@ -128,8 +113,9 @@ namespace Hatchit {
 		
 		float* Vector3::getAsArray()
 		{
-			_mm_store_ps(m_vec_array, m_vector);
-			return m_vec_array;
+			static _MM_ALIGN16 float vec_array[4];
+			_mm_store_ps(vec_array, m_vector);
+			return vec_array;
 		}
 
 		void Vector3::setX(float x)
@@ -331,20 +317,22 @@ namespace Hatchit {
 
         float& Vector3::operator[](int i)
         {
-			_mm_store_ps(m_vec_array, m_vector);
-			return m_vec_array[i];
+			float* vec_array = getAsArray();
+			return vec_array[i];
         }
 
         Vector3::operator Vector4()
         {
-			_mm_store_ps(m_vec_array, m_vector);
-            return Vector4(m_vec_array[0], m_vec_array[1], m_vec_array[2], 1.0f);
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+            return Vector4(temp[0], temp[1], temp[2], 1.0f);
         }
 
         Vector3::operator Vector2()
         {
-			_mm_store_ps(m_vec_array, m_vector);
-            return Vector2(m_vec_array[0], m_vec_array[1]);
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+            return Vector2(temp[0], temp[1]);
         }
 
 

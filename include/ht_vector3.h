@@ -223,7 +223,6 @@ namespace Hatchit
 			operator Vector2();
 
 		private:
-			_MM_ALIGN16 float m_vec_array[3];
 			__m128 m_vector;
 		};
 

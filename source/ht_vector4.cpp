@@ -26,6 +26,8 @@ namespace Hatchit {
 		*/
 		Vector4::Vector4()
 		{
+			float zero;
+			this->m_vector = _mm_load_ps1(&zero);
 		}
 
 		Vector4::Vector4(float x, float y, float z, float w)
