@@ -157,9 +157,9 @@ namespace Hatchit {
 		float Vector4::Dot(Vector4 v, Vector4 u)
 		{
 			__m128 temp;
-			__m128 sq = _mm_mul_ps(v.m_vector, u.m_vector);
-			temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 2, 1, 0)));
-			temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
+			__m128 prod = _mm_mul_ps(v.m_vector, u.m_vector);
+			temp = _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, _MM_SHUFFLE(0, 1, 2, 3)));
+			temp = _mm_add_ps(temp, _mm_shuffle_ps(temp, temp, _MM_SHUFFLE(2, 3, 0, 1)));
 			return (float)Scalar(temp);
 		}
 
@@ -270,9 +270,9 @@ namespace Hatchit {
 		float Vector4::operator* (Vector4 u)
 		{
 			__m128 temp;
-			__m128 sq = _mm_mul_ps(m_vector, u.m_vector);
-			temp = _mm_hadd_ps(sq, sq);
-			temp = _mm_hadd_ps(temp, temp);
+			__m128 prod = _mm_mul_ps(m_vector, u.m_vector);
+			temp = _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, _MM_SHUFFLE(0, 1, 2, 3)));
+			temp = _mm_add_ps(temp, _mm_shuffle_ps(temp, temp, _MM_SHUFFLE(2, 3, 0, 1)));
 			return (float)Scalar(temp);
 		}
 		Vector4 Vector4::operator+(Vector4 u)
