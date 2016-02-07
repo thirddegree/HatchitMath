@@ -14,6 +14,7 @@
 
 #include <gtest/gtest.h>
 #include "ht_ray.h"
+#include <cfloat>
 
 using namespace Hatchit;
 using namespace Math;

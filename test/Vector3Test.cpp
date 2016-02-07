@@ -16,6 +16,7 @@
 #include "ht_vector2.h"
 #include "ht_vector3.h"
 #include "ht_vector4.h"
+#include <cfloat>
 
 using namespace Hatchit;
 using namespace Math;
