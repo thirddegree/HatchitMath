@@ -49,12 +49,12 @@ namespace Hatchit {
 		{
 			this->m_vector = (__m128)v3;
 
-			_mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(3, 2, 1, 0));
+			this->m_vector = _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(0, 1, 2, 3));
 			__m128 xw = _mm_load_ss(&w);
 
 
 			m_vector = _mm_move_ss(m_vector, xw);
-			_mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(3, 2, 1, 0));
+			this->m_vector = _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(0, 1, 2, 3));
 		}
 
 		void* Vector4::operator new(size_t _size)
