@@ -22,9 +22,9 @@ using namespace Math;
 
 TEST(Vector3, DefaultConstructorFillsZeros) {
   Vector3 vector;
-  ASSERT_EQ(vector.getX(), 0);
-  ASSERT_EQ(vector.getY(), 0);
-  ASSERT_EQ(vector.getZ(), 0);
+  ASSERT_NEAR(vector.getX(), 0, FLT_EPSILON);
+  ASSERT_NEAR(vector.getY(), 0, FLT_EPSILON);
+  ASSERT_NEAR(vector.getZ(), 0, FLT_EPSILON);
 }
 
 TEST(Vector3, ParamaterizedConstructor) {

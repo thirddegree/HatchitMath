@@ -25,11 +25,10 @@ using namespace Math;
 TEST(Vector4, DefaultConstructorFillsZeros)
 {
     Vector4 vector;
-
-    ASSERT_EQ(vector.getX(), 0);
-    ASSERT_EQ(vector.getY(), 0);
-    ASSERT_EQ(vector.getZ(), 0);
-    ASSERT_EQ(vector.getW(), 0);
+    ASSERT_NEAR(vector.getX(), 0, FLT_EPSILON);
+	ASSERT_NEAR(vector.getY(), 0, FLT_EPSILON);
+	ASSERT_NEAR(vector.getZ(), 0, FLT_EPSILON);
+	ASSERT_NEAR(vector.getW(), 0, FLT_EPSILON);
 }
 
 TEST(Vector4, ParamaterizedConstructor) {
@@ -71,7 +70,7 @@ TEST(Vector4, Magnitude)
 
   std::cout << vector.getMagnitude() << std::endl;
 
-  ASSERT_NEAR(vector.getMagnitude(), 9.27362184f, FLT_EPSILON);
+  ASSERT_NEAR(vector.getMagnitude(), 9.27362184f, 0.00000001f);
 }
 
 TEST(Vector4, GetAsArray)
