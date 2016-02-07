@@ -266,11 +266,11 @@ namespace Hatchit {
         bool Vector3::operator<(Vector3 u){ return getMagnitude() < u.getMagnitude(); }
         bool Vector3::operator==(Vector3 u)
         {
-			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 7;
+			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 15;
         }
         bool Vector3::operator!=(Vector3 u)
         {
-			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 7;
+			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
         }
 
         //Vector operators
