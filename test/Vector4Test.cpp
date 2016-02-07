@@ -114,8 +114,7 @@ TEST(Vector4, Vector3ConversionOperator)
   Vector4 vector(1,2,3,4);
   Vector3 result = (Vector3)vector;
 
-  float invV4W = 1 / vector[3];
-  ASSERT_EQ(result[0], vector[0] * invV4W);
-  ASSERT_EQ(result[1], vector[1] * invV4W);
-  ASSERT_EQ(result[2], vector[2] * invV4W);
+  ASSERT_EQ(result[0], vector[0]);
+  ASSERT_EQ(result[1], vector[1]);
+  ASSERT_EQ(result[2], vector[2]);
 }
