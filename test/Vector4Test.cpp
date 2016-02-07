@@ -70,7 +70,7 @@ TEST(Vector4, Magnitude)
 
   std::cout << vector.getMagnitude() << std::endl;
 
-  ASSERT_NEAR(vector.getMagnitude(), 9.27362184f, 0.00000001f);
+  ASSERT_NEAR(vector.getMagnitude(), 9.27362184f, 0.0000001f);
 }
 
 TEST(Vector4, GetAsArray)

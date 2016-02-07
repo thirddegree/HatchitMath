@@ -29,8 +29,8 @@ TEST(Ray, DirectionConstructor)
 
   //Origin should stay 0,0,0
   ASSERT_NEAR(origin[0], 0, FLT_EPSILON);
-  ASSERT_NEAR(origin[0], 0, FLT_EPSILON);
-  ASSERT_NEAR(origin[0], 0, FLT_EPSILON);
+  ASSERT_NEAR(origin[1], 0, FLT_EPSILON);
+  ASSERT_NEAR(origin[2], 0, FLT_EPSILON);
 
   //Direction should stay 1,2,3
   ASSERT_EQ(direction[0], 1);
