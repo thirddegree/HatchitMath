@@ -24,7 +24,7 @@ namespace Hatchit {
         void* aligned_malloc(size_t size, size_t alignment);
 
         HT_API
-        void* aligned_free(void* ptr);
+        void  aligned_free(void* ptr);
     }
 }
 

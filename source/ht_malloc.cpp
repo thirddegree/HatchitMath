@@ -36,7 +36,7 @@ namespace Hatchit {
 #endif
             }
 
-            void* aligned_free(void* ptr)
+            void aligned_free(void* ptr)
             {
 #ifdef HT_SYS_WINDOWS
                 _aligned_free(ptr);
