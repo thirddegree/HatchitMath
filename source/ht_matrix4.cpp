@@ -77,56 +77,124 @@ namespace Hatchit {
 
         Matrix4::Matrix4()
         {
-            matrix[0][0] = 1.0f; matrix[0][1] = 0.0f; matrix[0][2] = 0.0f; matrix[0][3] = 0.0f;
-            matrix[1][0] = 0.0f; matrix[1][1] = 1.0f; matrix[1][2] = 0.0f; matrix[1][3] = 0.0f;
-            matrix[2][0] = 0.0f; matrix[2][1] = 0.0f; matrix[2][2] = 1.0f; matrix[2][3] = 0.0f;
-            matrix[3][0] = 0.0f; matrix[3][1] = 0.0f; matrix[3][2] = 0.0f; matrix[3][3] = 1.0f;
+			float zero = 0;
+			float one = 1;
+			__m128 o = _mm_load_ss(&one);
+			__m128 z = _mm_load_ss(&zero);
+			this->m_rows[0] = o;
+			this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(z, o), _mm_unpacklo_ps(z, z));
+			this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(z, z), _mm_unpacklo_ps(o, z));
+			this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(z, z), _mm_unpacklo_ps(z, o));
         }
 
         Matrix4::Matrix4(float rawArray[])
         {
-            int index = 0;
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    matrix[i][j] = rawArray[index];
-                    index++;
-                }
-            }
+			__m128 xx = _mm_load_ss(&rawArray[0]);
+			__m128 xy = _mm_load_ss(&rawArray[1]);
+			__m128 xz = _mm_load_ss(&rawArray[2]);
+			__m128 xw = _mm_load_ss(&rawArray[3]);
+			__m128 yx = _mm_load_ss(&rawArray[4]);
+			__m128 yy = _mm_load_ss(&rawArray[5]);
+			__m128 yz = _mm_load_ss(&rawArray[6]);
+			__m128 yw = _mm_load_ss(&rawArray[7]);
+			__m128 zx = _mm_load_ss(&rawArray[8]);
+			__m128 zy = _mm_load_ss(&rawArray[9]);
+			__m128 zz = _mm_load_ss(&rawArray[10]);
+			__m128 zw = _mm_load_ss(&rawArray[11]);
+			__m128 wx = _mm_load_ss(&rawArray[12]);
+			__m128 wy = _mm_load_ss(&rawArray[13]);
+			__m128 wz = _mm_load_ss(&rawArray[14]);
+			__m128 ww = _mm_load_ss(&rawArray[15]);
+
+			this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
+			this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, yw));
+			this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, zw));
+			this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, ww));
         }
 
-        Matrix4::Matrix4(float x0, float y0, float z0, float w0,
-            float x1, float y1, float z1, float w1,
-            float x2, float y2, float z2, float w2,
-            float x3, float y3, float z3, float w3)
+        Matrix4:: Matrix4(	float xx, float xy, float xz, float xw,
+							float yx, float yy, float yz, float yw,
+							float zx, float zy, float zz, float zw,
+							float wx, float wy, float wz, float ww)
         {
-            matrix[0][0] = x0; matrix[0][1] = y0; matrix[0][2] = z0; matrix[0][3] = w0;
-            matrix[1][0] = x1; matrix[1][1] = y1; matrix[1][2] = z1; matrix[1][3] = w1;
-            matrix[2][0] = x2; matrix[2][1] = y2; matrix[2][2] = z2; matrix[2][3] = w2;
-            matrix[3][0] = x3; matrix[3][1] = y3; matrix[3][2] = z3; matrix[3][3] = w3;
+			__m128 xx0 = _mm_load_ss(&xx);
+			__m128 xy0 = _mm_load_ss(&xy);
+			__m128 xz0 = _mm_load_ss(&xz);
+			__m128 xw0 = _mm_load_ss(&xw);
+			__m128 yx0 = _mm_load_ss(&yx);
+			__m128 yy0 = _mm_load_ss(&yy);
+			__m128 yz0 = _mm_load_ss(&yz);
+			__m128 yw0 = _mm_load_ss(&yw);
+			__m128 zx0 = _mm_load_ss(&zx);
+			__m128 zy0 = _mm_load_ss(&zy);
+			__m128 zz0 = _mm_load_ss(&zz);
+			__m128 zw0 = _mm_load_ss(&zw);
+			__m128 wx0 = _mm_load_ss(&wx);
+			__m128 wy0 = _mm_load_ss(&wy);
+			__m128 wz0 = _mm_load_ss(&wz);
+			__m128 ww0 = _mm_load_ss(&ww);
+
+			this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx0, xy0), _mm_unpacklo_ps(xz0, xw0));
+			this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx0, yy0), _mm_unpacklo_ps(yz0, yw0));
+			this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx0, zy0), _mm_unpacklo_ps(zz0, zw0));
+			this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx0, wy0), _mm_unpacklo_ps(wz0, ww0));
         }
 
-        Matrix4::Matrix4(Vector3 one,
-            Vector3 two,
-            Vector3 three,
-            Vector3 four)
+		Matrix4::Matrix4(Vector3 a,
+						 Vector3 b,
+						 Vector3 c,
+						 Vector3 d)
         {
-            matrix[0][0] = one.getX();    matrix[0][1] = one.getY();    matrix[0][2] = one.getZ();   matrix[0][3] = 0;
-            matrix[1][0] = two.getX();    matrix[1][1] = two.getY();    matrix[1][2] = two.getZ();   matrix[1][3] = 0;
-            matrix[2][0] = three.getX();  matrix[2][1] = three.getY();  matrix[2][2] = three.getZ(); matrix[2][3] = 0;
-            matrix[3][0] = four.getX();   matrix[3][1] = four.getY();   matrix[3][2] = four.getZ();  matrix[3][3] = 1;
+			float zero = 0;
+			float one = 1;
+			__m128 o = _mm_load_ss(&one);
+			__m128 z = _mm_load_ss(&zero);
+
+			__m128 xx = _mm_load_ss(&a[0]);
+			__m128 xy = _mm_load_ss(&a[1]);
+			__m128 xz = _mm_load_ss(&a[2]);
+			__m128 yx = _mm_load_ss(&b[0]);
+			__m128 yy = _mm_load_ss(&b[1]);
+			__m128 yz = _mm_load_ss(&b[2]);
+			__m128 zx = _mm_load_ss(&c[0]);
+			__m128 zy = _mm_load_ss(&c[1]);
+			__m128 zz = _mm_load_ss(&c[2]);
+			__m128 wx = _mm_load_ss(&d[0]);
+			__m128 wy = _mm_load_ss(&d[1]);
+			__m128 wz = _mm_load_ss(&d[2]);
+
+			this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, o));
+			this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, o));
+			this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, o));
+			this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, z));
         }
 
-        Matrix4::Matrix4(Vector4 one,
-            Vector4 two,
-            Vector4 three,
-            Vector4 four)
+        Matrix4::Matrix4(Vector4 a,
+						 Vector4 b,
+						 Vector4 c,
+						 Vector4 d)
         {
-            matrix[0][0] = one.getX();   matrix[0][1] = one.getY();   matrix[0][2] = one.getZ();   matrix[0][3] = one.getW();
-            matrix[1][0] = two.getX();   matrix[1][1] = two.getY();   matrix[1][2] = two.getZ();   matrix[1][3] = two.getW();
-            matrix[2][0] = three.getX(); matrix[2][1] = three.getY(); matrix[2][2] = three.getZ(); matrix[2][3] = three.getW();
-            matrix[3][0] = four.getX();  matrix[3][1] = four.getY();  matrix[3][2] = four.getZ();  matrix[3][3] = four.getW();
+			__m128 xx = _mm_load_ss(&a[0]);
+			__m128 xy = _mm_load_ss(&a[1]);
+			__m128 xz = _mm_load_ss(&a[2]);
+			__m128 xw = _mm_load_ss(&a[3]);
+			__m128 yx = _mm_load_ss(&b[0]);
+			__m128 yy = _mm_load_ss(&b[1]);
+			__m128 yz = _mm_load_ss(&b[2]);
+			__m128 yw = _mm_load_ss(&b[3]);
+			__m128 zx = _mm_load_ss(&c[0]);
+			__m128 zy = _mm_load_ss(&c[1]);
+			__m128 zz = _mm_load_ss(&c[2]);
+			__m128 zw = _mm_load_ss(&c[3]);
+			__m128 wx = _mm_load_ss(&d[0]);
+			__m128 wy = _mm_load_ss(&d[1]);
+			__m128 wz = _mm_load_ss(&d[2]);
+			__m128 ww = _mm_load_ss(&d[3]);
+
+			this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
+			this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, yw));
+			this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, zw));
+			this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, ww));
         }
 
         /*
@@ -135,26 +203,32 @@ namespace Hatchit {
 
         Matrix4 Matrix4::getTranspose()
         {
+
+			/*matrix shuffling to transpose is done in 3 steps
+			* |01,02,03,04|    |01,02,05,06|    |01,05,02,06|    |01,05,09,13|
+			* |05,06,07,08| -> |03,04,07,08| -> |03,07,04,08| -> |02,06,10,14|
+			* |09,10,11,12|    |09,10,13,14|    |09,13,10,14|    |03,07,11,15|
+			* |13,14,15,16|    |11,12,15,16|    |11,15,12,16|    |04,08,12,16|
+			*/
             Matrix4 transpose;
 
-            transpose[0][0] = matrix[0][0];
-            transpose[1][1] = matrix[1][1];
-            transpose[2][2] = matrix[2][2];
-            transpose[3][3] = matrix[3][3];
+			//first step
+			__m128 a = _mm_shuffle_ps(m_rows[0], m_rows[1], _MM_SHUFFLE(1, 0, 1, 0));
+			__m128 b = _mm_shuffle_ps(m_rows[0], m_rows[1], _MM_SHUFFLE(3, 2, 3, 2));
+			__m128 c = _mm_shuffle_ps(m_rows[2], m_rows[3], _MM_SHUFFLE(1, 0, 1, 0));
+			__m128 d = _mm_shuffle_ps(m_rows[2], m_rows[3], _MM_SHUFFLE(3, 2, 3, 2));
 
-            transpose[0][1] = matrix[1][0];
-            transpose[0][2] = matrix[2][0];
-            transpose[0][3] = matrix[3][0];
-            transpose[1][2] = matrix[2][1];
-            transpose[1][3] = matrix[3][1];
-            transpose[2][3] = matrix[3][2];
+			//second step
+			a = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 2, 0));
+			b = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 2, 0));
+			c = _mm_shuffle_ps(c, c, _MM_SHUFFLE(3, 1, 2, 0));
+			d = _mm_shuffle_ps(d, d, _MM_SHUFFLE(3, 1, 2, 0));
 
-            transpose[1][0] = matrix[0][1];
-            transpose[2][0] = matrix[0][2];
-            transpose[3][0] = matrix[0][3];
-            transpose[2][1] = matrix[1][2];
-            transpose[3][1] = matrix[1][3];
-            transpose[3][2] = matrix[2][3];
+			//third step
+			transpose.m_rows[0] = _mm_shuffle_ps(a, c, _MM_SHUFFLE(1, 0, 1, 0));
+			transpose.m_rows[1] = _mm_shuffle_ps(a, c, _MM_SHUFFLE(3, 2, 3, 2));
+			transpose.m_rows[2] = _mm_shuffle_ps(b, d, _MM_SHUFFLE(1, 0, 1, 0));
+			transpose.m_rows[3] = _mm_shuffle_ps(b, d, _MM_SHUFFLE(3, 2, 3, 2));
 
             return transpose;
         }
@@ -163,6 +237,7 @@ namespace Hatchit {
         {
             Matrix4 inverse;
 
+			/*
             //Inversion using Cramer's Rule adapted from https://graphics.stanford.edu/~mdfisher/Code/Engine/Matrix4.cpp.html
 
             float tmp[12]; //Temp array for pairs
@@ -252,27 +327,27 @@ namespace Hatchit {
                     inverse[i][j] *= determinant;
                 }
             }
-
+			*/
             return inverse;
         }
 
         float* Matrix4::getAsArray()
         {
-            return &matrix[0][0];
+            return nullptr;
         }
 
         /*
         Operators
         */
 
-        float* Matrix4::operator[] (int i)
+        __m128* Matrix4::operator[] (int i)
         {
-            return matrix[i];
+            return &m_rows[i];
         }
 
         Matrix4 Matrix4::operator*(Matrix4 m)
         {
-            float product[16];
+            /*float product[16];
             int index = 0;
 
             for (int i = 0; i < 4; i++)
@@ -290,17 +365,17 @@ namespace Hatchit {
             }
 
             Matrix4 newMat(product);
-
-            return newMat;
+			*/
+			return *this; //newMat;
         }
 
         Vector3 Matrix4::operator*(Vector3 vec)
         {
             float x, y, z;
 
-            x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3]);
-            y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3]);
-            z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3]);
+            //x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3]);
+            //y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3]);
+            //z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3]);
 
             return Vector3(x, y, z);
         }
@@ -309,21 +384,22 @@ namespace Hatchit {
         {
             float x, y, z, w;
 
-            x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3] * vec.getW());
-            y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3] * vec.getW());
-            z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3] * vec.getW());
-            w = (matrix[3][0] * vec.getX()) + (matrix[3][1] * vec.getY()) + (matrix[3][2] * vec.getZ()) + (matrix[3][3] * vec.getW());
+            //x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3] * vec.getW());
+            //y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3] * vec.getW());
+            //z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3] * vec.getW());
+            //w = (matrix[3][0] * vec.getX()) + (matrix[3][1] * vec.getY()) + (matrix[3][2] * vec.getZ()) + (matrix[3][3] * vec.getW());
 
             return Vector4(x, y, z, w);
         }
 
         Matrix4::operator Matrix3()
         {
-            Matrix3 mat(matrix[0][0], matrix[0][1], matrix[0][2],
+            /*
+			Matrix3 mat(matrix[0][0], matrix[0][1], matrix[0][2],
                         matrix[1][0], matrix[1][1], matrix[1][2],
                         matrix[2][0], matrix[2][1], matrix[2][2]);
-
-            return mat;
+			*/
+			return Matrix3(); //mat;
         }
 
         /*

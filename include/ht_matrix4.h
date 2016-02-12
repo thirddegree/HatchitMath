@@ -20,10 +20,10 @@
  *
  * A collection of 16 floats arranged in a two dimensional grid.
  * This Matrix is row major and is laid out as such:
- * x1, y1, z1, w1
- * x2, y2, z2, w2
- * x3, y3, z3, w3
- * x4, y4, z4, w4
+ * xx, xy, xz, xw
+ * yx, yy, yz, yw
+ * zz, zy, zz, zw
+ * wx, wy, wz, ww
  */
 
 #pragma once
@@ -76,21 +76,28 @@ namespace Hatchit
 			///Creates a 4x4 matrix from an array of 16 values
 			Matrix4(float rawArray[]);
 			///Creates a 4x4 matrix from 16 given values
-			Matrix4(float x0, float y0, float z0, float w0,
-						  float x1, float y1, float z1, float w1,
-							float x2, float y2, float z2, float w2,
-						 	float x3, float y3, float z3, float w3);
+			Matrix4(float xx, float xy, float xz, float xw,
+					float yx, float yy, float yz, float yw,
+					float zx, float zy, float zz, float zw,
+					float wx, float wy, float wz, float ww);
 			/** Creates a 4x4 matrix from 4 given Vector3s
-			 * The resulting matrix fills in a few values so that it will match this
-			 * layout:
-			 * x1, y1, z1, 0
-			 * x2, y2, z2, 0
-			 * x3, y3, z3, 0
-			 * x4, y4, z4, 1
-			 */
-			Matrix4(Vector3 one, Vector3 two, Vector3 three, Vector3 four);
-			///Creates a 4x4 matrix from 4 Vector4s where each vector represents a row
-			Matrix4(Vector4 one, Vector4 two, Vector4 three, Vector4 four);
+			* The resulting matrix fills in a few values so that it will match this
+			* layout:
+			* a1, a2, a3, 0
+			* b1, b2, b3, 0
+			* c1, c2, c3, 0
+			* d1, d2, d3, 1
+			*/
+			Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
+			/** Creates a 4x4 matrix from 4 given Vector4s
+			* The resulting matrix fills in a few values so that it will match this
+			* layout:
+			* a1, a2, a3, a4
+			* b1, b2, b3, b4
+			* c1, c2, c3, c4
+			* d1, d2, d3, d4
+			*/
+			Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
 
 			virtual ~Matrix4();
 
@@ -145,10 +152,10 @@ namespace Hatchit
 			 * This will throw an index out of range exception if you try to access a
 			 * 5th row with index 4.
 			 */
-			float* operator[] (int i);
+			__m128* operator[] (int i);
 
 		private:
-			float matrix[4][4];
+			__m128 m_rows[4];
 		};
 	}
 }

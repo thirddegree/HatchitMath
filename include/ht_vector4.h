@@ -33,8 +33,8 @@ namespace Hatchit
 {
 	namespace Math
 	{
-		class Vector4;
 		class Vector2;
+		class Vector3;
 
 		class HT_API Vector4
 		{
@@ -54,7 +54,7 @@ namespace Hatchit
 			void* operator new(size_t _size);
 			///Delete an array of Vector4s
 			void  operator delete(void* p);
-			///Fetch the Vector4's SSE intrinsic __m128
+			///Cast Vector4's SSE intrinsic to __m128
 			operator const __m128(void) const;
 
 			//Accessors & Mutators

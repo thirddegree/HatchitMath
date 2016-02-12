@@ -51,6 +51,10 @@ namespace Hatchit {
         {
             //We'll just ignore the last element of the __m128 so just do a copy by value
 			this->m_vector = (__m128)v4;
+
+			_MM_ALIGN16 float temp[4];
+			_mm_store_ps(temp, m_vector);
+			m_vector = _mm_set_ps(0, temp[2], temp[1], temp[0]);
         }
 
 		void* Vector3::operator new(size_t _size)

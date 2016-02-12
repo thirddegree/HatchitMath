@@ -33,8 +33,8 @@ namespace Hatchit
 {
 	namespace Math
 	{
-		class Vector4;
 		class Vector2;
+		class Vector4;
 
 		class HT_API Vector3
 		{
