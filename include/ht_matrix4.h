@@ -102,10 +102,12 @@ namespace Hatchit
 			virtual ~Matrix4();
 
 			//Accessors
-			/** Returns the transpose of this matrix as a Matrix4
+			/** Returns the transpose of a matrix as a Matrix4
+			 * \param mat matrix to transpose
 			 * \return A Matrix4 that is the transpoe of this matrix
 			 */
-			Matrix4 getTranspose();
+			static Matrix4 Transpose(const Matrix4& mat);
+
 			/** Returns the inverse of this matrix as a Matrix4
 			 * \return A Matrix4 that is the inverse of this matrix
 			 */
@@ -115,7 +117,7 @@ namespace Hatchit
 			 * this matrix is disposed of.
 			 * \return A float array containing all the values in this matrix
 			 */
-			float* getAsArray();
+			const float* const getAsArray() const;
 
 			//Operators
 			/** Multiplies this Matrix4 by another given Matrix4 and returns the
@@ -152,10 +154,22 @@ namespace Hatchit
 			 * This will throw an index out of range exception if you try to access a
 			 * 5th row with index 4.
 			 */
-			__m128* operator[] (int i);
+			const float* const operator[] (int i) const;
 
 		private:
 			__m128 m_rows[4];
 		};
+
+
+		/** An insertion operator for a Matrix4 to interace with an ostream
+		* \param output The ostream to output to
+		* \param h The Matrix4 to interface with the ostream
+		*/
+		HT_API std::ostream& operator<< (std::ostream& output, Matrix4& h);
+		/** An insertion operator for a Matrix4 to interace with an ostream
+		* \param output The ostream to output to
+		* \param h The Matrix4 to interface with the ostream
+		*/
+		HT_API std::istream& operator>> (std::istream& input, Matrix4& h);
 	}
 }

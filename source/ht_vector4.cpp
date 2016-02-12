@@ -160,7 +160,10 @@ namespace Hatchit {
 			__m128 prod = _mm_mul_ps(v.m_vector, u.m_vector);
 			temp = _mm_add_ps(prod, _mm_shuffle_ps(prod, prod, _MM_SHUFFLE(0, 1, 2, 3)));
 			temp = _mm_add_ps(temp, _mm_shuffle_ps(temp, temp, _MM_SHUFFLE(2, 3, 0, 1)));
-			return (float)Scalar(temp);
+
+			float dot;
+			_mm_store_ss(&dot, temp);
+			return dot;
 		}
 
 		//Normalize a vector

@@ -14,6 +14,7 @@
 
 #include <ht_matrix4.h>
 #include <ht_matrix3.h>
+#include <cassert>
 
 namespace Hatchit {
 
@@ -201,9 +202,8 @@ namespace Hatchit {
         Accessors and Mutators
         */
 
-        Matrix4 Matrix4::getTranspose()
+        Matrix4 Matrix4::Transpose(const Matrix4& mat)
         {
-
 			/*matrix shuffling to transpose is done in 3 steps
 			* |01,02,03,04|    |01,02,05,06|    |01,05,02,06|    |01,05,09,13|
 			* |05,06,07,08| -> |03,04,07,08| -> |03,07,04,08| -> |02,06,10,14|
@@ -213,10 +213,10 @@ namespace Hatchit {
             Matrix4 transpose;
 
 			//first step
-			__m128 a = _mm_shuffle_ps(m_rows[0], m_rows[1], _MM_SHUFFLE(1, 0, 1, 0));
-			__m128 b = _mm_shuffle_ps(m_rows[0], m_rows[1], _MM_SHUFFLE(3, 2, 3, 2));
-			__m128 c = _mm_shuffle_ps(m_rows[2], m_rows[3], _MM_SHUFFLE(1, 0, 1, 0));
-			__m128 d = _mm_shuffle_ps(m_rows[2], m_rows[3], _MM_SHUFFLE(3, 2, 3, 2));
+			__m128 a = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(1, 0, 1, 0));
+			__m128 b = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(3, 2, 3, 2));
+			__m128 c = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(1, 0, 1, 0));
+			__m128 d = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(3, 2, 3, 2));
 
 			//second step
 			a = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 2, 0));
@@ -331,42 +331,62 @@ namespace Hatchit {
             return inverse;
         }
 
-        float* Matrix4::getAsArray()
+        const float* const Matrix4::getAsArray() const
         {
-            return nullptr;
+			static _MM_ALIGN16 float mat_array[16];
+
+			_mm_store_ps(mat_array     , m_rows[0]);
+			_mm_store_ps(mat_array +  4, m_rows[1]);
+			_mm_store_ps(mat_array +  8, m_rows[2]);
+			_mm_store_ps(mat_array + 12, m_rows[3]);
+
+            return mat_array;
         }
 
         /*
         Operators
         */
 
-        __m128* Matrix4::operator[] (int i)
+        const float* const Matrix4::operator[] (int i) const
         {
-            return &m_rows[i];
+			assert(0 <= i && i <= 3);
+			const float* mat_array = getAsArray();
+			return mat_array + 4*i;
         }
 
-        Matrix4 Matrix4::operator*(Matrix4 m)
+        Matrix4 Matrix4::operator*(const Matrix4 m)
         {
-            /*float product[16];
-            int index = 0;
+			Matrix4 result;
 
-            for (int i = 0; i < 4; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
-                    float value = (matrix[i][0] * m[0][j]) +
-                                  (matrix[i][1] * m[1][j]) +
-                                  (matrix[i][2] * m[2][j]) +
-                                  (matrix[i][3] * m[3][j]);
-                    product[index] = value;
+			//transpose the other matrix to get it in columns
+			Matrix4 other = Transpose(m);
 
-                    index++;
-                }
-            }
+			//get the dot product of each row/column and put them into an array
+			//rows
+			for (int i = 0; i < 4; i++)
+			{
+				//columns
+				__m128 a = _mm_mul_ps(m_rows[i], other.m_rows[0]);
+				a = _mm_add_ps(a, _mm_shuffle_ps(a, a, _MM_SHUFFLE(0, 1, 2, 3)));
+				a = _mm_add_ps(a, _mm_shuffle_ps(a, a, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            Matrix4 newMat(product);
-			*/
-			return *this; //newMat;
+				__m128 b = _mm_mul_ps(m_rows[i], other.m_rows[1]);
+				b = _mm_add_ps(b, _mm_shuffle_ps(b, b, _MM_SHUFFLE(0, 1, 2, 3)));
+				b = _mm_add_ps(b, _mm_shuffle_ps(b, b, _MM_SHUFFLE(2, 3, 0, 1)));
+
+				__m128 c = _mm_mul_ps(m_rows[i], other.m_rows[2]);
+				c = _mm_add_ps(c, _mm_shuffle_ps(c, c, _MM_SHUFFLE(0, 1, 2, 3)));
+				c = _mm_add_ps(c, _mm_shuffle_ps(c, c, _MM_SHUFFLE(2, 3, 0, 1)));
+
+				__m128 d = _mm_mul_ps(m_rows[i], other.m_rows[3]);
+				d = _mm_add_ps(d, _mm_shuffle_ps(d, d, _MM_SHUFFLE(0, 1, 2, 3)));
+				d = _mm_add_ps(d, _mm_shuffle_ps(d, d, _MM_SHUFFLE(2, 3, 0, 1)));
+
+				//combine into one m128 and store in the new matrix
+				result.m_rows[i] = _mm_movelh_ps(_mm_unpacklo_ps(a, b), _mm_unpacklo_ps(c, d));
+			}
+
+			return result; //newMat;
         }
 
         Vector3 Matrix4::operator*(Vector3 vec)
@@ -410,5 +430,36 @@ namespace Hatchit {
         {
 
         }
+
+		//Extraction
+		std::ostream& operator<<(std::ostream& output, Matrix4& m)
+		{
+			output	<< m[0][0] << " " << m[0][1] << " " << m[0][2] << " " << m[0][3] << std::endl
+					<< m[1][0] << " " << m[1][1] << " " << m[1][2] << " " << m[1][3] << std::endl
+					<< m[2][0] << " " << m[2][1] << " " << m[2][2] << " " << m[2][3] << std::endl
+					<< m[3][0] << " " << m[3][1] << " " << m[3][2] << " " << m[3][3];
+			return output;
+		}
+
+		//Insertion
+		std::istream& operator>>(std::istream& input, Matrix4& m)
+		{
+			float	xx, xy, xz, xw,
+					yx, yy, yz, yw,
+					zx, zy, zz, zw,
+					wx, wy, wz, ww;
+
+			input	>> xx >> xy >> xz >> xw
+					>> yx >> yy >> yz >> yw
+					>> zx >> zy >> zz >> zw
+					>> wx >> wy >> wz >> ww;
+
+			m = Matrix4(xx, xy, xz, xw,
+						yx, yy, yz, yw,
+						zx, zy, zz, zw,
+						wx, wy, wz, ww);
+
+			return input;
+		}
     }
 }
