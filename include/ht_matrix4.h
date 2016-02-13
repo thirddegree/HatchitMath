@@ -99,19 +99,28 @@ namespace Hatchit
 			*/
 			Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
 
-			virtual ~Matrix4();
-
-			//Accessors
 			/** Returns the transpose of a matrix as a Matrix4
 			 * \param mat matrix to transpose
 			 * \return A Matrix4 that is the transpoe of this matrix
 			 */
 			static Matrix4 Transpose(const Matrix4& mat);
 
+			/** Calculate the determinant of a matrix4
+			* \param mat matrix to calculate with
+			* \return the determinant of that matrix
+			*/
+			static float Determinant(const Matrix4& mat);
+
 			/** Returns the inverse of this matrix as a Matrix4
+			 * \param mat matrix to invert
+			 * \param precalculated determinant of the matrix, (cannot be zero)
 			 * \return A Matrix4 that is the inverse of this matrix
 			 */
-			Matrix4 getInverse();
+			static Matrix4 Inverse(const Matrix4& mat, const float det);
+
+
+
+			//Accessors
 			/** Get this matrix as an array of values rather than a matrix
 			 * This pointer is to an array on the stack which will be deleted when
 			 * this matrix is disposed of.

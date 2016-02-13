@@ -34,10 +34,9 @@ namespace Hatchit
 {
 	namespace Math
 	{
-		class Matrix4;
-
 		class HT_API Matrix3
 		{
+		friend class Matrix4;
 		public:
 			//Constructors
 			///Create a 3x3 identity matrix
@@ -51,7 +50,6 @@ namespace Hatchit
 			///Creates a 3x3 matrix from 3 Vector3s where each Vector is a row
 			Matrix3(Vector3 one, Vector3 two, Vector3 three);
 
-			virtual ~Matrix3();
 
 			//Accessors
 			/** Returns the transpose of this matrix as a Matrix3
@@ -103,6 +101,7 @@ namespace Hatchit
 
 		private:
 			float matrix[3][3];
+			__m128 m_rows[3];
 		};
 	}
 }

@@ -38,6 +38,7 @@ namespace Hatchit
 
 		class HT_API Vector3
 		{
+		friend class Matrix4;
 		public:
 			//Constructors
 			///Create a Vector3 with all 3 elements being 0
@@ -56,9 +57,6 @@ namespace Hatchit
 			void  operator delete(void* p);
 			///Fetch the Vector3's SSE intrinsic __m128
 			operator const __m128(void) const;
-
-			//Destructor
-			virtual ~Vector3();
 
 			//Accessors & Mutators
 			///Returns the first element \return The first element

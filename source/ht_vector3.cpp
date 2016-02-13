@@ -73,15 +73,6 @@ namespace Hatchit {
 		}
 
         /*
-        Destructor
-        */
-
-        Vector3::~Vector3()
-        {
-
-        }
-
-        /*
         Accessors & Mutators
         */
 

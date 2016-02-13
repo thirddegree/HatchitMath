@@ -38,6 +38,7 @@ namespace Hatchit
 
 		class HT_API Vector4
 		{
+		friend class Matrix4;
 		public:
 			//Constructors
 			///Create a Vector4 with all 4 elements being 0

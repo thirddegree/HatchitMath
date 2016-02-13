@@ -233,13 +233,18 @@ namespace Hatchit {
             return transpose;
         }
 
-        Matrix4 Matrix4::getInverse()
+		float Matrix4::Determinant(const Matrix4& mat)
+		{
+			return 0;
+		}
+
+		Matrix4 Matrix4::Inverse(const Matrix4& mat, const float det)
         {
             Matrix4 inverse;
 
-			/*
+			
             //Inversion using Cramer's Rule adapted from https://graphics.stanford.edu/~mdfisher/Code/Engine/Matrix4.cpp.html
-
+			/*
             float tmp[12]; //Temp array for pairs
             float src[16]; //Transpose of source matrix
             float determinant;
@@ -358,7 +363,7 @@ namespace Hatchit {
         {
 			Matrix4 result;
 
-			//transpose the other matrix to get it in columns
+			//transpose the other matrix to get it as columns
 			Matrix4 other = Transpose(m);
 
 			//get the dot product of each row/column and put them into an array
@@ -391,44 +396,64 @@ namespace Hatchit {
 
         Vector3 Matrix4::operator*(Vector3 vec)
         {
-            float x, y, z;
+			Vector3 result;
 
-            //x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3]);
-            //y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3]);
-            //z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3]);
+			__m128 x = _mm_mul_ps(m_rows[0], vec.m_vector);
+			x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 1, 2, 3)));
+			x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            return Vector3(x, y, z);
+			__m128 y = _mm_mul_ps(m_rows[1], vec.m_vector);
+			y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 1, 2, 3)));
+			y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 3, 0, 1)));
+
+			__m128 z = _mm_mul_ps(m_rows[2], vec.m_vector);
+			z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 1, 2, 3)));
+			z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 3, 0, 1)));
+
+			__m128 w = _mm_load_ss(0);
+
+			result.m_vector = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
+
+			return result;
         }
 
         Vector4 Matrix4::operator*(Vector4 vec)
         {
-            float x, y, z, w;
+			Vector3 result;
 
-            //x = (matrix[0][0] * vec.getX()) + (matrix[0][1] * vec.getY()) + (matrix[0][2] * vec.getZ()) + (matrix[0][3] * vec.getW());
-            //y = (matrix[1][0] * vec.getX()) + (matrix[1][1] * vec.getY()) + (matrix[1][2] * vec.getZ()) + (matrix[1][3] * vec.getW());
-            //z = (matrix[2][0] * vec.getX()) + (matrix[2][1] * vec.getY()) + (matrix[2][2] * vec.getZ()) + (matrix[2][3] * vec.getW());
-            //w = (matrix[3][0] * vec.getX()) + (matrix[3][1] * vec.getY()) + (matrix[3][2] * vec.getZ()) + (matrix[3][3] * vec.getW());
+			__m128 x = _mm_mul_ps(m_rows[0], vec.m_vector);
+			x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 1, 2, 3)));
+			x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            return Vector4(x, y, z, w);
+			__m128 y = _mm_mul_ps(m_rows[1], vec.m_vector);
+			y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 1, 2, 3)));
+			y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 3, 0, 1)));
+
+			__m128 z = _mm_mul_ps(m_rows[2], vec.m_vector);
+			z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 1, 2, 3)));
+			z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 3, 0, 1)));
+
+			__m128 w = _mm_mul_ps(m_rows[2], vec.m_vector);
+			w = _mm_add_ps(w, _mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 1, 2, 3)));
+			w = _mm_add_ps(w, _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 3, 0, 1)));
+
+			result.m_vector = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
+
+			return result;
         }
 
         Matrix4::operator Matrix3()
         {
-            /*
-			Matrix3 mat(matrix[0][0], matrix[0][1], matrix[0][2],
-                        matrix[1][0], matrix[1][1], matrix[1][2],
-                        matrix[2][0], matrix[2][1], matrix[2][2]);
-			*/
-			return Matrix3(); //mat;
-        }
+			Matrix3 result;
 
-        /*
-        Destructor
-        */
+			float zero = 0;
+			__m128 w = _mm_load_ss(&zero);
 
-        Matrix4::~Matrix4(void)
-        {
+			result.m_rows[0] = _mm_movelh_ps(m_rows[0], _mm_unpackhi_ps(m_rows[0], w));
+			result.m_rows[1] = _mm_movelh_ps(m_rows[1], _mm_unpackhi_ps(m_rows[1], w));
+			result.m_rows[2] = _mm_movelh_ps(m_rows[2], _mm_unpackhi_ps(m_rows[2], w));
 
+			return result; //mat;
         }
 
 		//Extraction

@@ -164,11 +164,6 @@ namespace Hatchit {
 
         float* Matrix3::operator[](int i){ return matrix[i]; }
 
-        /*
-        Destructor
-        */
-
-        Matrix3::~Matrix3(){}
 
 
     }
