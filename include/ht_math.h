@@ -28,3 +28,37 @@
 #include <ht_vector3.h>
 #include <ht_vector4.h>
 
+namespace Hatchit {
+
+    namespace Math {
+
+        struct Float3
+        {
+            float x;
+            float y;
+            float z;
+
+            Float3() = default;
+            Float3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+            explicit Float3(const float *pArray) : x(pArray[0]), y(pArray[1]), z(pArray[2]) {}
+
+            Float3& operator= (const Float3& other) { x = other.x; y = other.y; z = other.z; return *this; }
+        };
+
+        struct Float4
+        {
+            float x;
+            float y;
+            float z;
+            float w;
+
+            Float4() = default;
+            Float4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w){}
+            explicit Float4(const float *pArray) : x(pArray[0]), y(pArray[1]), z(pArray[2]), w(pArray[3]) {}
+
+            Float4& operator= (const Float4& other) { x = other.x; y = other.y; z = other.z; w = other.w; return *this; }
+        };
+
+    }
+
+}
