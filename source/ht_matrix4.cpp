@@ -214,126 +214,196 @@ namespace Hatchit {
 
 			//first step
 			__m128 a = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(1, 0, 1, 0));
-			__m128 b = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(3, 2, 3, 2));
-			__m128 c = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(1, 0, 1, 0));
-			__m128 d = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(3, 2, 3, 2));
+			__m128 b = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(1, 0, 1, 0));
 
 			//second step
 			a = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 2, 0));
 			b = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 2, 0));
-			c = _mm_shuffle_ps(c, c, _MM_SHUFFLE(3, 1, 2, 0));
-			d = _mm_shuffle_ps(d, d, _MM_SHUFFLE(3, 1, 2, 0));
 
 			//third step
-			transpose.m_rows[0] = _mm_shuffle_ps(a, c, _MM_SHUFFLE(1, 0, 1, 0));
-			transpose.m_rows[1] = _mm_shuffle_ps(a, c, _MM_SHUFFLE(3, 2, 3, 2));
-			transpose.m_rows[2] = _mm_shuffle_ps(b, d, _MM_SHUFFLE(1, 0, 1, 0));
-			transpose.m_rows[3] = _mm_shuffle_ps(b, d, _MM_SHUFFLE(3, 2, 3, 2));
+			transpose.m_rows[0] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(1, 0, 1, 0));
+			transpose.m_rows[1] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(3, 2, 3, 2));
+
+			//repeat
+			a = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(3, 2, 3, 2));
+			b = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(3, 2, 3, 2));
+
+			a = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 2, 0));
+			b = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 2, 0));
+
+			transpose.m_rows[2] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(1, 0, 1, 0));
+			transpose.m_rows[3] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(3, 2, 3, 2));
 
             return transpose;
         }
 
-		float Matrix4::Determinant(const Matrix4& mat)
-		{
-			return 0;
-		}
 
-		Matrix4 Matrix4::Inverse(const Matrix4& mat, const float det)
+		Matrix4 Matrix4::Inverse(const Matrix4& mat)
         {
-            Matrix4 inverse;
 
+			Matrix4 result;
+			__m128 x, y, z, w;
+			__m128 temp1, temp2;
+			__m128 det;
+
+			//xx, xy, xz, xw
+			//yx, yy, yz, yw
+			//zx, zy, zz, zw
+			//wx, wy, wz, ww
+
+			//calculate cofactor
+			//xx,xy
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(1, 3, 2, 0)),  //row 2 shifted backwards (ignoring 1st value)
+								_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(2, 1, 3, 0))); //row 3 shifted forwards (ignoring 1st value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(1, 3, 2, 0)),  //row 3 shifted backwards (ignoring 1st value)
+								_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 1, 3, 0))); //row 2 shifted forwards (ignoring 1st value)
+			//+
+			x = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[1]);
+			x =	_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 3, 2, 2)),
+							_mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+			//-
+			y = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[0]);
+			y =	_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(3, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 3, 2, 2)),
+							_mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+
+			//xz,xw
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(1, 3, 2, 0)),  //row 0 shifted backwards (ignoring 1st value)
+								_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(2, 1, 3, 0))); //row 1 shifted forwards (ignoring 1st value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(1, 3, 2, 0)),  //row 1 shifted backwards (ignoring 1st value)
+								_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(2, 1, 3, 0))); //row 0 shifted forwards (ignoring 1st value)
+			//+
+			z = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[3]);
+			z =	_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(3, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 3, 2, 2)),
+							_mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+			//-
+			w = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[2]);
+			w =	_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 3, 2, 2)),
+							_mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+
+			result.m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
+
+			//yx,yy
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(0, 3, 1, 2)),  //row 2 shifted backwards (ignoring 2nd value)
+								_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(2, 0, 1, 3))); //row 3 shifted forwards (ignoring 2nd value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(0, 3, 1, 2)),  //row 3 shifted backwards (ignoring 2nd value)
+								_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 0, 1, 3))); //row 2 shifted forwards (ignoring 2nd value)
+			//-
+			x = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[1]);
+			x =	_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 2, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 3, 2, 2)),
+							_mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+			//+
+			y = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[0]);
+			y =	_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(3, 2, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 3, 2, 2)),
+							_mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+
+			//yz,yw
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(0, 3, 1, 2)),  //row 0 shifted backwards (ignoring 2nd value)
+								_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(2, 0, 1, 3))); //row 1 shifted forwards (ignoring 2nd value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(0, 3, 1, 2)),  //row 1 shifted backwards (ignoring 2nd value)
+								_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(2, 0, 1, 3))); //row 0 shifted forwards (ignoring 2nd value)
+			//-
+			z = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[3]);
+			z =	_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(3, 2, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 3, 2, 2)),
+							_mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+			//+
+			w = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[2]);
+			w =	_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 2, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 3, 2, 2)),
+							_mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+
+			result.m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
+
+			//zx,zy 
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(0, 2, 3, 1)),  //row 2 shifted backwards (ignoring 3rd value)
+								_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(1, 2, 0, 3))); //row 3 shifted forwards (ignoring 3rd value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(0, 2, 3, 1)),  //row 3 shifted backwards (ignoring 3rd value)
+								_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(1, 2, 0, 3))); //row 2 shifted forwards (ignoring 3rd value)
+			//+
+			x = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[1]);
+			x =	_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 1, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 3, 1, 1)),
+							_mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+			//-
+			y = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[0]);
+			y =	_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(3, 1, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 3, 1, 1)),
+							_mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+
+			//zz,zw 
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(0, 2, 3, 1)),  //row 0 shifted backwards (ignoring 3rd value)
+								_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(1, 2, 0, 3))); //row 1 shifted forwards (ignoring 3rd value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(0, 2, 3, 1)),  //row 1 shifted backwards (ignoring 3rd value)
+								_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(1, 2, 0, 3))); //row 0 shifted forwards (ignoring 3rd value)
+																						//+
+			z = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[3]);
+			z = _mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(3, 1, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 3, 1, 1)),
+							_mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+																	   //-
+			w = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[2]);
+			w = _mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 1, 0, 0)),
+				_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 3, 1, 1)),
+							_mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+
+			result.m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
+
+			//wx,wy
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(3, 0, 2, 1)),  //row 2 shifted backwards (ignoring 4th value)
+								_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(3, 1, 0, 2))); //row 3 shifted forwards (ignoring 4th value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(3, 0, 2, 1)),  //row 3 shifted backwards (ignoring 4th value)
+								_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(3, 1, 0, 2))); //row 2 shifted forwards (ignoring 4th value)
+			//-
+			x = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[1]);
+			x =	_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 0, 2, 2)),
+							_mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
+			//+
+			y = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[0]);
+			y =	_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 0, 2, 2)),
+							_mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
 			
-            //Inversion using Cramer's Rule adapted from https://graphics.stanford.edu/~mdfisher/Code/Engine/Matrix4.cpp.html
-			/*
-            float tmp[12]; //Temp array for pairs
-            float src[16]; //Transpose of source matrix
-            float determinant;
+			//wz,ww
+			temp1 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(3, 0, 2, 1)),  //row 0 shifted backwards (ignoring 4th value)
+								_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(3, 1, 0, 2))); //row 1 shifted forwards (ignoring 4th value)
+			temp2 = _mm_mul_ps(	_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(3, 0, 2, 1)),  //row 1 shifted backwards (ignoring 4th value)
+								_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(3, 1, 0, 2))); //row 0 shifted forwards (ignoring 4th value)
+			//-
+			z = _mm_mul_ps(	_mm_sub_ps(temp2, temp1), mat.m_rows[3]);
+			z =	_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 0, 2, 2)),
+							_mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
+			//+
+			w = _mm_mul_ps(	_mm_sub_ps(temp1, temp2), mat.m_rows[2]);
+			w =	_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 2, 1, 1)),
+				_mm_add_ps(	_mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 0, 2, 2)),
+							_mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
 
-            //Transpose into float
-            for (unsigned int i = 0; i < 4; i++)
-            {
-                src[i + 0] = matrix[i][0];
-                src[i + 4] = matrix[i][1];
-                src[i + 8] = matrix[i][2];
-                src[i + 12] = matrix[i][3];
-            }
+			result.m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
-            //Calculate pairs for first 8 elements (cofactors)
-            tmp[0] = src[10] * src[15];
-            tmp[1] = src[11] * src[14];
-            tmp[2] = src[9] * src[15];
-            tmp[3] = src[11] * src[13];
-            tmp[4] = src[9] * src[14];
-            tmp[5] = src[10] * src[13];
-            tmp[6] = src[8] * src[15];
-            tmp[7] = src[11] * src[12];
-            tmp[8] = src[8] * src[14];
-            tmp[9] = src[10] * src[12];
-            tmp[10] = src[8] * src[13];
-            tmp[11] = src[9] * src[12];
-            //Calculate first 8 elements (cofactors)
-            inverse[0][0] = tmp[0] * src[5] + tmp[3] * src[6] + tmp[4] * src[7];
-            inverse[0][0] -= tmp[1] * src[5] + tmp[2] * src[6] + tmp[5] * src[7];
-            inverse[0][1] = tmp[1] * src[4] + tmp[6] * src[6] + tmp[9] * src[7];
-            inverse[0][1] -= tmp[0] * src[4] + tmp[7] * src[6] + tmp[8] * src[7];
-            inverse[0][2] = tmp[2] * src[4] + tmp[7] * src[5] + tmp[10] * src[7];
-            inverse[0][2] -= tmp[3] * src[4] + tmp[6] * src[5] + tmp[11] * src[7];
-            inverse[0][3] = tmp[5] * src[4] + tmp[8] * src[5] + tmp[11] * src[6];
-            inverse[0][3] -= tmp[4] * src[4] + tmp[9] * src[5] + tmp[10] * src[6];
-            inverse[1][0] = tmp[1] * src[1] + tmp[2] * src[2] + tmp[5] * src[3];
-            inverse[1][0] -= tmp[0] * src[1] + tmp[3] * src[2] + tmp[4] * src[3];
-            inverse[1][1] = tmp[0] * src[0] + tmp[7] * src[2] + tmp[8] * src[3];
-            inverse[1][1] -= tmp[1] * src[0] + tmp[6] * src[2] + tmp[9] * src[3];
-            inverse[1][2] = tmp[3] * src[0] + tmp[6] * src[1] + tmp[11] * src[3];
-            inverse[1][2] -= tmp[2] * src[0] + tmp[7] * src[1] + tmp[10] * src[3];
-            inverse[1][3] = tmp[4] * src[0] + tmp[9] * src[1] + tmp[10] * src[2];
-            inverse[1][3] -= tmp[5] * src[0] + tmp[8] * src[1] + tmp[11] * src[2];
-            //Calculate pairs for second 8 elements (cofactors)
-            tmp[0] = src[2] * src[7];
-            tmp[1] = src[3] * src[6];
-            tmp[2] = src[1] * src[7];
-            tmp[3] = src[3] * src[5];
-            tmp[4] = src[1] * src[6];
-            tmp[5] = src[2] * src[5];
+			//calculate determinant using first element in each row
 
-            tmp[6] = src[0] * src[7];
-            tmp[7] = src[3] * src[4];
-            tmp[8] = src[0] * src[6];
-            tmp[9] = src[2] * src[4];
-            tmp[10] = src[0] * src[5];
-            tmp[11] = src[1] * src[4];
-            //Calculate second 8 elements (cofactors)
-            inverse[2][0] = tmp[0] * src[13] + tmp[3] * src[14] + tmp[4] * src[15];
-            inverse[2][0] -= tmp[1] * src[13] + tmp[2] * src[14] + tmp[5] * src[15];
-            inverse[2][1] = tmp[1] * src[12] + tmp[6] * src[14] + tmp[9] * src[15];
-            inverse[2][1] -= tmp[0] * src[12] + tmp[7] * src[14] + tmp[8] * src[15];
-            inverse[2][2] = tmp[2] * src[12] + tmp[7] * src[13] + tmp[10] * src[15];
-            inverse[2][2] -= tmp[3] * src[12] + tmp[6] * src[13] + tmp[11] * src[15];
-            inverse[2][3] = tmp[5] * src[12] + tmp[8] * src[13] + tmp[11] * src[14];
-            inverse[2][3] -= tmp[4] * src[12] + tmp[9] * src[13] + tmp[10] * src[14];
-            inverse[3][0] = tmp[2] * src[10] + tmp[5] * src[11] + tmp[1] * src[9];
-            inverse[3][0] -= tmp[4] * src[11] + tmp[0] * src[9] + tmp[3] * src[10];
-            inverse[3][1] = tmp[8] * src[11] + tmp[0] * src[8] + tmp[7] * src[10];
-            inverse[3][1] -= tmp[6] * src[10] + tmp[9] * src[11] + tmp[1] * src[8];
-            inverse[3][2] = tmp[6] * src[9] + tmp[11] * src[11] + tmp[3] * src[8];
-            inverse[3][2] -= tmp[10] * src[11] + tmp[2] * src[8] + tmp[7] * src[9];
-            inverse[3][3] = tmp[10] * src[10] + tmp[4] * src[8] + tmp[9] * src[9];
-            inverse[3][3] -= tmp[8] * src[9] + tmp[11] * src[10] + tmp[5] * src[8];
+			det = _mm_movelh_ps(_mm_unpacklo_ps(result.m_rows[0], result.m_rows[1]), _mm_unpacklo_ps(result.m_rows[2], result.m_rows[3]));
+			det = _mm_mul_ps(det, mat.m_rows[0]);
+			det = _mm_add_ps(det, _mm_shuffle_ps(det, det, _MM_SHUFFLE(2, 3, 0, 1)));
+			det = _mm_add_ps(det, _mm_shuffle_ps(det, det, _MM_SHUFFLE(0, 1, 2, 3)));
+			
+			det = _mm_rcp_ss(det);
+			det = _mm_shuffle_ps(det, det, _MM_SHUFFLE(0, 0, 0, 0));
 
-            //Calculate inverse determinant
-            determinant = src[0] * inverse[0][0] + src[1] * inverse[0][1] + src[2] * inverse[0][2] + src[3] * inverse[0][3];
-            determinant = 1.0f / determinant;
-
-            //Multiply inverse determinant to all memebers
-            for (unsigned int i = 0; i < 4; i++)
-            {
-                for (unsigned int j = 0; j < 4; j++)
-                {
-                    inverse[i][j] *= determinant;
-                }
-            }
-			*/
-            return inverse;
+			result.m_rows[0] = _mm_mul_ps(result.m_rows[0], det);
+			result.m_rows[1] = _mm_mul_ps(result.m_rows[1], det);
+			result.m_rows[2] = _mm_mul_ps(result.m_rows[2], det);
+			result.m_rows[3] = _mm_mul_ps(result.m_rows[3], det);
+			
+            return result;
         }
 
         const float* const Matrix4::getAsArray() const

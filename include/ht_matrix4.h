@@ -105,18 +105,12 @@ namespace Hatchit
 			 */
 			static Matrix4 Transpose(const Matrix4& mat);
 
-			/** Calculate the determinant of a matrix4
-			* \param mat matrix to calculate with
-			* \return the determinant of that matrix
-			*/
-			static float Determinant(const Matrix4& mat);
 
 			/** Returns the inverse of this matrix as a Matrix4
 			 * \param mat matrix to invert
-			 * \param precalculated determinant of the matrix, (cannot be zero)
 			 * \return A Matrix4 that is the inverse of this matrix
 			 */
-			static Matrix4 Inverse(const Matrix4& mat, const float det);
+			static Matrix4 Inverse(const Matrix4& mat);
 
 
 
