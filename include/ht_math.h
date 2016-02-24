@@ -28,6 +28,34 @@
 #include <ht_vector3.h>
 #include <ht_vector4.h>
 
+
+#ifdef _WIN32
+    //Visual C++ compiler warning C4251 disable
+    #ifdef _MSC_VER
+    #pragma warning(disable : 4251)
+    #endif
+
+    #ifndef _MM_CALLCONV
+    #define _MM_CALLCONV __vectorcall
+    #endif
+#else //Linux and MAC OSX
+    #if __GNUC__ >= 4
+        //GCC 4 has unique keywords for showing/hiding symbols
+        //the same keyword is used for both import and export
+        #define HT_API __attribute__((__visibility__("default")))
+
+        //Define MSVC compatible __forceinline keyword
+        //for use with GCC compiler.
+        #ifndef __forceinline
+        #define __forceinline __attribute__((always_inline))
+        #endif
+
+        #ifndef _MM_CALLCONV
+        #define _MM_CALLCONV __attribute__((fastcall))
+        #endif
+    #endif
+#endif
+
 namespace Hatchit {
 
     namespace Math {
@@ -58,6 +86,47 @@ namespace Hatchit {
 
             Float4& operator= (const Float4& other) { x = other.x; y = other.y; z = other.z; w = other.w; return *this; }
         };
+
+        _MM_ALIGN16 class VectorF32
+        {
+            union
+            {
+                float data[4];
+                __m128 v;
+            };
+
+            inline operator __m128() const { return v; }
+            inline operator const float*() const { return data; }
+            inline operator __m128i() const { return _mm_castps_si128(v); }
+            inline operator __m128d() const { return _mm_castps_pd(v); }
+        };
+
+        /////////////////////////////////////////////////////////
+        // MM Instrinsic Functions
+        /////////////////////////////////////////////////////////
+
+        __m128 _MM_CALLCONV MMVectorZero();
+        __m128 _MM_CALLCONV MMVectorSet(float x, float y, float z, float w);
+        __m128 _MM_CALLCONV MMVectorSetInt(uint32_t x, uint32_t y, uint32_t z, uint32_t w);
+        
+        float  _MM_CALLCONV MMVectorGetX(__m128 v);
+        float  _MM_CALLCONV MMVectorGetY(__m128 v);
+        float  _MM_CALLCONV MMVectorGetZ(__m128 v);
+        float  _MM_CALLCONV MMVectorGetW(__m128 v);
+
+        void   _MM_CALLCONV MMVectorGetXRaw(float* x, __m128 v);
+        void   _MM_CALLCONV MMVectorGetYRaw(float* y, __m128 v);
+        void   _MM_CALLCONV MMVectorGetZRaw(float* z, __m128 v);
+        void   _MM_CALLCONV MMVectorGetWRaw(float* w, __m128 v);
+
+        __m128 _MM_CALLCONV MMVectorSetX(__m128 v, float x);
+        __m128 _MM_CALLCONV MMVectorSetY(__m128 v, float y);
+        __m128 _MM_CALLCONV MMVectorSetZ(__m128 v, float z);
+        __m128 _MM_CALLCONV MMVectorSetW(__m128 v, float w);
+
+        __m128 _MM_CALLCONV MMVectorSetXRaw(__m128 v, const float* x);
+
+#include <ht_mathmm.inl>
 
     }
 
