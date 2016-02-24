@@ -270,8 +270,8 @@ namespace Hatchit {
 			return (*this);
 		}
 
-		bool Vector4::operator>(Vector4 u) { return getMagnitude() > u.getMagnitude(); }
-		bool Vector4::operator<(Vector4 u) { return getMagnitude() < u.getMagnitude(); }
+		bool Vector4::operator>(Vector4 u) { return magSqr() > u.magSqr(); }
+		bool Vector4::operator<(Vector4 u) { return magSqr() < u.magSqr(); }
 		bool Vector4::operator==(Vector4 u)
 		{
 			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 7;
