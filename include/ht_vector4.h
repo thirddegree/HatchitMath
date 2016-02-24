@@ -61,39 +61,45 @@ namespace Hatchit
 			//Accessors & Mutators
 			///Returns the first element \return The first element
 			float getX();
+			///Sets the first element \param The first element
+			void setX(float x);
+
 			///Returns the second element \return The second element
 			float getY();
+			///Sets the second element \param The second element
+			void setY(float y);
+
 			///Returns the third element \return The third element
 			float getZ();
+			///Sets the third element \param The third element
+			void setZ(float z);
+
 			///Returns the fourth element \return The fourth element
 			float getW();
+			///Sets the fourth element \param The fourth element
+			void setW(float w);
+
+
+			float magSqr();
 
 			/** Returns the magnitude of the vector
 			* \return The magnitude as a float
 			*/
-			float getMagnitude();
+			float mag();
+
+
+			/** Normalizes a Vector4
+			* \param v The Vector4 to normalize
+			* \return A normalized version of v
+			*/
+			Vector4 normalized();
+
+
 			/** Returns this Vector4 as a pointer to an array of floats
 			* \return This vector as an array of floats
 			*/
 			float* getAsArray();
 
-			/** Sets the first element
-			* \param x The float you want to be the first element of this vector
-			*/
-			void setX(float x);
-			/** Sets the second element
-			* \param y The float you want to be the second element of this vector
-			*/
-			void setY(float y);
-			/** Sets the third element
-			* \param z The float you want to be the third element of this vector
-			*/
-			void setZ(float z);
-
-			/** Sets the fourth element
-			* \param w The float you want to be the fourth element of this vector
-			*/
-			void setW(float w);
 
 			//Static functions
 
@@ -103,11 +109,6 @@ namespace Hatchit
 			* \return The Dot product of v and u as a float
 			*/
 			static float Dot(Vector4 v, Vector4 u);
-			/** Normalizes a Vector4
-			* \param v The Vector4 to normalize
-			* \return A normalized version of v
-			*/
-			static Vector4 Normalize(Vector4 v);
 
 			//Operators
 

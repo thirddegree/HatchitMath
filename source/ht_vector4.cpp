@@ -105,12 +105,48 @@ namespace Hatchit {
 			return w;
 		}
 
-		float Vector4::getMagnitude()
+		//magnitude of this vector squared
+		float Vector4::magSqr()
 		{
-			Scalar mag = (*this) * (*this);
-			mag = _mm_sqrt_ps(mag);
+			__m128 val = _mm_mul_ps(m_vector, m_vector);
+			val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
+			val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(0, 1, 2, 3)));
+			float x;
+			_mm_store_ss(&x, m_vector);
+			return x;
+		}
 
-			return (float)mag;
+		//magnitude of this vector
+		float Vector4::mag()
+		{
+			__m128 val = _mm_mul_ps(m_vector, m_vector);
+			val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
+			val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(0, 1, 2, 3)));
+			val = _mm_sqrt_ss(val);
+			float x;
+			_mm_store_ss(&x, m_vector);
+			return x;
+		}
+
+		//Normalize a vector
+		Vector4 Vector4::normalized()
+		{
+			Vector4 normalized;
+			normalized.m_vector = _mm_mul_ps(m_vector, m_vector);
+			normalized.m_vector = _mm_add_ps(normalized.m_vector, _mm_shuffle_ps(normalized.m_vector, normalized.m_vector, _MM_SHUFFLE(2, 3, 0, 1)));
+			normalized.m_vector = _mm_add_ps(normalized.m_vector, _mm_shuffle_ps(normalized.m_vector, normalized.m_vector, _MM_SHUFFLE(0, 1, 2, 3)));
+
+			float x;
+			_mm_store_ss(&x, normalized.m_vector);
+			if (x == 0) {
+				x = 1;
+				_mm_store_ps(&x, normalized.m_vector);
+			}
+
+			normalized.m_vector = _mm_sqrt_ss(normalized.m_vector);
+			normalized.m_vector = _mm_mul_ps(m_vector, normalized.m_vector);
+
+			return normalized;
 		}
 
 		float* Vector4::getAsArray()
@@ -166,22 +202,6 @@ namespace Hatchit {
 			return dot;
 		}
 
-		//Normalize a vector
-		Vector4 Vector4::Normalize(Vector4 v)
-		{
-			float magnitude = v.getMagnitude();
-
-			if (magnitude == 0)
-				magnitude = 1;
-
-			Vector4 normalizedVec;
-
-			float invMag = 1 / magnitude;
-			normalizedVec.m_vector = _mm_mul_ps(v.m_vector, Scalar(invMag));
-
-			return normalizedVec;
-		}
-
 		/*
 		Operators
 		*/
@@ -212,21 +232,13 @@ namespace Hatchit {
 		Vector4 Vector4::operator-(float s)
 		{
 			Vector4 vec;
-
-			__m128 product = _mm_sub_ps(m_vector, Scalar(s));
-
-			vec.m_vector = product;
-
+			vec.m_vector = _mm_sub_ps(m_vector, Scalar(s));
 			return vec;
 		}
 		Vector4 Vector4::operator+(float s)
 		{
 			Vector4 vec;
-
-			__m128 product = _mm_add_ps(m_vector, Scalar(s));
-
-			vec.m_vector = product;
-
+			vec.m_vector = _mm_add_ps(m_vector, Scalar(s));
 			return vec;
 		}
 
