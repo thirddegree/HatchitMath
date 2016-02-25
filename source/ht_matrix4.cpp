@@ -43,7 +43,7 @@ namespace Hatchit {
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
             float depth = _far - _near;
-            float q = -(_far + _near) / depth;
+            float m_vector = -(_far + _near) / depth;
             float qn = -2 * (_far * _near) / depth;
 
             float h = 1 / tanf(0.5f * fov);
@@ -51,7 +51,7 @@ namespace Hatchit {
 
             return Matrix4(w, 0, 0, 0,
                            0, h, 0, 0,
-                           0, 0, q, -1,
+                           0, 0, m_vector, -1,
                            0, 0, qn, 0);
         }
 
@@ -211,29 +211,11 @@ namespace Hatchit {
 			* |13,14,15,16|    |11,12,15,16|    |11,15,12,16|    |04,08,12,16|
 			*/
             Matrix4 transpose;
-
-			//first step
-			__m128 a = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(1, 0, 1, 0));
-			__m128 b = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(1, 0, 1, 0));
-
-			//second step
-			a = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 2, 0));
-			b = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 2, 0));
-
-			//third step
-			transpose.m_rows[0] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(1, 0, 1, 0));
-			transpose.m_rows[1] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(3, 2, 3, 2));
-
-			//repeat
-			a = _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[1], _MM_SHUFFLE(3, 2, 3, 2));
-			b = _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[3], _MM_SHUFFLE(3, 2, 3, 2));
-
-			a = _mm_shuffle_ps(a, a, _MM_SHUFFLE(3, 1, 2, 0));
-			b = _mm_shuffle_ps(b, b, _MM_SHUFFLE(3, 1, 2, 0));
-
-			transpose.m_rows[2] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(1, 0, 1, 0));
-			transpose.m_rows[3] = _mm_shuffle_ps(a, b, _MM_SHUFFLE(3, 2, 3, 2));
-
+			transpose.m_rows[0] = mat.m_rows[0];
+			transpose.m_rows[1] = mat.m_rows[1];
+			transpose.m_rows[2] = mat.m_rows[2];
+			transpose.m_rows[3] = mat.m_rows[3];
+			_MM_TRANSPOSE4_PS(transpose.m_rows[0], transpose.m_rows[1], transpose.m_rows[2], transpose.m_rows[3]);
             return transpose;
         }
 
@@ -422,12 +404,6 @@ namespace Hatchit {
         Operators
         */
 
-        const float* const Matrix4::operator[] (int i) const
-        {
-			assert(0 <= i && i <= 3);
-			const float* mat_array = getAsArray();
-			return mat_array + 4*i;
-        }
 
         Matrix4 Matrix4::operator*(const Matrix4 m)
         {
@@ -529,10 +505,10 @@ namespace Hatchit {
 		//Extraction
 		std::ostream& operator<<(std::ostream& output, Matrix4& m)
 		{
-			output	<< m[0][0] << " " << m[0][1] << " " << m[0][2] << " " << m[0][3] << std::endl
-					<< m[1][0] << " " << m[1][1] << " " << m[1][2] << " " << m[1][3] << std::endl
-					<< m[2][0] << " " << m[2][1] << " " << m[2][2] << " " << m[2][3] << std::endl
-					<< m[3][0] << " " << m[3][1] << " " << m[3][2] << " " << m[3][3];
+			output	<< m.xx << " " << m.xy << " " << m.xz << " " << m.xw << std::endl
+					<< m.yx << " " << m.yy << " " << m.yz << " " << m.yw << std::endl
+					<< m.zx << " " << m.zy << " " << m.zz << " " << m.zw << std::endl
+					<< m.wx << " " << m.zw << " " << m.wz << " " << m.ww;
 			return output;
 		}
 

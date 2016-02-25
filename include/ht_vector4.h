@@ -39,6 +39,8 @@ namespace Hatchit
 		class HT_API Vector4
 		{
 		friend class Matrix4;
+		friend class Quaternion;
+
 		public:
 			//Constructors
 			///Create a Vector4 with all 4 elements being 0
@@ -57,27 +59,6 @@ namespace Hatchit
 			void  operator delete(void* p);
 			///Cast Vector4's SSE intrinsic to __m128
 			operator const __m128(void) const;
-
-			//Accessors & Mutators
-			///Returns the first element \return The first element
-			float getX();
-			///Sets the first element \param The first element
-			void setX(float x);
-
-			///Returns the second element \return The second element
-			float getY();
-			///Sets the second element \param The second element
-			void setY(float y);
-
-			///Returns the third element \return The third element
-			float getZ();
-			///Sets the third element \param The third element
-			void setZ(float z);
-
-			///Returns the fourth element \return The fourth element
-			float getW();
-			///Sets the fourth element \param The fourth element
-			void setW(float w);
 
 
 			float magSqr();
@@ -222,8 +203,16 @@ namespace Hatchit
 			///Returns a Vector2 with the fist two elements from this vector
 			operator Vector2();
 
-		private:
-			__m128 m_vector;
+		public:
+			union
+			{
+				__m128 m_vector;
+				struct
+				{
+					float x, y, z, w;
+				};
+				float data[4];
+			};
 		};
 
 		/** An insertion operator for a Vector4 to interace with an ostream

@@ -72,38 +72,6 @@ namespace Hatchit {
 			return m_vector;
 		}
 
-		/*
-		Accessors & Mutators
-		*/
-
-		float Vector4::getX()
-		{
-			float x;
-			_mm_store_ss(&x, m_vector);
-
-			return x;
-		}
-		float Vector4::getY()
-		{
-			float y;
-			_mm_store_ss(&y, _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(1, 1, 1, 1)));
-
-			return y;
-		}
-		float Vector4::getZ()
-		{
-			float z;
-			_mm_store_ss(&z, _mm_movehl_ps(m_vector, m_vector));
-
-			return z;
-		}
-		float Vector4::getW()
-		{
-			float w;
-			_mm_store_ss(&w, _mm_shuffle_ps(m_vector, m_vector, _MM_SHUFFLE(3, 3, 3, 3)));
-
-			return w;
-		}
 
 		//magnitude of this vector squared
 		float Vector4::magSqr()
@@ -155,35 +123,7 @@ namespace Hatchit {
 			_mm_store_ps(vec_array, m_vector);
 			return vec_array;
 		}
-
-		void Vector4::setX(float x)
-		{
-			_MM_ALIGN16 float temp[4];
-			_mm_store_ps(temp, m_vector);
-
-			m_vector = _mm_set_ps(temp[3], temp[2], temp[1], x);
-		}
-		void Vector4::setY(float y)
-		{
-			_MM_ALIGN16 float temp[4];
-			_mm_store_ps(temp, m_vector);
-
-			m_vector = _mm_set_ps(temp[3], temp[2], y, temp[0]);
-		}
-		void Vector4::setZ(float z)
-		{
-			_MM_ALIGN16 float temp[4];
-			_mm_store_ps(temp, m_vector);
-
-			m_vector = _mm_set_ps(temp[3], z, temp[1], temp[0]);
-		}
-		void Vector4::setW(float w)
-		{
-			_MM_ALIGN16 float temp[4];
-			_mm_store_ps(temp, m_vector);
-
-			m_vector = _mm_set_ps(w, temp[2], temp[1], temp[0]);
-		}
+		
 
 		/*
 		Static Functions
@@ -325,8 +265,7 @@ namespace Hatchit {
 
 		float& Vector4::operator[](int i)
 		{
-			float* vec_array = getAsArray();
-			return vec_array[i];
+			return data[i];
 		}
 
 		Vector4::operator Vector3()
@@ -347,7 +286,7 @@ namespace Hatchit {
 		//Extraction
 		std::ostream& operator<<(std::ostream& output, Vector4& v)
 		{
-			output << v.getX() << " " << v.getY() << " " << v.getZ() << " " << v.getW();
+			output << v.x << " " << v.y << " " << v.z << " " << v.w;
 			return output;
 		}
 
@@ -357,10 +296,10 @@ namespace Hatchit {
 			float x, y, z, w;
 			input >> x >> y >> z >> w;
 
-			v.setX(x);
-			v.setY(y);
-			v.setZ(z);
-			v.setW(w);
+			v.x = x;
+			v.y = y;
+			v.z = z;
+			v.w = w;
 
 			return input;
 		}

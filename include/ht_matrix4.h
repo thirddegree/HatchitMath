@@ -43,6 +43,8 @@ namespace Hatchit
 
 		class HT_API Matrix4
 		{
+		friend class Quaternion;
+
 		public:
 			//Statics
 			/** Generates an orthographic projection from the given values
@@ -149,18 +151,20 @@ namespace Hatchit
 			 * x3, y3, z3
 			 */
 			operator Matrix3();
-			/** Fetches a row of this Matrix at the index i
-			 * The subsequent row can also use this operator so you can access values
-			 * in this matrix with two [] operators: myMatrix[0][1].
-			 * \param i The index of the row to fetch
-			 * \return A pointer to a float array which is a row of this matrix
-			 * This will throw an index out of range exception if you try to access a
-			 * 5th row with index 4.
-			 */
-			const float* const operator[] (int i) const;
 
-		private:
-			__m128 m_rows[4];
+		public:
+			union
+			{
+				__m128 m_rows[4];
+				struct
+				{
+					float	xx, xy, xz, xw,
+							yx, yy, yz, yw,
+							zx, zy, zz, zw,
+							wx, wy, wz, ww;
+				};
+				float data[16];
+			};
 		};
 
 
