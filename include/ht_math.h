@@ -62,11 +62,6 @@
     #endif
 #endif
 
-typedef Hatchit::Math::Vector2 MMVECTOR2;
-typedef Hatchit::Math::Vector3 MMVECTOR3;
-typedef Hatchit::Math::Vector4 MMVECTOR4;
-typedef Hatchit::Math::Matrix4 MMMATRIX;
-
 namespace Hatchit {
 
     namespace Math {
@@ -239,113 +234,25 @@ namespace Hatchit {
             *	Operators
             *****************************************************/
 
-            
             operator const __m128(void) const;
-
-			/** Multiplies all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to multiply this Vector3 by
-			* \return A Vector3 after all the elements have been multiplied by s
-			*/
-			Vector3 operator* (float s);
-			/** Divides all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to divide this Vector3 by
-			* \return A Vector3 after all the elements have been divided by s
-			*/
-			Vector3 operator/ (float s);
-			/** Subtracts all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to subtract this Vector3 by
-			* \return A Vector3 after all the elements have been subtracted by s
-			*/
-			Vector3 operator- (float s);
-			/** Adds all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to add this Vector3 by
-			* \return A Vector3 after all the elements have been added by s
-			*/
-			Vector3 operator+ (float s);
-
-			/** Multiplies all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to multiply this Vector3 by
-			* \return This Vector3 after all the elements have been multiplied by s
-			*/
-			Vector3 operator*= (float s);
-			/** Divides all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to divide this Vector3 by
-			* \return This Vector3 after all the elements have been divided by s
-			*/
-			Vector3 operator/= (float s);
-			/** Subtracts all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to subtract this Vector3 by
-			* \return This Vector3 after all the elements have been subtracted by s
-			*/
-			Vector3 operator-= (float s);
-			/** Adds all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to add this Vector3 by
-			* \return This Vector3 after all the elements have been added by s
-			*/
-			Vector3 operator+= (float s);
-
-			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has a larger magnitude than the other Vector3
-			*/
-			bool operator>(Vector3 u);
-			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has a smaller magnitude than the other Vector3
-			*/
-			bool operator<(Vector3 u);
-			/** Compares the values of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has the same values of the other Vector3
-			*/
-			bool operator==(Vector3 u);
-			/** Compares the values of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 does not have the same values as the other Vector3
-			*/
-			bool operator!=(Vector3 u);
-
-			/** Executes memberwise multiplication on two vectors
-			* \param u The other Vector3
-			* \return The product of this * u as a vector
-			*/
-			Vector3 operator* (Vector3 u);
-
-			/** Adds all of the elements from a given vector to this one
-			* \param u The other Vector3
-			* \return A new vector with the sums of all the pairs of elements
-			*/
-			Vector3 operator+ (Vector3 u);
-			/** Subtracts all of the elements from this vector by a given vector
-			* \param u The other Vector3
-			* \return A new vector with the differences of all the pairs of elemens
-			*/
-			Vector3 operator- (Vector3 u);
-			/** Adds all of the elements from a given vector to this one
-			* \param u The other Vector3
-			* \return This vector with the sums of all the pairs of elements
-			*/
-			Vector3 operator+= (Vector3 u);
-			/** Subtracts all of the elements from this vector by a given one
-			* \param u The other Vector3
-			* \return This vector with the differences of all the pairs of elements
-			*/
-			Vector3 operator-= (Vector3 u);
-
-			/** Fetches an element of this Vector at the index i
-			* \param i The index of the element to fetch
-			* \return A float that is stored in this Vector3 at the index i
-			* This will throw an index out of range exception if you go beyond an index if 1
-			*/
-			float& operator[] (int i);
+			Vector3 operator*   (float s);
+			Vector3 operator/   (float s);
+			Vector3 operator-   (float s);
+			Vector3 operator+   (float s);
+			Vector3 operator*=  (float s);
+			Vector3 operator/=  (float s);
+			Vector3 operator-=  (float s);
+			Vector3 operator+=  (float s);
+			bool    operator>   (Vector3 u);
+			bool    operator<   (Vector3 u);
+			bool    operator==  (Vector3 u);
+			bool    operator!=  (Vector3 u);
+			Vector3 operator*   (Vector3 u);
+			Vector3 operator+   (Vector3 u);
+			Vector3 operator-   (Vector3 u);
+			Vector3 operator+=  (Vector3 u);
+			Vector3 operator-=  (Vector3 u);
+			float&  operator[]  (int i);
 
             union
             {
@@ -358,16 +265,8 @@ namespace Hatchit {
             };
 		};
 
-		/** An insertion operator for a Vector3 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Vector3 to interface with the ostream
-		*/
-		HT_API std::ostream& operator<< (std::ostream& output, Vector3& h);
-		/** An insertion operator for a Vector3 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Vector3 to interface with the ostream
-		*/
-		HT_API std::istream& operator>> (std::istream& input, Vector3& h);
+		std::ostream& operator<< (std::ostream& output, Vector3& h);
+		std::istream& operator>> (std::istream& input,  Vector3& h);
 
         /////////////////////////////////////////////////////////
         // MM Vector4 Definition
@@ -592,28 +491,26 @@ namespace Hatchit {
 		//////////////////////////////////////////////////////////
 		// MM Matrix Operations
 		//////////////////////////////////////////////////////////
-		MMMATRIX _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
-		MMMATRIX _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
-		MMMATRIX _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);
-		MMMATRIX _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
-		MMMATRIX _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
+		Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
+        Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
+        Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);
+        Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
+        Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
 
 		//////////////////////////////////////////////////////////
 		// MM Vector3 Operations
 		//////////////////////////////////////////////////////////
 		
-		MMVECTOR3 _MM_CALLCONV MMVector3Cross(MMVECTOR3 v, MMVECTOR3 u);
-		float	  _MM_CALLCONV MMVector3Dot(MMVECTOR3 v, MMVECTOR3 u);
-		MMVECTOR3 _MM_CALLCONV MMVector3Normalize(MMVECTOR3 v);
-        float     _MM_CALLCONV MMVector3Magnitude(MMVECTOR3 v);
+		Vector3 _MM_CALLCONV MMVector3Cross(Vector3 v, Vector3 u);
+		float	_MM_CALLCONV MMVector3Dot(Vector3 v, Vector3 u);
+        Vector3 _MM_CALLCONV MMVector3Normalize(Vector3 v);
+        float   _MM_CALLCONV MMVector3Magnitude(Vector3 v);
 
 		
-
-
-#include <ht_mathmm.inl>
-#include <ht_mathvector.inl>
-#include <ht_mathmatrix.inl>
-
     }
 
 }
+
+#include <ht_mathmm.inl>
+#include <ht_mathvector3.inl>
+#include <ht_mathmatrix.inl>
