@@ -56,10 +56,10 @@ namespace Hatchit {
 
     namespace Math {
 
-		class Vector2;
-		class Vector3;
-		class Vector4;
-		class Matrix4;
+        class Vector2;
+        class Vector3;
+        class Vector4;
+        class Matrix4;
 
         struct Float3
         {
@@ -76,14 +76,14 @@ namespace Hatchit {
 
         struct Float4
         {
-			union
-			{
-				struct
-				{
-					float x, y, z, w;
-				};
-				float data[4];
-			};
+            union
+            {
+                struct
+                {
+                    float x, y, z, w;
+                };
+                float data[4];
+            };
 
             Float4() = default;
             Float4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w){}
@@ -93,94 +93,94 @@ namespace Hatchit {
 
         };
 
-		class Matrix4
-		{
-		public:
-			/****************************************************
-			*	Constructors
-			*****************************************************/
+        class Matrix4
+        {
+        public:
+            /****************************************************
+            *	Constructors
+            *****************************************************/
 
-			Matrix4();
-			Matrix4(float rawArray[]);
-			Matrix4(float xx, float xy, float xz, float xw,
-				float yx, float yy, float yz, float yw,
-				float zx, float zy, float zz, float zw,
-				float wx, float wy, float wz, float ww);
-			Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
-			Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
+            Matrix4();
+            Matrix4(float rawArray[]);
+            Matrix4(float xx, float xy, float xz, float xw,
+                float yx, float yy, float yz, float yw,
+                float zx, float zy, float zz, float zw,
+                float wx, float wy, float wz, float ww);
+            Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
+            Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
 
-			/****************************************************
-			*	Operators
-			*****************************************************/
+            /****************************************************
+            *	Operators
+            *****************************************************/
 
-			Matrix4 operator* (Matrix4 mat);
-			Vector3 operator* (Vector3 vec);
-			Vector4 operator* (Vector4 vec);
-			
+            Matrix4 operator* (Matrix4 mat);
+            Vector3 operator* (Vector3 vec);
+            Vector4 operator* (Vector4 vec);
+            
 
-		public:
-			union
-			{
-				__m128 m_rows[4];
-				struct
-				{
-					float xx, xy, xz, xw,
-						  yx, yy, yz, yw,
-						  zx, zy, zz, zw,
-						  wx, wy, wz, ww;
-				};
-				float data[16];
-			};
-		};
-		std::ostream& operator<< (std::ostream& output, Matrix4& h);
-		std::istream& operator>> (std::istream& input,  Matrix4& h);
+        public:
+            union
+            {
+                __m128 m_rows[4];
+                struct
+                {
+                    float xx, xy, xz, xw,
+                          yx, yy, yz, yw,
+                          zx, zy, zz, zw,
+                          wx, wy, wz, ww;
+                };
+                float data[16];
+            };
+        };
+        std::ostream& operator<< (std::ostream& output, Matrix4& h);
+        std::istream& operator>> (std::istream& input,  Matrix4& h);
 
-		/////////////////////////////////////////////////////////
-		// Vector3 definition
-		/////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////
+        // Vector3 definition
+        /////////////////////////////////////////////////////////
 
-		class Vector3
-		{
-			friend class Matrix4;
-		public:
-			
-			/****************************************************
-			*	Constructors
-			*****************************************************/
-			Vector3();
-			Vector3(float x, float y, float z);
-			Vector3(const Vector3& other);
-			Vector3(Vector4& v4);
+        class Vector3
+        {
+            friend class Matrix4;
+        public:
+            
+            /****************************************************
+            *	Constructors
+            *****************************************************/
+            Vector3();
+            Vector3(float x, float y, float z);
+            Vector3(const Vector3& other);
+            Vector3(Vector4& v4);
 
             /****************************************************
             *	 Custom allocation/deallocation
             *****************************************************/
-			void* operator new(size_t _size);
-			void  operator delete(void* p);
-			
+            void* operator new(size_t _size);
+            void  operator delete(void* p);
+            
             /****************************************************
             *	Operators
             *****************************************************/
 
             operator const __m128(void) const;
-			Vector3 operator*   (float s);
-			Vector3 operator/   (float s);
-			Vector3 operator-   (float s);
-			Vector3 operator+   (float s);
-			Vector3 operator*=  (float s);
-			Vector3 operator/=  (float s);
-			Vector3 operator-=  (float s);
-			Vector3 operator+=  (float s);
-			bool    operator>   (Vector3 u);
-			bool    operator<   (Vector3 u);
-			bool    operator==  (Vector3 u);
-			bool    operator!=  (Vector3 u);
-			Vector3 operator*   (Vector3 u);
-			Vector3 operator+   (Vector3 u);
-			Vector3 operator-   (Vector3 u);
-			Vector3 operator+=  (Vector3 u);
-			Vector3 operator-=  (Vector3 u);
-			float&  operator[]  (int i);
+            Vector3 operator*   (float s);
+            Vector3 operator/   (float s);
+            Vector3 operator-   (float s);
+            Vector3 operator+   (float s);
+            Vector3 operator*=  (float s);
+            Vector3 operator/=  (float s);
+            Vector3 operator-=  (float s);
+            Vector3 operator+=  (float s);
+            bool    operator>   (Vector3 u);
+            bool    operator<   (Vector3 u);
+            bool    operator==  (Vector3 u);
+            bool    operator!=  (Vector3 u);
+            Vector3 operator*   (Vector3 u);
+            Vector3 operator+   (Vector3 u);
+            Vector3 operator-   (Vector3 u);
+            Vector3 operator+=  (Vector3 u);
+            Vector3 operator-=  (Vector3 u);
+            float&  operator[]  (int i);
 
             union
             {
@@ -191,10 +191,10 @@ namespace Hatchit {
                 float  m_data[3];
                 __m128 m_vector;
             };
-		};
+        };
 
-		std::ostream& operator<< (std::ostream& output, Vector3& h);
-		std::istream& operator>> (std::istream& input,  Vector3& h);
+        std::ostream& operator<< (std::ostream& output, Vector3& h);
+        std::istream& operator>> (std::istream& input,  Vector3& h);
 
         /////////////////////////////////////////////////////////
         // MM Vector4 Definition
@@ -416,25 +416,25 @@ namespace Hatchit {
         __m128 _MM_CALLCONV MMVectorSetXRaw(__m128 v, const float* x);
 
 
-		//////////////////////////////////////////////////////////
-		// MM Matrix Operations
-		//////////////////////////////////////////////////////////
-		Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
+        //////////////////////////////////////////////////////////
+        // MM Matrix Operations
+        //////////////////////////////////////////////////////////
+        Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);
         Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
         Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
 
-		//////////////////////////////////////////////////////////
-		// MM Vector3 Operations
-		//////////////////////////////////////////////////////////
-		
-		Vector3 _MM_CALLCONV MMVector3Cross(Vector3 v, Vector3 u);
-		float	_MM_CALLCONV MMVector3Dot(Vector3 v, Vector3 u);
+        //////////////////////////////////////////////////////////
+        // MM Vector3 Operations
+        //////////////////////////////////////////////////////////
+        
+        Vector3 _MM_CALLCONV MMVector3Cross(Vector3 v, Vector3 u);
+        float	_MM_CALLCONV MMVector3Dot(Vector3 v, Vector3 u);
         Vector3 _MM_CALLCONV MMVector3Normalize(Vector3 v);
         float   _MM_CALLCONV MMVector3Magnitude(Vector3 v);
 
-		
+        
     }
 
 }
