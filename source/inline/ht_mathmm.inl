@@ -57,7 +57,7 @@ namespace Hatchit {
 
         inline void _MM_CALLCONV MMVectorGetYRaw(float* y, __m128 v)
         {
-            __m128 temp = _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
+            _mm_shuffle_ps(v, v, _MM_SHUFFLE(1, 1, 1, 1));
 
             _mm_store_ss(y, v);
         }

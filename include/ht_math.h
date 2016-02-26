@@ -47,7 +47,7 @@
         #endif
 
         #ifndef _MM_CALLCONV
-        #define _MM_CALLCONV __attribute__((fastcall))
+        #define _MM_CALLCONV
         #endif
     #endif
 #endif

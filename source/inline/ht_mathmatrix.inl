@@ -13,7 +13,7 @@ namespace Hatchit
 		*\param v vector3 to translate by
 		*\return the translation matrix
 		*/
-		Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3 & v)
+		inline Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3 & v)
 		{
 			return Matrix4(1, 0, 0, v.x,
 			               0, 1, 0, v.y,
