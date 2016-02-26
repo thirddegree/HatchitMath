@@ -301,23 +301,23 @@ namespace Hatchit {
             /****************************************************
             *	Operators
             *****************************************************/
-            ///Create a Vector4 with all 4 elements being 0
+            
             Vector4();
-            ///Create a Vector4 with the elements x, y and z
             Vector4(float x, float y, float z, float w);
-            ///Create a copy of an existing Vector4
             Vector4(const Vector4& other);
-            ///Create a Vector4 with the first three elements of a given Vector3 and a fourth given float w
             Vector4(const Vector3& v3, float w);
-            ///Create a Vector4 with an intrinsic vector type.
-            explicit Vector4(__m128 intrinsicVec);
+            explicit Vector4(__m128 v);
 
-            //Custom allocation/deallocation
-            ///Allocate a 16byte aligned array of Vector4s
+			/****************************************************
+			*	 Custom allocation/deallocation
+			*****************************************************/
             void* operator new(size_t _size);
-            ///Delete an array of Vector4s
             void  operator delete(void* p);
-            ///Cast Vector4's SSE intrinsic to __m128
+
+
+            /****************************************************
+            *	Operators
+            *****************************************************/
             operator __m128(void) const;
 
 
@@ -460,17 +460,8 @@ namespace Hatchit {
                 float data[4];
             };
         };
-
-        /** An insertion operator for a Vector4 to interace with an ostream
-        * \param output The ostream to output to
-        * \param h The Vector4 to interface with the ostream
-        */
-        HT_API std::ostream& operator<< (std::ostream& output, Vector4& h);
-        /** An insertion operator for a Vector4 to interace with an ostream
-        * \param output The ostream to output to
-        * \param h The Vector4 to interface with the ostream
-        */
-        HT_API std::istream& operator>> (std::istream& input, Vector4& h);
+        std::ostream& operator<< (std::ostream& output, Vector4& h);
+        std::istream& operator>> (std::istream& input,  Vector4& h);
 
         /////////////////////////////////////////////////////////
         // MM Instrinsic Functions
@@ -520,9 +511,9 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         // MM Vector4 Operations
         //////////////////////////////////////////////////////////
-        float _MM_CALLCONV Vector4Dot(Vector4 lhs, Vector4 rhs);
-        Vector4 _MM_CALLCONV Vector4Normalize(Vector4 v);
-        float _MM_CALLCONV Vector4Magnitude(Vector4 v);
+        float   _MM_CALLCONV MMVector4Dot(Vector4 lhs, Vector4 rhs);
+        Vector4 _MM_CALLCONV MMVector4Normalize(Vector4 v);
+        float   _MM_CALLCONV MMVector4Magnitude(Vector4 v);
     }
 }
 

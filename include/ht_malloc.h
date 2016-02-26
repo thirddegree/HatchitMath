@@ -14,17 +14,39 @@
 
 #pragma once
 
-#include <ht_platform.h>
 #include <cstdlib>
 
 namespace Hatchit {
 
     namespace Math {
-        HT_API
-        void* aligned_malloc(size_t size, size_t alignment);
+     
+		void* aligned_malloc(size_t size, size_t alignment)
+		{
+#ifdef _WIN32
+			return _aligned_malloc(size, alignment);
+#else
+			void* ptr;
+			int   err = posix_memalign(&ptr, alignment, size);
+			if (err == 0)
+				return ptr;
+			else
+			{
+#ifdef _DEBUG 
+				std::cerr << "ALIGNED_MALLOC: Error allocating memory (posix_memalign: " << err << ")" << std::endl;
+#endif           
+				return nullptr;
+			}
+#endif
+		}
 
-        HT_API
-        void  aligned_free(void* ptr);
+		void aligned_free(void* ptr)
+		{
+#ifdef _WIN32
+			_aligned_free(ptr);
+#else
+			free(ptr);
+#endif
+		}
     }
 }
 
