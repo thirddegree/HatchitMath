@@ -64,14 +64,14 @@ namespace Hatchit {
 
         inline void _MM_CALLCONV MMVectorGetZRaw(float* z, __m128 v)
         {
-            __m128 temp = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
+            _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 2, 2));
 
             _mm_store_ss(z, v);
         }
 
         inline void _MM_CALLCONV MMVectorGetWRaw(float* w, __m128 v)
         {
-            __m128 temp = _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 3, 3, 3));
+            _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 3, 3, 3));
 
             _mm_store_ss(w, v);
         }

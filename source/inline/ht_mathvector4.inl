@@ -13,8 +13,10 @@ namespace Hatchit
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(0, 1, 2, 3)));
             normalizedVec = _mm_rsqrt_ps(normalizedVec);
-            Vector4 returnValue;
-            returnValue.m_vector = _mm_mul_ps(v.m_vector, normalizedVec);
+            Vector4 val;
+            val.m_vector = _mm_mul_ps(v.m_vector, normalizedVec);
+
+            return val; 
         }
 
         
