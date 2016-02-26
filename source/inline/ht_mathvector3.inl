@@ -368,7 +368,7 @@ namespace Hatchit {
             val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(3, 2, 2, 2)));
             val = _mm_sqrt_ss(val);
 
-            return ::MMVectorGetX(val);
+            return MMVectorGetX(val);
         }
 
         /** An outstream operator for a Vector3 to interace with an ostream

@@ -28,7 +28,7 @@ namespace Hatchit
             val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(0, 1, 2, 3)));
             val = _mm_sqrt_ps(val);
 
-            return ::MMVectorGetX(val);
+            return MMVectorGetX(val);
         }
 
         /** Returns the dot product of two vectors
