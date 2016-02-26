@@ -12,8 +12,7 @@
 **
 **/
 
-#include <ht_matrix3.h>
-#include <ht_matrix4.h>
+#include <ht_math.h>
 
 namespace Hatchit {
 
