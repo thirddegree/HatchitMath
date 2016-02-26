@@ -32,9 +32,6 @@
 #include <cstdint>
 #include <sstream>
 
-#include <DirectXMath.h>
-
-
 #ifdef _WIN32
     //Visual C++ compiler warning C4251 disable
     #ifdef _MSC_VER
