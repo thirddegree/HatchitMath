@@ -15,7 +15,7 @@
 #define _USE_MATH_DEFINES
 
 #include <gtest/gtest.h>
-#include "ht_quaternion.h"
+#include "ht_math.h"
 
 using namespace Hatchit;
 using namespace Math;
@@ -23,12 +23,6 @@ using namespace Math;
 TEST(Quaternion, DefaultConstructor)
 {
   Quaternion quat;
-
-#ifdef _ISOC11_SOURCE
-  std::cout << "C11 SUPPORT FOUND" << std::endl;
-#else
-  std::cout << "C11 SUPPORT NOT FOUND!!!!!!!" << std::endl;
-#endif
 
   ASSERT_EQ(quat.getW(), 1);
   ASSERT_EQ(quat.getX(), 0);
