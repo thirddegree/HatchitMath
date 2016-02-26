@@ -1,4 +1,7 @@
 
+#include <ht_math.h>
+#include <cassert>
+
 namespace Hatchit {
 
     namespace Math {
