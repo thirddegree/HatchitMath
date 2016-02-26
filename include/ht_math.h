@@ -19,19 +19,11 @@
 
 #pragma once
 
-//#include <ht_bounds.h>
-//#include <ht_matrix3.h>
-//#include <ht_quaternion.h>
-//#include <ht_ray.h>
-//#include <ht_vector2.h>
-//#include <ht_vector3.h>
-//#include <ht_vector4.h>
-
 #include <ht_intrin.h>
 #include <ht_malloc.h>
 #include <cstdint>
+#include <cmath>
 #include <sstream>
-
 
 #ifdef _WIN32
     //Visual C++ compiler warning C4251 disable
@@ -60,19 +52,14 @@
     #endif
 #endif
 
-typedef Hatchit::Math::Vector2 MMVECTOR2;
-typedef Hatchit::Math::Vector3 MMVECTOR3;
-typedef Hatchit::Math::Vector4 MMVECTOR4;
-typedef Hatchit::Math::Matrix4 MMMATRIX;
-
 namespace Hatchit {
 
     namespace Math {
 
-		class Vector2;
-		class Vector3;
-		class Vector4;
-		class Matrix4;
+        class Vector2;
+        class Vector3;
+        class Vector4;
+        class Matrix4;
 
         struct Float3
         {
@@ -89,14 +76,14 @@ namespace Hatchit {
 
         struct Float4
         {
-			union
-			{
-				struct
-				{
-					float x, y, z, w;
-				};
-				float data[4];
-			};
+            union
+            {
+                struct
+                {
+                    float x, y, z, w;
+                };
+                float data[4];
+            };
 
             Float4() = default;
             Float4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w){}
@@ -106,109 +93,47 @@ namespace Hatchit {
 
         };
 
-		class Matrix4
-		{
-			friend class Quaternion;
+        class Matrix4
+        {
+        public:
+            /****************************************************
+            *	Constructors
+            *****************************************************/
 
-		public:
-			/****************************************************
-			*	Constructors
-			*****************************************************/
+            Matrix4();
+            Matrix4(float rawArray[]);
+            Matrix4(float xx, float xy, float xz, float xw,
+                float yx, float yy, float yz, float yw,
+                float zx, float zy, float zz, float zw,
+                float wx, float wy, float wz, float ww);
+            Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
+            Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
 
-			///Creates a 4x4 identity matrix
-			Matrix4();
+            /****************************************************
+            *	Operators
+            *****************************************************/
 
-			///Creates a 4x4 matrix from an array of 16 values
-			Matrix4(float rawArray[]);
+            Matrix4 operator* (Matrix4 mat);
+            Vector3 operator* (Vector3 vec);
+            Vector4 operator* (Vector4 vec);
+            
 
-			///Creates a 4x4 matrix from 16 given values
-			Matrix4(float xx, float xy, float xz, float xw,
-				float yx, float yy, float yz, float yw,
-				float zx, float zy, float zz, float zw,
-				float wx, float wy, float wz, float ww);
-
-			/** Creates a 4x4 matrix from 4 given Vector3s
-			* The resulting matrix fills in a few values so that it will match this
-			* layout:
-			* a1, a2, a3, 0
-			* b1, b2, b3, 0
-			* c1, c2, c3, 0
-			* d1, d2, d3, 1
-			*/
-			Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
-
-			/** Creates a 4x4 matrix from 4 given Vector4s
-			* The resulting matrix fills in a few values so that it will match this
-			* layout:
-			* a1, a2, a3, a4
-			* b1, b2, b3, b4
-			* c1, c2, c3, c4
-			* d1, d2, d3, d4
-			*/
-			Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
-
-			/****************************************************
-			*	Accessors
-			*****************************************************/
-
-			/** Get this matrix as an array of values rather than a matrix
-			* This pointer is to an array on the stack which will be deleted when
-			* this matrix is disposed of.
-			* \return A float array containing all the values in this matrix
-			*/
-			const float* const getAsArray() const;
-
-			
-			/****************************************************
-			*	Operators
-			*****************************************************/
-
-			/** Multiplies this Matrix4 by another given Matrix4 and returns the
-			* resulting matrix
-			* \param mat The other Matrix4 to multiply into this one
-			* \return The product of this matrix * mat as a Matrix4
-			*/
-			Matrix4 operator* (Matrix4 mat);
-			/** Multiplies this Matrix4 by a given Vector3 and returns the
-			* resulting Vector3
-			* \param vec The Vector3 to multiply into this matrix
-			* \return The product of this matrix * vec as a Vector3
-			*/
-			Vector3 operator* (Vector3 vec);
-			/** Multiplies this Matrix4 by a given Vector4 and returns the
-			* resulting Vector4
-			* \param vec The Vector4 to multiply into this matrix
-			* \return The product of this matrix * vec as a Vector4
-			*/
-			Vector4 operator* (Vector4 vec);
-			
-
-		public:
-			union
-			{
-				__m128 m_rows[4];
-				struct
-				{
-					float xx, xy, xz, xw,
-						  yx, yy, yz, yw,
-						  zx, zy, zz, zw,
-						  wx, wy, wz, ww;
-				};
-				float data[16];
-			};
-		};
-
-
-		/** An insertion operator for a Matrix4 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Matrix4 to interface with the ostream
-		*/
-		inline std::ostream& operator<< (std::ostream& output, Matrix4& h);
-		/** An insertion operator for a Matrix4 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Matrix4 to interface with the ostream
-		*/
-		inline std::istream& operator>> (std::istream& input, Matrix4& h);
+        public:
+            union
+            {
+                __m128 m_rows[4];
+                struct
+                {
+                    float xx, xy, xz, xw,
+                          yx, yy, yz, yw,
+                          zx, zy, zz, zw,
+                          wx, wy, wz, ww;
+                };
+                float data[16];
+            };
+        };
+        std::ostream& operator<< (std::ostream& output, Matrix4& h);
+        std::istream& operator>> (std::istream& input,  Matrix4& h);
 
         /////////////////////////////////////////////////////////
         // Vector2 definition
@@ -305,139 +230,51 @@ namespace Hatchit {
         std::istream& operator>> (std::istream& input, Vector2& v);
 
 		/////////////////////////////////////////////////////////
-		// Vector3 definition
-		/////////////////////////////////////////////////////////
+        // Vector3 definition
+        /////////////////////////////////////////////////////////
 
-		class Vector3
-		{
-			friend class Matrix4;
-		public:
-			
-			/****************************************************
-			*	Constructors
-			*****************************************************/
-			Vector3();
-			Vector3(float x, float y, float z);
-			Vector3(const Vector3& other);
-			Vector3(Vector4& v4);
+        class Vector3
+        {
+            friend class Matrix4;
+        public:
+            
+            /****************************************************
+            *	Constructors
+            *****************************************************/
+            Vector3();
+            Vector3(float x, float y, float z);
+            Vector3(const Vector3& other);
+            Vector3(Vector4& v4);
 
             /****************************************************
             *	 Custom allocation/deallocation
             *****************************************************/
-			void* operator new(size_t _size);
-			void  operator delete(void* p);
-			
+            void* operator new(size_t _size);
+            void  operator delete(void* p);
+            
             /****************************************************
             *	Operators
             *****************************************************/
 
-            
             operator const __m128(void) const;
-
-			/** Multiplies all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to multiply this Vector3 by
-			* \return A Vector3 after all the elements have been multiplied by s
-			*/
-			Vector3 operator* (float s);
-			/** Divides all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to divide this Vector3 by
-			* \return A Vector3 after all the elements have been divided by s
-			*/
-			Vector3 operator/ (float s);
-			/** Subtracts all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to subtract this Vector3 by
-			* \return A Vector3 after all the elements have been subtracted by s
-			*/
-			Vector3 operator- (float s);
-			/** Adds all elements in this Vector3 by a given scalar
-			* This operation returns a new Vector3
-			* \param s The scalar to add this Vector3 by
-			* \return A Vector3 after all the elements have been added by s
-			*/
-			Vector3 operator+ (float s);
-
-			/** Multiplies all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to multiply this Vector3 by
-			* \return This Vector3 after all the elements have been multiplied by s
-			*/
-			Vector3 operator*= (float s);
-			/** Divides all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to divide this Vector3 by
-			* \return This Vector3 after all the elements have been divided by s
-			*/
-			Vector3 operator/= (float s);
-			/** Subtracts all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to subtract this Vector3 by
-			* \return This Vector3 after all the elements have been subtracted by s
-			*/
-			Vector3 operator-= (float s);
-			/** Adds all elements in this Vector3 by a given scalar
-			* This operation affects the elements in this Vector3
-			* \param s The scalar to add this Vector3 by
-			* \return This Vector3 after all the elements have been added by s
-			*/
-			Vector3 operator+= (float s);
-
-			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has a larger magnitude than the other Vector3
-			*/
-			bool operator>(Vector3 u);
-			/** Compares the magnitue of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has a smaller magnitude than the other Vector3
-			*/
-			bool operator<(Vector3 u);
-			/** Compares the values of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 has the same values of the other Vector3
-			*/
-			bool operator==(Vector3 u);
-			/** Compares the values of this Vector3 to another given Vector3
-			* \param u The other Vector3
-			* \return True if this Vector3 does not have the same values as the other Vector3
-			*/
-			bool operator!=(Vector3 u);
-
-			/** Executes memberwise multiplication on two vectors
-			* \param u The other Vector3
-			* \return The product of this * u as a vector
-			*/
-			Vector3 operator* (Vector3 u);
-
-			/** Adds all of the elements from a given vector to this one
-			* \param u The other Vector3
-			* \return A new vector with the sums of all the pairs of elements
-			*/
-			Vector3 operator+ (Vector3 u);
-			/** Subtracts all of the elements from this vector by a given vector
-			* \param u The other Vector3
-			* \return A new vector with the differences of all the pairs of elemens
-			*/
-			Vector3 operator- (Vector3 u);
-			/** Adds all of the elements from a given vector to this one
-			* \param u The other Vector3
-			* \return This vector with the sums of all the pairs of elements
-			*/
-			Vector3 operator+= (Vector3 u);
-			/** Subtracts all of the elements from this vector by a given one
-			* \param u The other Vector3
-			* \return This vector with the differences of all the pairs of elements
-			*/
-			Vector3 operator-= (Vector3 u);
-
-			/** Fetches an element of this Vector at the index i
-			* \param i The index of the element to fetch
-			* \return A float that is stored in this Vector3 at the index i
-			* This will throw an index out of range exception if you go beyond an index if 1
-			*/
-			float& operator[] (int i);
+            Vector3 operator*   (float s);
+            Vector3 operator/   (float s);
+            Vector3 operator-   (float s);
+            Vector3 operator+   (float s);
+            Vector3 operator*=  (float s);
+            Vector3 operator/=  (float s);
+            Vector3 operator-=  (float s);
+            Vector3 operator+=  (float s);
+            bool    operator>   (Vector3 u);
+            bool    operator<   (Vector3 u);
+            bool    operator==  (Vector3 u);
+            bool    operator!=  (Vector3 u);
+            Vector3 operator*   (Vector3 u);
+            Vector3 operator+   (Vector3 u);
+            Vector3 operator-   (Vector3 u);
+            Vector3 operator+=  (Vector3 u);
+            Vector3 operator-=  (Vector3 u);
+            float&  operator[]  (int i);
 
             union
             {
@@ -448,18 +285,10 @@ namespace Hatchit {
                 float  m_data[3];
                 __m128 m_vector;
             };
-		};
+        };
 
-		/** An insertion operator for a Vector3 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Vector3 to interface with the ostream
-		*/
-		HT_API std::ostream& operator<< (std::ostream& output, Vector3& h);
-		/** An insertion operator for a Vector3 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Vector3 to interface with the ostream
-		*/
-		HT_API std::istream& operator>> (std::istream& input, Vector3& h);
+        std::ostream& operator<< (std::ostream& output, Vector3& h);
+        std::istream& operator>> (std::istream& input,  Vector3& h);
 
         /////////////////////////////////////////////////////////
         // MM Vector4 Definition
@@ -669,36 +498,35 @@ namespace Hatchit {
         __m128 _MM_CALLCONV MMVectorSetXRaw(__m128 v, const float* x);
 
 
-		//////////////////////////////////////////////////////////
-		// MM Matrix Operations
-		//////////////////////////////////////////////////////////
-		MMMATRIX _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
-		MMMATRIX _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
-		MMMATRIX _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);
-		MMMATRIX _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
-		MMMATRIX _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
+        //////////////////////////////////////////////////////////
+        // MM Matrix Operations
+        //////////////////////////////////////////////////////////
+        Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
+        Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
+        Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);
+        Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
+        Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
 
-		//////////////////////////////////////////////////////////
-		// MM Vector3 Operations
-		//////////////////////////////////////////////////////////
-		
-		MMVECTOR3 _MM_CALLCONV MMVector3Cross(MMVECTOR3 v, MMVECTOR3 u);
-		float	  _MM_CALLCONV MMVector3Dot(MMVECTOR3 v, MMVECTOR3 u);
-		MMVECTOR3 _MM_CALLCONV MMVector3Normalize(MMVECTOR3 v);
-        float     _MM_CALLCONV MMVector3Magnitude(MMVECTOR3 v);
+        //////////////////////////////////////////////////////////
+        // MM Vector3 Operations
+        //////////////////////////////////////////////////////////
+        
+        Vector3 _MM_CALLCONV MMVector3Cross(Vector3 v, Vector3 u);
+        float	_MM_CALLCONV MMVector3Dot(Vector3 v, Vector3 u);
+        Vector3 _MM_CALLCONV MMVector3Normalize(Vector3 v);
+        float   _MM_CALLCONV MMVector3Magnitude(Vector3 v);
 
-		
+        
         //////////////////////////////////////////////////////////
         // MM Vector4 Operations
         //////////////////////////////////////////////////////////
         float _MM_CALLCONV Vector4Dot(Vector4 lhs, Vector4 rhs);
         Vector4 _MM_CALLCONV Vector4Normalize(Vector4 v);
         float _MM_CALLCONV Vector4Magnitude(Vector4 v);
-
-
     }
-
 }
+
+
 
 #include <ht_mathmm.inl>
 #include <ht_mathvector3.inl>
