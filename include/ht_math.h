@@ -384,6 +384,7 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         // MM Matrix Operations
         //////////////////////////////////////////////////////////
+		Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3& v);
         Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);

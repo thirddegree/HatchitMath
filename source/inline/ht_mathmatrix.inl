@@ -9,6 +9,18 @@ namespace Hatchit
         // Matrix4 Implementation
         /////////////////////////////////////////////////////////////
 
+		/**Generates a translation matrix with the given vector3 values
+		*\param v vector3 to translate by
+		*\return the translation matrix
+		*/
+		Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3 & v)
+		{
+			return Matrix4(1, 0, 0, v.x,
+			               0, 1, 0, v.y,
+			               0, 0, 1, v.z,
+			               0, 0, 0, 1);
+		}
+
         /** Generates an orthographic projection from the given values
         * \param left The lefthand bound
         * \param right The righthand bound
@@ -21,15 +33,15 @@ namespace Hatchit
         {
             float a = 2 / (right - left);
             float b = 2 / (top - bottom);
-            float c = -2 / (zfar - znear);
-            float d = -1 * ((right + left) / (right - left));
-            float e = -1 * ((top + bottom) / (top - bottom));
-            float f = -1 * ((zfar + znear) / (zfar - znear));
+            float c = 2 / (znear - zfar);
+            float d = (right + left) / (left - right);
+            float e = (top + bottom) / (bottom - top);
+            float f = (zfar + znear) / (znear - zfar);
 
             return Matrix4(a, 0, 0, 0,
-                0, b, 0, 0,
-                0, 0, c, 0,
-                d, e, f, 1);
+                           0, b, 0, 0,
+                           0, 0, c, 0,
+                           d, e, f, 1);
         }
 
         /** Generates a perspective projection from the given values
@@ -43,16 +55,16 @@ namespace Hatchit
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
             float depth = zfar - znear;
-            float m_vector = -(zfar + znear) / depth;
+            float v = -(zfar + znear) / depth;
             float qn = -2 * (zfar * znear) / depth;
 
             float h = 1 / tanf(0.5f * fov);
             float w = h / aspect;
 
             return Matrix4(w, 0, 0, 0,
-                0, h, 0, 0,
-                0, 0, m_vector, -1,
-                0, 0, qn, 0);
+                           0, h, 0, 0,
+                           0, 0, v, -1,
+                           0, 0, qn, 0);
         }
 
         /** Generates a view matrix from the given values
@@ -70,12 +82,12 @@ namespace Hatchit
 
             //Create view matrix;
             return Matrix4(xAxis.x, yAxis.x, zAxis.x, 0,
-                xAxis.y, yAxis.y, zAxis.y, 0,
-                xAxis.z, yAxis.z, zAxis.z, 0,
-                MMVector3Dot(xAxis * -1, lookAt),
-                MMVector3Dot(yAxis * -1, lookAt),
-                MMVector3Dot(zAxis * -1, lookAt),
-                1);
+                           xAxis.y, yAxis.y, zAxis.y, 0,
+                           xAxis.z, yAxis.z, zAxis.z, 0,
+                           MMVector3Dot(xAxis * -1, lookAt),
+                           MMVector3Dot(yAxis * -1, lookAt),
+                           MMVector3Dot(zAxis * -1, lookAt),
+                           1);
         }
 
         /** Returns the transpose of a matrix as a Matrix4
@@ -84,12 +96,6 @@ namespace Hatchit
         */
         inline Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& mat)
         {
-            /*matrix shuffling to transpose is done in 3 steps
-            * |01,02,03,04|    |01,02,05,06|    |01,05,02,06|    |01,05,09,13|
-            * |05,06,07,08| -> |03,04,07,08| -> |03,07,04,08| -> |02,06,10,14|
-            * |09,10,11,12|    |09,10,13,14|    |09,13,10,14|    |03,07,11,15|
-            * |13,14,15,16|    |11,12,15,16|    |11,15,12,16|    |04,08,12,16|
-            */
             Matrix4 transpose;
             transpose.m_rows[0] = mat.m_rows[0];
             transpose.m_rows[1] = mat.m_rows[1];
@@ -119,137 +125,146 @@ namespace Hatchit
             //calculate cofactor
             //xx,xy
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(1, 3, 2, 0)),  //row 2 shifted backwards (ignoring 1st value)
-                _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(2, 1, 3, 0))); //row 3 shifted forwards (ignoring 1st value)
+                               _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(2, 1, 3, 0))); //row 3 shifted forwards (ignoring 1st value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(1, 3, 2, 0)),  //row 3 shifted backwards (ignoring 1st value)
-                _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 1, 3, 0))); //row 2 shifted forwards (ignoring 1st value)
+                               _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 1, 3, 0))); //row 2 shifted forwards (ignoring 1st value)
                                                                                         //+
             x = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[1]); //multiply 3 rows together
             x = _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 3, 2, 2)),
-                    _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
                                                                      //-
             y = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[0]); //multiply 3 rows together
             y = _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(3, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 3, 2, 2)),
-                    _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
 
                                                                      //xz,xw
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(1, 3, 2, 0)),  //row 0 shifted backwards (ignoring 1st value)
-                _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(2, 1, 3, 0))); //row 1 shifted forwards (ignoring 1st value)
+                               _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(2, 1, 3, 0))); //row 1 shifted forwards (ignoring 1st value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(1, 3, 2, 0)),  //row 1 shifted backwards (ignoring 1st value)
-                _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(2, 1, 3, 0))); //row 0 shifted forwards (ignoring 1st value)
+                               _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(2, 1, 3, 0))); //row 0 shifted forwards (ignoring 1st value)
                                                                                         //+
             z = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[3]); //multiply 3 rows together
             z = _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(3, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 3, 2, 2)),
-                    _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
                                                                      //-
             w = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[2]); //multiply 3 rows together
             w = _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 3, 2, 2)),
-                    _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 1, 3, 3)))); //add 3 values together into new vector
 
             result.m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
             //yx,yy
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(0, 3, 1, 2)),  //row 2 shifted backwards (ignoring 2nd value)
-                _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(2, 0, 1, 3))); //row 3 shifted forwards (ignoring 2nd value)
+                               _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(2, 0, 1, 3))); //row 3 shifted forwards (ignoring 2nd value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(0, 3, 1, 2)),  //row 3 shifted backwards (ignoring 2nd value)
-                _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 0, 1, 3))); //row 2 shifted forwards (ignoring 2nd value)
-                                                                                        //-
+                               _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 0, 1, 3))); //row 2 shifted forwards (ignoring 2nd value)
+            
+			//-
             x = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[1]); //multiply 3 rows together
             x = _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 2, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 3, 2, 2)),
-                    _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
-                                                                     //+
+                           _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+
+            //+
             y = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[0]); //multiply 3 rows together
             y = _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(3, 2, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 3, 2, 2)),
-                    _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
 
-                                                                     //yz,yw
+            //yz,yw
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(0, 3, 1, 2)),  //row 0 shifted backwards (ignoring 2nd value)
-                _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(2, 0, 1, 3))); //row 1 shifted forwards (ignoring 2nd value)
+                               _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(2, 0, 1, 3))); //row 1 shifted forwards (ignoring 2nd value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(0, 3, 1, 2)),  //row 1 shifted backwards (ignoring 2nd value)
-                _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(2, 0, 1, 3))); //row 0 shifted forwards (ignoring 2nd value)
-                                                                                        //-
+                               _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(2, 0, 1, 3))); //row 0 shifted forwards (ignoring 2nd value)
+
+            //-
             z = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[3]); //multiply 3 rows together
             z = _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(3, 2, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 3, 2, 2)),
-                    _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
                                                                      //+
             w = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[2]); //multiply 3 rows together
             w = _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 2, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 3, 2, 2)),
-                    _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 0, 3, 3)))); //add 3 values together into new vector
 
             result.m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
             //zx,zy 
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(0, 2, 3, 1)),  //row 2 shifted backwards (ignoring 3rd value)
-                _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(1, 2, 0, 3))); //row 3 shifted forwards (ignoring 3rd value)
+                               _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(1, 2, 0, 3))); //row 3 shifted forwards (ignoring 3rd value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(0, 2, 3, 1)),  //row 3 shifted backwards (ignoring 3rd value)
-                _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(1, 2, 0, 3))); //row 2 shifted forwards (ignoring 3rd value)
-                                                                                        //+
+                               _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(1, 2, 0, 3))); //row 2 shifted forwards (ignoring 3rd value)
+
+            //+
             x = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[1]); //multiply 3 rows together
             x = _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 1, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 3, 1, 1)),
-                    _mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
                                                                      //-
             y = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[0]); //multiply 3 rows together
             y = _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(3, 1, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 3, 1, 1)),
-                    _mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
 
-                                                                     //zz,zw 
+            //zz,zw 
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(0, 2, 3, 1)),  //row 0 shifted backwards (ignoring 3rd value)
-                _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(1, 2, 0, 3))); //row 1 shifted forwards (ignoring 3rd value)
+                               _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(1, 2, 0, 3))); //row 1 shifted forwards (ignoring 3rd value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(0, 2, 3, 1)),  //row 1 shifted backwards (ignoring 3rd value)
-                _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(1, 2, 0, 3))); //row 0 shifted forwards (ignoring 3rd value)
-                                                                                        //+
+                               _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(1, 2, 0, 3))); //row 0 shifted forwards (ignoring 3rd value)
+
+            //+
             z = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[3]); //multiply 3 rows together
             z = _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(3, 1, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 3, 1, 1)),
-                    _mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
-                                                                     //-
+                           _mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+
+            //-
             w = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[2]); //multiply 3 rows together
             w = _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(3, 1, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 3, 1, 1)),
-                    _mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 0, 3, 3)))); //add 3 values together into new vector
 
             result.m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
             //wx,wy
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(3, 0, 2, 1)),  //row 2 shifted backwards (ignoring 4th value)
-                _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(3, 1, 0, 2))); //row 3 shifted forwards (ignoring 4th value)
+                               _mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(3, 1, 0, 2))); //row 3 shifted forwards (ignoring 4th value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(3, 0, 2, 1)),  //row 3 shifted backwards (ignoring 4th value)
-                _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(3, 1, 0, 2))); //row 2 shifted forwards (ignoring 4th value)
+                               _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(3, 1, 0, 2))); //row 2 shifted forwards (ignoring 4th value)
                                                                                         //-
             x = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[1]); //multiply 3 rows together
             x = _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(1, 0, 2, 2)),
-                    _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
-                                                                     //+
+                           _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
+
+            //+
             y = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[0]); //multiply 3 rows together
             y = _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(y, y, _MM_SHUFFLE(1, 0, 2, 2)),
-                    _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
 
-                                                                     //wz,ww
+            //wz,ww
             temp1 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(3, 0, 2, 1)),  //row 0 shifted backwards (ignoring 4th value)
-                _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(3, 1, 0, 2))); //row 1 shifted forwards (ignoring 4th value)
+                               _mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(3, 1, 0, 2))); //row 1 shifted forwards (ignoring 4th value)
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[1], mat.m_rows[1], _MM_SHUFFLE(3, 0, 2, 1)),  //row 1 shifted backwards (ignoring 4th value)
-                _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(3, 1, 0, 2))); //row 0 shifted forwards (ignoring 4th value)
-                                                                                        //-
+                               _mm_shuffle_ps(mat.m_rows[0], mat.m_rows[0], _MM_SHUFFLE(3, 1, 0, 2))); //row 0 shifted forwards (ignoring 4th value)
+
+            //-
             z = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[3]); //multiply 3 rows together
             z = _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(z, z, _MM_SHUFFLE(1, 0, 2, 2)),
-                    _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
-                                                                     //+
+                           _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
+
+            //+
             w = _mm_mul_ps(_mm_sub_ps(temp1, temp2), mat.m_rows[2]); //multiply 3 rows together
             w = _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 2, 1, 1)),
                 _mm_add_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 0, 2, 2)),
-                    _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
+                           _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 1, 0, 0)))); //add 3 values together into new vector
 
             result.m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
@@ -274,47 +289,27 @@ namespace Hatchit
         //Creates a 4x4 identity matrix
         inline Matrix4::Matrix4()
         {
-            float zero = 0;
-            float one = 1;
-            __m128 o = _mm_load_ss(&one);
-            __m128 z = _mm_load_ss(&zero);
-            this->m_rows[0] = o;
-            this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(z, o), _mm_unpacklo_ps(z, z));
-            this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(z, z), _mm_unpacklo_ps(o, z));
-            this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(z, z), _mm_unpacklo_ps(z, o));
+            __m128 v = _mm_set_ss(1);
+            this->m_rows[0] = v;
+			this->m_rows[1] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 0, 2));
+            this->m_rows[2] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 0, 2, 2));
+            this->m_rows[3] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 2, 2, 2));
         }
 
         //Creates a 4x4 matrix from an array of 16 values
         inline Matrix4::Matrix4(float rawArray[])
         {
-            __m128 xx = _mm_load_ss(&rawArray[0]);
-            __m128 xy = _mm_load_ss(&rawArray[1]);
-            __m128 xz = _mm_load_ss(&rawArray[2]);
-            __m128 xw = _mm_load_ss(&rawArray[3]);
-            __m128 yx = _mm_load_ss(&rawArray[4]);
-            __m128 yy = _mm_load_ss(&rawArray[5]);
-            __m128 yz = _mm_load_ss(&rawArray[6]);
-            __m128 yw = _mm_load_ss(&rawArray[7]);
-            __m128 zx = _mm_load_ss(&rawArray[8]);
-            __m128 zy = _mm_load_ss(&rawArray[9]);
-            __m128 zz = _mm_load_ss(&rawArray[10]);
-            __m128 zw = _mm_load_ss(&rawArray[11]);
-            __m128 wx = _mm_load_ss(&rawArray[12]);
-            __m128 wy = _mm_load_ss(&rawArray[13]);
-            __m128 wz = _mm_load_ss(&rawArray[14]);
-            __m128 ww = _mm_load_ss(&rawArray[15]);
-
-            this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
-            this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, yw));
-            this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, zw));
-            this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, ww));
+			this->m_rows[0] = _mm_load_ps(rawArray);
+            this->m_rows[1] = _mm_load_ps(rawArray + 4);
+            this->m_rows[2] = _mm_load_ps(rawArray + 8);
+            this->m_rows[3] = _mm_load_ps(rawArray + 12);
         }
 
-        //Creates a 4x4 matrix from 16 given values
+        //Creates a 4x4 matrix from 16 given values (it's recommended to send an array instead)
         inline Matrix4::Matrix4(float xx, float xy, float xz, float xw,
-            float yx, float yy, float yz, float yw,
-            float zx, float zy, float zz, float zw,
-            float wx, float wy, float wz, float ww)
+                                float yx, float yy, float yz, float yw,
+                                float zx, float zy, float zz, float zw,
+                                float wx, float wy, float wz, float ww)
         {
             __m128 xx0 = _mm_load_ss(&xx);
             __m128 xy0 = _mm_load_ss(&xy);
@@ -347,10 +342,7 @@ namespace Hatchit
         * c1, c2, c3, 0
         * d1, d2, d3, 1
         */
-        inline Matrix4::Matrix4(Vector3 a,
-            Vector3 b,
-            Vector3 c,
-            Vector3 d)
+        inline Matrix4::Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
         {
             float zero = 0;
             float one = 1;
@@ -384,32 +376,12 @@ namespace Hatchit
         * c1, c2, c3, c4
         * d1, d2, d3, d4
         */
-        inline Matrix4::Matrix4(Vector4 a,
-            Vector4 b,
-            Vector4 c,
-            Vector4 d)
+        inline Matrix4::Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d)
         {
-            __m128 xx = _mm_load_ss(&a[0]);
-            __m128 xy = _mm_load_ss(&a[1]);
-            __m128 xz = _mm_load_ss(&a[2]);
-            __m128 xw = _mm_load_ss(&a[3]);
-            __m128 yx = _mm_load_ss(&b[0]);
-            __m128 yy = _mm_load_ss(&b[1]);
-            __m128 yz = _mm_load_ss(&b[2]);
-            __m128 yw = _mm_load_ss(&b[3]);
-            __m128 zx = _mm_load_ss(&c[0]);
-            __m128 zy = _mm_load_ss(&c[1]);
-            __m128 zz = _mm_load_ss(&c[2]);
-            __m128 zw = _mm_load_ss(&c[3]);
-            __m128 wx = _mm_load_ss(&d[0]);
-            __m128 wy = _mm_load_ss(&d[1]);
-            __m128 wz = _mm_load_ss(&d[2]);
-            __m128 ww = _mm_load_ss(&d[3]);
-
-            this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
-            this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, yw));
-            this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, zw));
-            this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, ww));
+			this->m_rows[0] = a.m_vector;
+			this->m_rows[0] = b.m_vector;
+			this->m_rows[0] = c.m_vector;
+			this->m_rows[0] = d.m_vector;
         }
 
         /** Multiplies this Matrix4 by another given Matrix4 and returns the
@@ -517,9 +489,9 @@ namespace Hatchit
         inline std::ostream& operator<<(std::ostream& output, Matrix4& m)
         {
             output << m.xx << " " << m.xy << " " << m.xz << " " << m.xw << std::endl
-                << m.yx << " " << m.yy << " " << m.yz << " " << m.yw << std::endl
-                << m.zx << " " << m.zy << " " << m.zz << " " << m.zw << std::endl
-                << m.wx << " " << m.zw << " " << m.wz << " " << m.ww;
+                   << m.yx << " " << m.yy << " " << m.yz << " " << m.yw << std::endl
+                   << m.zx << " " << m.zy << " " << m.zz << " " << m.zw << std::endl
+                   << m.wx << " " << m.zw << " " << m.wz << " " << m.ww;
 
             return output;
         }
@@ -531,9 +503,9 @@ namespace Hatchit
         inline std::istream& operator>>(std::istream& input, Matrix4& m)
         {
             input >> m.xx >> m.xy >> m.xz >> m.xw
-                >> m.yx >> m.yy >> m.yz >> m.yw
-                >> m.zx >> m.zy >> m.zz >> m.zw
-                >> m.wx >> m.wy >> m.wz >> m.ww;
+                  >> m.yx >> m.yy >> m.yz >> m.yw
+                  >> m.zx >> m.zy >> m.zz >> m.zw
+                  >> m.wx >> m.wy >> m.wz >> m.ww;
 
             return input;
         }
