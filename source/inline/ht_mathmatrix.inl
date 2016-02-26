@@ -1,29 +1,23 @@
-#include <cmath>
+#include <ht_math.h>
 
 namespace Hatchit
 {
     namespace Math
     {
 
-
-
         /////////////////////////////////////////////////////////////
         // Matrix4 Implementation
         /////////////////////////////////////////////////////////////
-
-        /*
-        *	Statics
-        */
 
         /** Generates an orthographic projection from the given values
         * \param left The lefthand bound
         * \param right The righthand bound
         * \param top The topmost bound
-        * \param _near The near plane
-        * \param _far The far plane
+        * \param znear The near plane
+        * \param zfar The far plane
         * \return The resulting orthographic projection in a Matrix4
         */
-        inline MMMATRIX _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar)
+        inline Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar)
         {
             float a = 2 / (right - left);
             float b = 2 / (top - bottom);
@@ -32,7 +26,7 @@ namespace Hatchit
             float e = -1 * ((top + bottom) / (top - bottom));
             float f = -1 * ((zfar + znear) / (zfar - znear));
 
-            return MMMATRIX(a, 0, 0, 0,
+            return Matrix4(a, 0, 0, 0,
                 0, b, 0, 0,
                 0, 0, c, 0,
                 d, e, f, 1);
@@ -41,11 +35,11 @@ namespace Hatchit
         /** Generates a perspective projection from the given values
         * \param fov The field of view
         * \param aspect The aspect ratio
-        * \param near The _near plane
-        * \param far The _far plane
+        * \param znear The near plane
+        * \param zfar The far plane
         * \return The resulting perspective projection in a Matrix4
         */
-        inline Hatchit::Math::Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar)
+        inline Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar)
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
             float depth = zfar - znear;
@@ -55,7 +49,7 @@ namespace Hatchit
             float h = 1 / tanf(0.5f * fov);
             float w = h / aspect;
 
-            return MMMATRIX(w, 0, 0, 0,
+            return Matrix4(w, 0, 0, 0,
                 0, h, 0, 0,
                 0, 0, m_vector, -1,
                 0, 0, qn, 0);
@@ -67,15 +61,15 @@ namespace Hatchit
         * \param up The vector representing which way is up for this camera
         * \return The resulting view matrix in a Matrix4
         */
-        inline Hatchit::Math::Matrix4 _MM_CALLCONV MMMatrixLookAt(Hatchit::Math::Vector3 lookAt, Hatchit::Math::Vector3 center, Hatchit::Math::Vector3 up)
+        inline Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up)
         {
             //Calculate axes
-            MMVECTOR3 zAxis = Hatchit::Math::MMVector3Normalize((lookAt - center));
-            MMVECTOR3 xAxis = Hatchit::Math::MMVector3Normalize(Hatchit::Math::MMVector3Cross(up, zAxis));
-            MMVECTOR3 yAxis = Hatchit::Math::MMVector3Cross(zAxis, xAxis);
+            Vector3 zAxis = MMVector3Normalize((lookAt - center));
+            Vector3 xAxis = MMVector3Normalize(MMVector3Cross(up, zAxis));
+            Vector3 yAxis = MMVector3Cross(zAxis, xAxis);
 
             //Create view matrix;
-            return MMMATRIX(xAxis.x, yAxis.x, zAxis.x, 0,
+            return Matrix4(xAxis.x, yAxis.x, zAxis.x, 0,
                 xAxis.y, yAxis.y, zAxis.y, 0,
                 xAxis.z, yAxis.z, zAxis.z, 0,
                 MMVector3Dot(xAxis * -1, lookAt),
@@ -88,7 +82,7 @@ namespace Hatchit
         * \param mat matrix to transpose
         * \return A Matrix4 that is the transpoe of this matrix
         */
-        inline Hatchit::Math::Matrix4 _MM_CALLCONV MMMatrixTranspose(const MMMATRIX& mat)
+        inline Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& mat)
         {
             /*matrix shuffling to transpose is done in 3 steps
             * |01,02,03,04|    |01,02,05,06|    |01,05,02,06|    |01,05,09,13|
@@ -96,7 +90,7 @@ namespace Hatchit
             * |09,10,11,12|    |09,10,13,14|    |09,13,10,14|    |03,07,11,15|
             * |13,14,15,16|    |11,12,15,16|    |11,15,12,16|    |04,08,12,16|
             */
-            MMMATRIX transpose;
+            Matrix4 transpose;
             transpose.m_rows[0] = mat.m_rows[0];
             transpose.m_rows[1] = mat.m_rows[1];
             transpose.m_rows[2] = mat.m_rows[2];
@@ -109,10 +103,10 @@ namespace Hatchit
         * \param mat matrix to invert
         * \return A Matrix4 that is the inverse of this matrix
         */
-        inline Hatchit::Math::Matrix4 _MM_CALLCONV MMMatrixInverse(const MMMATRIX& mat)
+        inline Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& mat)
         {
 
-            MMMATRIX result;
+            Matrix4 result;
             __m128 x, y, z, w;
             __m128 temp1, temp2;
             __m128 det;
@@ -277,12 +271,8 @@ namespace Hatchit
             return result;
         }
 
-
-        /*
-        *	Constructors
-        */
-
-        inline Hatchit::Math::Matrix4::Matrix4()
+        //Creates a 4x4 identity matrix
+        inline Matrix4::Matrix4()
         {
             float zero = 0;
             float one = 1;
@@ -294,7 +284,8 @@ namespace Hatchit
             this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(z, z), _mm_unpacklo_ps(z, o));
         }
 
-        inline Hatchit::Math::Matrix4::Matrix4(float rawArray[])
+        //Creates a 4x4 matrix from an array of 16 values
+        inline Matrix4::Matrix4(float rawArray[])
         {
             __m128 xx = _mm_load_ss(&rawArray[0]);
             __m128 xy = _mm_load_ss(&rawArray[1]);
@@ -319,7 +310,8 @@ namespace Hatchit
             this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, ww));
         }
 
-        inline Hatchit::Math::Matrix4::Matrix4(float xx, float xy, float xz, float xw,
+        //Creates a 4x4 matrix from 16 given values
+        inline Matrix4::Matrix4(float xx, float xy, float xz, float xw,
             float yx, float yy, float yz, float yw,
             float zx, float zy, float zz, float zw,
             float wx, float wy, float wz, float ww)
@@ -347,7 +339,15 @@ namespace Hatchit
             this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx0, wy0), _mm_unpacklo_ps(wz0, ww0));
         }
 
-        Hatchit::Math::Matrix4::Matrix4(Vector3 a,
+        /** Creates a 4x4 matrix from 4 given Vector3s
+        * The resulting matrix fills in a few values so that it will match this
+        * layout:
+        * a1, a2, a3, 0
+        * b1, b2, b3, 0
+        * c1, c2, c3, 0
+        * d1, d2, d3, 1
+        */
+        inline Matrix4::Matrix4(Vector3 a,
             Vector3 b,
             Vector3 c,
             Vector3 d)
@@ -376,7 +376,15 @@ namespace Hatchit
             this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, z));
         }
 
-        Hatchit::Math::Matrix4::Matrix4(Vector4 a,
+        /** Creates a 4x4 matrix from 4 given Vector4s
+        * The resulting matrix fills in a few values so that it will match this
+        * layout:
+        * a1, a2, a3, a4
+        * b1, b2, b3, b4
+        * c1, c2, c3, c4
+        * d1, d2, d3, d4
+        */
+        inline Matrix4::Matrix4(Vector4 a,
             Vector4 b,
             Vector4 c,
             Vector4 d)
@@ -404,28 +412,12 @@ namespace Hatchit
             this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, ww));
         }
 
-        /*
-        Accessors and Mutators
+        /** Multiplies this Matrix4 by another given Matrix4 and returns the
+        * resulting matrix
+        * \param mat The other Matrix4 to multiply into this one
+        * \return The product of this matrix * mat as a Matrix4
         */
-
-        inline const float* const Hatchit::Math::Matrix4::getAsArray() const
-        {
-            static _MM_ALIGN16 float mat_array[16];
-
-            _mm_store_ps(mat_array, m_rows[0]);
-            _mm_store_ps(mat_array + 4, m_rows[1]);
-            _mm_store_ps(mat_array + 8, m_rows[2]);
-            _mm_store_ps(mat_array + 12, m_rows[3]);
-
-            return mat_array;
-        }
-
-        /*
-        Operators
-        */
-
-
-        inline Matrix4 Hatchit::Math::Matrix4::operator*(const Matrix4 m)
+        inline Matrix4 Matrix4::operator*(const Matrix4 m)
         {
             Matrix4 result;
 
@@ -460,7 +452,12 @@ namespace Hatchit
             return result; //newMat;
         }
 
-        inline Vector3 Hatchit::Math::Matrix4::operator*(Vector3 vec)
+        /** Multiplies this Matrix4 by a given Vector3 and returns the
+        * resulting Vector3
+        * \param vec The Vector3 to multiply into this matrix
+        * \return The product of this matrix * vec as a Vector3
+        */
+        inline Vector3 Matrix4::operator*(Vector3 vec)
         {
             Vector3 result;
 
@@ -483,9 +480,14 @@ namespace Hatchit
             return result;
         }
 
-        inline Vector4 Hatchit::Math::Matrix4::operator*(Vector4 vec)
+        /** Multiplies this Matrix4 by a given Vector4 and returns the
+        * resulting Vector4
+        * \param vec The Vector4 to multiply into this matrix
+        * \return The product of this matrix * vec as a Vector4
+        */
+        inline Vector4 Matrix4::operator*(Vector4 vec)
         {
-            Vector3 result;
+            Vector4 result;
 
             __m128 x = _mm_mul_ps(m_rows[0], vec.m_vector);
             x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 1, 2, 3)));
@@ -508,33 +510,30 @@ namespace Hatchit
             return result;
         }
 
-        //Extraction
-        inline std::ostream& operator<<(std::ostream& output, Hatchit::Math::Matrix4& m)
+        /** An outstream operator for a Matrix4 to interace with an ostream
+        * \param output The ostream to output to
+        * \param h The Matrix4 to interface with the ostream
+        */
+        inline std::ostream& operator<<(std::ostream& output, Matrix4& m)
         {
             output << m.xx << " " << m.xy << " " << m.xz << " " << m.xw << std::endl
                 << m.yx << " " << m.yy << " " << m.yz << " " << m.yw << std::endl
                 << m.zx << " " << m.zy << " " << m.zz << " " << m.zw << std::endl
                 << m.wx << " " << m.zw << " " << m.wz << " " << m.ww;
+
             return output;
         }
 
-        //Insertion
-        inline std::istream& operator>>(std::istream& input, Hatchit::Math::Matrix4& m)
+        /** An insertion operator for a Matrix4 to interace with an ostream
+        * \param output The ostream to output to
+        * \param h The Matrix4 to interface with the ostream
+        */
+        inline std::istream& operator>>(std::istream& input, Matrix4& m)
         {
-            float	xx, xy, xz, xw,
-                yx, yy, yz, yw,
-                zx, zy, zz, zw,
-                wx, wy, wz, ww;
-
-            input >> xx >> xy >> xz >> xw
-                >> yx >> yy >> yz >> yw
-                >> zx >> zy >> zz >> zw
-                >> wx >> wy >> wz >> ww;
-
-            m = Matrix4(xx, xy, xz, xw,
-                yx, yy, yz, yw,
-                zx, zy, zz, zw,
-                wx, wy, wz, ww);
+            input >> m.xx >> m.xy >> m.xz >> m.xw
+                >> m.yx >> m.yy >> m.yz >> m.yw
+                >> m.zx >> m.zy >> m.zz >> m.zw
+                >> m.wx >> m.wy >> m.wz >> m.ww;
 
             return input;
         }

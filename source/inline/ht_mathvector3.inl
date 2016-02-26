@@ -368,7 +368,7 @@ namespace Hatchit {
             return ::MMVectorGetX(val);
         }
 
-        /** An insertion operator for a Vector3 to interace with an ostream
+        /** An outstream operator for a Vector3 to interace with an ostream
         * \param output The ostream to output to
         * \param h The Vector3 to interface with the ostream
         */

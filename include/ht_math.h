@@ -19,17 +19,10 @@
 
 #pragma once
 
-//#include <ht_bounds.h>
-//#include <ht_matrix3.h>
-//#include <ht_quaternion.h>
-//#include <ht_ray.h>
-//#include <ht_vector2.h>
-//#include <ht_vector3.h>
-//#include <ht_vector4.h>
-
 #include <ht_intrin.h>
 #include <ht_malloc.h>
 #include <cstdint>
+#include <cmath>
 #include <sstream>
 
 #ifdef _WIN32
@@ -102,78 +95,26 @@ namespace Hatchit {
 
 		class Matrix4
 		{
-			friend class Quaternion;
-
 		public:
 			/****************************************************
 			*	Constructors
 			*****************************************************/
 
-			///Creates a 4x4 identity matrix
 			Matrix4();
-
-			///Creates a 4x4 matrix from an array of 16 values
 			Matrix4(float rawArray[]);
-
-			///Creates a 4x4 matrix from 16 given values
 			Matrix4(float xx, float xy, float xz, float xw,
 				float yx, float yy, float yz, float yw,
 				float zx, float zy, float zz, float zw,
 				float wx, float wy, float wz, float ww);
-
-			/** Creates a 4x4 matrix from 4 given Vector3s
-			* The resulting matrix fills in a few values so that it will match this
-			* layout:
-			* a1, a2, a3, 0
-			* b1, b2, b3, 0
-			* c1, c2, c3, 0
-			* d1, d2, d3, 1
-			*/
 			Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
-
-			/** Creates a 4x4 matrix from 4 given Vector4s
-			* The resulting matrix fills in a few values so that it will match this
-			* layout:
-			* a1, a2, a3, a4
-			* b1, b2, b3, b4
-			* c1, c2, c3, c4
-			* d1, d2, d3, d4
-			*/
 			Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
 
-			/****************************************************
-			*	Accessors
-			*****************************************************/
-
-			/** Get this matrix as an array of values rather than a matrix
-			* This pointer is to an array on the stack which will be deleted when
-			* this matrix is disposed of.
-			* \return A float array containing all the values in this matrix
-			*/
-			const float* const getAsArray() const;
-
-			
 			/****************************************************
 			*	Operators
 			*****************************************************/
 
-			/** Multiplies this Matrix4 by another given Matrix4 and returns the
-			* resulting matrix
-			* \param mat The other Matrix4 to multiply into this one
-			* \return The product of this matrix * mat as a Matrix4
-			*/
 			Matrix4 operator* (Matrix4 mat);
-			/** Multiplies this Matrix4 by a given Vector3 and returns the
-			* resulting Vector3
-			* \param vec The Vector3 to multiply into this matrix
-			* \return The product of this matrix * vec as a Vector3
-			*/
 			Vector3 operator* (Vector3 vec);
-			/** Multiplies this Matrix4 by a given Vector4 and returns the
-			* resulting Vector4
-			* \param vec The Vector4 to multiply into this matrix
-			* \return The product of this matrix * vec as a Vector4
-			*/
 			Vector4 operator* (Vector4 vec);
 			
 
@@ -191,18 +132,8 @@ namespace Hatchit {
 				float data[16];
 			};
 		};
-
-
-		/** An insertion operator for a Matrix4 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Matrix4 to interface with the ostream
-		*/
-		inline std::ostream& operator<< (std::ostream& output, Matrix4& h);
-		/** An insertion operator for a Matrix4 to interace with an ostream
-		* \param output The ostream to output to
-		* \param h The Matrix4 to interface with the ostream
-		*/
-		inline std::istream& operator>> (std::istream& input, Matrix4& h);
+		std::ostream& operator<< (std::ostream& output, Matrix4& h);
+		std::istream& operator>> (std::istream& input,  Matrix4& h);
 
 		/////////////////////////////////////////////////////////
 		// Vector3 definition
