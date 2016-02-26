@@ -20,7 +20,7 @@ namespace Hatchit {
 
     namespace Math {
      
-		void* aligned_malloc(size_t size, size_t alignment)
+		inline void* aligned_malloc(size_t size, size_t alignment)
 		{
 #ifdef _WIN32
 			return _aligned_malloc(size, alignment);
@@ -39,7 +39,7 @@ namespace Hatchit {
 #endif
 		}
 
-		void aligned_free(void* ptr)
+        inline void aligned_free(void* ptr)
 		{
 #ifdef _WIN32
 			_aligned_free(ptr);

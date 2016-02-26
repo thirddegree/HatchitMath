@@ -318,135 +318,27 @@ namespace Hatchit {
             /****************************************************
             *	Operators
             *****************************************************/
-            operator __m128(void) const;
-
-
-            float magSqr() const;
-
-            /** Returns the magnitude of the vector
-            * \return The magnitude as a float
-            */
-            float mag() const;
-
-
-            /** Normalizes a Vector4
-            * \param v The Vector4 to normalize
-            * \return A normalized version of v
-            */
-            Vector4 normalized() const;
-
-
-            //Operators
-
-            /** Multiplies all elements in this Vector4 by a given scalar
-            * This operation returns a new Vector4
-            * \param s The scalar to multiply this Vector4 by
-            * \return A Vector4 after all the elements have been multiplied by s
-            */
-            Vector4 operator* (float s) const;
-            /** Divides all elements in this Vector4 by a given scalar
-            * This operation returns a new Vector4
-            * \param s The scalar to divide this Vector4 by
-            * \return A Vector4 after all the elements have been divided by s
-            */
-            Vector4 operator/ (float s) const;
-            /** Subtracts all elements in this Vector4 by a given scalar
-            * This operation returns a new Vector4
-            * \param s The scalar to subtract this Vector4 by
-            * \return A Vector4 after all the elements have been subtracted by s
-            */
+            operator __m128(void) const;  
+            Vector4 operator* (float s) const; 
+            Vector4 operator/ (float s) const;  
             Vector4 operator- (float s) const;
-            /** Adds all elements in this Vector4 by a given scalar
-            * This operation returns a new Vector4
-            * \param s The scalar to add this Vector4 by
-            * \return A Vector4 after all the elements have been added by s
-            */
-            Vector4 operator+ (float s) const;
-
-            /** Multiplies all elements in this Vector4 by a given scalar
-            * This operation affects the elements in this Vector4
-            * \param s The scalar to multiply this Vector4 by
-            * \return This Vector4 after all the elements have been multiplied by s
-            */
+            Vector4 operator+ (float s) const;  
             Vector4& operator*= (float s);
-            /** Divides all elements in this Vector4 by a given scalar
-            * This operation affects the elements in this Vector4
-            * \param s The scalar to divide this Vector4 by
-            * \return This Vector4 after all the elements have been divided by s
-            */
             Vector4& operator/= (float s);
-            /** Subtracts all elements in this Vector4 by a given scalar
-            * This operation affects the elements in this Vector4
-            * \param s The scalar to subtract this Vector4 by
-            * \return This Vector4 after all the elements have been subtracted by s
-            */
             Vector4& operator-= (float s);
-            /** Adds all elements in this Vector4 by a given scalar
-            * This operation affects the elements in this Vector4
-            * \param s The scalar to add this Vector4 by
-            * \return This Vector4 after all the elements have been added by s
-            */
             Vector4& operator+= (float s);
-
-            /** Compares the magnitue of this Vector4 to another given Vector4
-            * \param u The other Vector4
-            * \return True if this Vector4 has a larger magnitude than the other Vector4
-            */
             bool operator>(Vector4 u) const;
-            /** Compares the magnitue of this Vector4 to another given Vector4
-            * \param u The other Vector4
-            * \return True if this Vector4 has a smaller magnitude than the other Vector4
-            */
             bool operator<(Vector4 u) const;
-            /** Compares the values of this Vector4 to another given Vector4
-            * \param u The other Vector4
-            * \return True if this Vector4 has the same values of the other Vector4
-            */
             bool operator==(Vector4 u) const;
-            /** Compares the values of this Vector4 to another given Vector4
-            * \param u The other Vector4
-            * \return True if this Vector4 does not have the same values as the other Vector4
-            */
             bool operator!=(Vector4 u) const;
-
-            /** Executes the Dot product this Vector4 and another as this * other
-            * \param u The other Vector4
-            * \return The Dot product of this * u as a float
-            */
             Vector4 operator* (Vector4 u) const;
-
-            /** Adds all of the elements from a given vector to this one
-            * \param u The other Vector4
-            * \return A new vector with the sums of all the pairs of elements
-            */
             Vector4 operator+ (Vector4 u) const;
-            /** Subtracts all of the elements from this vector by a given vector
-            * \param u The other Vector4
-            * \return A new vector with the differences of all the pairs of elemens
-            */
             Vector4 operator- (Vector4 u) const;
-            /** Adds all of the elements from a given vector to this one
-            * \param u The other Vector4
-            * \return This vector with the sums of all the pairs of elements
-            */
             Vector4& operator+= (Vector4 u);
-            /** Subtracts all of the elements from this vector by a given one
-            * \param u The other Vector4
-            * \return This vector with the differences of all the pairs of elements
-            */
-            Vector4& operator-= (Vector4 u);
-
-            /** Fetches an element of this Vector at the index i
-            * \param i The index of the element to fetch
-            * \return A float that is stored in this Vector4 at the index i
-            * This will throw an index out of range exception if you go beyond an index if 1
-            */
+            Vector4& operator-= (Vector4 u); 
             float& operator[] (size_t i);
             const float& operator[] (size_t i) const;
-
-            ///Returns a Vector3 with the first three elements from this vector and the last one being 0
             operator Vector3() const;
-            ///Returns a Vector2 with the fist two elements from this vector
             operator Vector2() const;
 
         public:

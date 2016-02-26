@@ -7,7 +7,7 @@ namespace Hatchit
         /** Returns a normalized version of the vector
         * \return The normalized vector
         */
-        inline Vector4 MMVector4Normalize(Vector4 v)
+        inline Vector4 _MM_CALLCONV MMVector4Normalize(Vector4 v)
         {
             __m128 normalizedVec = _mm_mul_ps(v.m_vector, v.m_vector);
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
@@ -21,7 +21,7 @@ namespace Hatchit
         /** Returns the magnitude of the vector
         * \return The magnitude as a float
         */
-        inline float MMVector4Magnitude(Vector4 v)
+        inline float _MM_CALLCONV MMVector4Magnitude(Vector4 v)
         {
             __m128 val = _mm_mul_ps(v.m_vector, v.m_vector);
             val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
@@ -34,7 +34,7 @@ namespace Hatchit
         /** Returns the dot product of two vectors
         * \return The dot product as a float
         */
-        inline float MMVector4Dot(Vector4 lhs, Vector4 rhs)
+        inline float _MM_CALLCONV MMVector4Dot(Vector4 lhs, Vector4 rhs)
         {
             __m128 dotProd = _mm_mul_ps(lhs.m_vector, rhs.m_vector);
             dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(2, 3, 0, 1)));
@@ -200,6 +200,10 @@ namespace Hatchit
             return MMVector4Magnitude(*this) < MMVector4Magnitude(rhs);
         }
 
+        /** Compares the values of this Vector4 to another given Vector4
+        * \param u The other Vector4
+        * \return True if this Vector4 has the same values of the other Vector4
+        */
         inline bool Vector4::operator==(Vector4 rhs) const
         {
             //This may have too little of epsilon to be considered accurate.
@@ -209,44 +213,90 @@ namespace Hatchit
             __m128 compMask = _mm_cmpeq_ps(m_vector, rhs.m_vector);
             return _mm_movemask_ps(compMask) == 7;
         }
+
+        /** Compares the values of this Vector4 to another given Vector4
+        * \param u The other Vector4
+        * \return True if this Vector4 does not have the same values as the other Vector4
+        */
         inline bool Vector4::operator!=(Vector4 rhs) const
         {
             return !operator==(rhs);
         }
 
-        //Memberwise multiplication
+        /** Executes memberwise multiplication on this Vector4
+        * \param u The other Vector4
+        * \return The product of this * u as a float
+        */
         inline Vector4 Vector4::operator*(Vector4 rhs) const
         {
             return Vector4(_mm_mul_ps(m_vector, rhs.m_vector));
         }
 
+        /** Adds all of the elements from a given vector to this one
+        * \param u The other Vector4
+        * \return A new vector with the sums of all the pairs of elements
+        */
         inline Vector4 Vector4::operator+(Vector4 rhs) const
         {
             return Vector4(_mm_add_ps(m_vector, rhs.m_vector));
         }
 
+        /** Subtracts all of the elements from this vector by a given vector
+        * \param u The other Vector4
+        * \return A new vector with the differences of all the pairs of elemens
+        */
+        inline Vector4 Vector4::operator-(Vector4 u) const
+        {
+            Vector4 vec;
+
+            __m128 diff = _mm_sub_ps(m_vector, u.m_vector);
+
+            vec.m_vector = diff;
+
+            return vec;
+        }
+
+        /** Adds all of the elements from a given vector to this one
+        * \param u The other Vector4
+        * \return This vector with the sums of all the pairs of elements
+        */
         inline Vector4& Vector4::operator+=(Vector4 rhs)
         {
             m_vector = _mm_add_ps(m_vector, rhs.m_vector);
             return *this;
         }
 
+        /** Subtracts all of the elements from this vector by a given one
+        * \param u The other Vector4
+        * \return This vector with the differences of all the pairs of elements
+        */
         inline Vector4& Vector4::operator-=(Vector4 rhs)
         {
             m_vector = _mm_sub_ps(m_vector, rhs.m_vector);
             return *this;
         }
 
+        /** Fetches an element of this Vector at the index i
+        * \param i The index of the element to fetch
+        * \return A float that is stored in this Vector4 at the index i
+        * This will throw an index out of range exception if you go beyond an index if 1
+        */
         inline float& Vector4::operator[](size_t i)
         {
             return data[i];
         }
 
+        /** Fetches an element of this Vector at the index i
+        * \param i The index of the element to fetch
+        * \return A float that is stored in this Vector4 at the index i
+        * This will throw an index out of range exception if you go beyond an index if 1
+        */
         inline const float& Vector4::operator[](size_t i) const
         {
             return data[i];
         }
 
+        //Returns a Vector3 with the first three elements from this vector and the last one being 0
         inline Vector4::operator Vector3() const
         {
             _MM_ALIGN16 float vecArray[4];
@@ -254,6 +304,7 @@ namespace Hatchit
             return Vector3(vecArray[0], vecArray[1], vecArray[2]);
         }
 
+        //Returns a Vector2 with the fist two elements from this vector
         inline Vector4::operator Vector2() const
         {
             _MM_ALIGN16 float vecArray[4];

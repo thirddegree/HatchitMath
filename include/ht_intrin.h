@@ -14,15 +14,13 @@
 
 #pragma once
 
-#include <ht_platform.h>
-
-#ifdef HT_SYS_WINDOWS
+#ifdef _WIN32
 #include <intrin.h>
-#elif defined (HT_SYS_LINUX)
+#elif defined (__linux__)
 #include <x86intrin.h>
 #endif
 
-#ifdef HT_SYS_WINDOWS
+#ifdef _WIN32
     #ifndef _MM_ALIGN16
     #define _MM_ALIGN16 __declspec(align(16))
     #endif
