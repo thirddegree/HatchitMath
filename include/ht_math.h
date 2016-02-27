@@ -113,10 +113,10 @@ namespace Hatchit {
             *	Operators
             *****************************************************/
 
-            Matrix4 operator* (Matrix4 mat);
-            Vector3 operator* (Vector3 vec);
-            Vector4 operator* (Vector4 vec);
-            
+            Matrix4 operator*   (Matrix4 mat);
+            Vector3 operator*   (Vector3 vec);
+            Vector4 operator*   (Vector4 vec);
+            float*  operator[]  (int row);          
 
         public:
             union

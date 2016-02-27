@@ -5,6 +5,7 @@ set(BUILD_TEST FALSE CACHE BOOL "Build the google test project")
 project(HatchitMath)
 
 file(GLOB HATCHIT_MATH_HEADERS "include/*.h")
+file(GLOB HATCHIT_MATH_INLINE "source/inline/*.inl")
 file(GLOB HATCHIT_MATH_SOURCE "source/*.cpp")
 
 # Compiler flag
@@ -21,11 +22,11 @@ else()
 endif()
 
 
-include_directories("include")
+include_directories("include" "source/inline")
 include_directories(SYSTEM)
 
 source_group("Headers" FILES ${HATCHIT_MATH_HEADERS})
-add_library(HatchitMath SHARED ${HATCHIT_MATH_SOURCE} ${HATCHIT_MATH_HEADERS})
+add_library(HatchitMath SHARED ${HATCHIT_MATH_SOURCE} ${HATCHIT_MATH_INLINE} ${HATCHIT_MATH_HEADERS})
 
 #Need to link some basic libraries
 if(UNIX)

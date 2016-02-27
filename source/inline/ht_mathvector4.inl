@@ -56,7 +56,7 @@ namespace Hatchit
         //Create a Vector4 with the elements x, y and z
         inline Vector4::Vector4(float x, float y, float z, float w)
         {
-            float dataArray[4] { w, z, y, x };
+            float dataArray[4] { x, y, z, w };
             m_vector = _mm_load_ps(&dataArray[0]);
         }
 

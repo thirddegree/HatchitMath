@@ -344,10 +344,9 @@ namespace Hatchit
         */
         inline Matrix4::Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
         {
-            float zero = 0;
             float one = 1;
             __m128 o = _mm_load_ss(&one);
-            __m128 z = _mm_load_ss(&zero);
+            __m128 z = _mm_setzero_ps();
 
             __m128 xx = _mm_load_ss(&a[0]);
             __m128 xy = _mm_load_ss(&a[1]);
@@ -362,10 +361,10 @@ namespace Hatchit
             __m128 wy = _mm_load_ss(&d[1]);
             __m128 wz = _mm_load_ss(&d[2]);
 
-            this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, o));
-            this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, o));
-            this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, o));
-            this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, z));
+            this->m_rows[0] = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, z));
+            this->m_rows[1] = _mm_movelh_ps(_mm_unpacklo_ps(yx, yy), _mm_unpacklo_ps(yz, z));
+            this->m_rows[2] = _mm_movelh_ps(_mm_unpacklo_ps(zx, zy), _mm_unpacklo_ps(zz, z));
+            this->m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(wx, wy), _mm_unpacklo_ps(wz, o));
         }
 
         /** Creates a 4x4 matrix from 4 given Vector4s
@@ -379,9 +378,9 @@ namespace Hatchit
         inline Matrix4::Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d)
         {
 			this->m_rows[0] = a.m_vector;
-			this->m_rows[0] = b.m_vector;
-			this->m_rows[0] = c.m_vector;
-			this->m_rows[0] = d.m_vector;
+			this->m_rows[1] = b.m_vector;
+			this->m_rows[2] = c.m_vector;
+			this->m_rows[3] = d.m_vector;
         }
 
         /** Multiplies this Matrix4 by another given Matrix4 and returns the
@@ -445,7 +444,7 @@ namespace Hatchit
             z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 1, 2, 3)));
             z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            __m128 w = _mm_load_ss(0);
+            __m128 w = _mm_setzero_ps();
 
             result.m_vector = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
@@ -482,6 +481,12 @@ namespace Hatchit
             return result;
         }
 
+
+        inline float* Matrix4::operator[] (int row)
+        {
+            return data + sizeof(float) * row;
+        }
+
         /** An outstream operator for a Matrix4 to interace with an ostream
         * \param output The ostream to output to
         * \param h The Matrix4 to interface with the ostream
@@ -491,7 +496,7 @@ namespace Hatchit
             output << m.xx << " " << m.xy << " " << m.xz << " " << m.xw << std::endl
                    << m.yx << " " << m.yy << " " << m.yz << " " << m.yw << std::endl
                    << m.zx << " " << m.zy << " " << m.zz << " " << m.zw << std::endl
-                   << m.wx << " " << m.zw << " " << m.wz << " " << m.ww;
+                   << m.wx << " " << m.wy << " " << m.wz << " " << m.ww;
 
             return output;
         }
