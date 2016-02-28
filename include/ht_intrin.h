@@ -22,18 +22,18 @@
 
 #ifdef _WIN32
     #ifndef _MM_ALIGN16
-    #define _MM_ALIGN16 __declspec(align(16))
+    #define _MM_ALIGN16 __declspec(align(Hatchit::Math::vectorAlignment))
     #endif
 #else
     #ifndef _MM_ALIGN16
-    #define _MM_ALIGN16 __attribute__((aligned(16)))
+    #define _MM_ALIGN16 __attribute__((aligned(Hatchit::Math::vectorAlignment)))
     #endif
 #endif
 
 namespace Hatchit {
 
     namespace Math {
-
+        constexpr size_t vectorAlignment = 16;
     }
 }
 

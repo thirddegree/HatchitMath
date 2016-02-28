@@ -139,95 +139,76 @@ namespace Hatchit {
         // Vector2 definition
         /////////////////////////////////////////////////////////
 
-        class Vector2
+        class _MM_ALIGN16 Vector2
         {
         public:
-            //Constructors
-            ///Create a Vector2 with both elements being 0
+            /****************************************************
+            *	Constructors
+            *****************************************************/
             Vector2();
-            ///Create a Vector2 with the elements described by x and y
             Vector2(float x, float y);
-            ///Create a Vector2 with the elements of another Vector2
             Vector2(const Vector2& other);
+            explicit Vector2(const __m128& vector);
+            explicit Vector2(__m128&& vector);
 
-            //Destructor
-            virtual ~Vector2();
+            /****************************************************
+            *	 Custom allocation/deallocation
+            *****************************************************/
+            void* operator new(size_t _size);
+            void  operator delete(void* p);
+            void* operator new[](size_t size);
+            void  operator delete[](void* p);
 
-            //Accessors & Mutators
-            ///Returns the first element \return The first element
-            float getX();
-            ///Returns the second element \return The second element
-            float getY();
+            /****************************************************
+            *	Operators
+            *****************************************************/
 
-            /** Returns the magnitude
-            * \return The magnitude as a float
-            */
-            float getMagnitude();
-            /** Returns this Vector3 as a pointer to an array of floats
-            * \return This vector as an array of floats
-            */
-            float* getAsArray();
-
-            /** Sets the first element
-            * \param x The float you want to be the first element of this vector
-            */
-            void setX(float x);
-            /** Sets the second element
-            * \param y The float you want to be the second element of this vector
-            */
-            void setY(float y);
-
-            //Static functions
-
-            /** Executes the Dot product on two Vector2s as v * u
-            * \param v The first Vector2
-            * \param u The second Vector2
-            * \return The Dot product of v and u as a float
-            */
-            static float Dot(Vector2 v, Vector2 u);
-            /** Normalizes a Vector2
-            * \param v The Vector2 to normalize
-            * \return A normalized version of v
-            */
-            static Vector2 Normalize(Vector2 v);
-
-            //Operators
-
-            /** Performs the dot procduct between this Vector2 and another Vector2
-            * \param u The other Vector2
-            * \return The dot product between this vector and u
-            */
-            float operator* (Vector2 u);
-            /** Multiplies a scalar into this Vector2
-            * \param s The other scalar
-            * \return A Vector2 whose elements have been multiplied by s
-            */
-            Vector2 operator* (float s);
-            /** Adds another Vector2 to this one
-            * \param u The other Vector2
-            * \return A Vector2 whose elements are a result of this Vector2 added to u
-            */
-            Vector2 operator+ (Vector2 u);
-            /** Fetches an element of this Vector at the index i
-            * \param i The index of the element to fetch
-            * \return A float that is stored in this Vector2 at the index i
-            * This will throw an index out of range exception if you go beyond an index if 1
-            */
-            float& operator[] (int i);
+                            operator __m128(void)           const;
+            Vector2         operator+   (float s)           const;
+            Vector2         operator-   (float s)           const;
+            Vector2         operator*   (float s)           const;
+            Vector2         operator/   (float s)           const;
+            Vector2&        operator+=  (float s);
+            Vector2&        operator-=  (float s);
+            Vector2&        operator*=  (float s);
+            Vector2&        operator/=  (float s);
+            bool            operator>   (const Vector2& u)  const;
+            bool            operator<   (const Vector2& u)  const;
+            bool            operator==  (const Vector2& u)  const;
+            bool            operator!=  (const Vector2& u)  const;
+            Vector2         operator+   (const Vector2& u)  const;
+            Vector2         operator-   (const Vector2& u)  const;
+            Vector2         operator*   (const Vector2& u)  const;
+            Vector2         operator/   (const Vector2& u)  const;
+            Vector2&        operator+=  (const Vector2& u);
+            Vector2&        operator-=  (const Vector2& u);
+            Vector2&        operator*=  (const Vector2& u);
+            Vector2&        operator/=  (const Vector2& u);
+            const float&    operator[]  (size_t i)          const;
+            float&          operator[]  (size_t i);
 
         private:
-            float vector[2];
+            union
+            {
+                __m128 m_vector;
+                struct
+                {
+                    float x;
+                    float y;
+                };
+                float m_data[2];
+            };
         };
         /** An insertion operator for a Vector2 to interface with an ostream
         * \param output the ostream to output to
         * \param v the Vector2 to interface with the ostream
         */
-        std::ostream& operator<< (std::ostream& output, Vector2& v);
+        std::ostream& operator<< (std::ostream& output, const Vector2& v);
         /** An extraction operator for a Vector2 to interface with an istream
         * \param input The istream to grab input from
         * \param v The Vector2 to interface with the istream
         */
-        std::istream& operator>> (std::istream& input, Vector2& v);
+        std::istream& operator>> (std::istream& input, const Vector2& v);
 
 		/////////////////////////////////////////////////////////
         // Vector3 definition
@@ -392,6 +373,15 @@ namespace Hatchit {
         Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
 
         //////////////////////////////////////////////////////////
+        // MM Vector2 Operations
+        //////////////////////////////////////////////////////////
+
+        float _MM_CALLCONV MMVector2Dot(const Vector2& v, const Vector2& u);
+        Vector2 _MM_CALLCONV MMVector2Normalize(const Vector2& v);
+        float _MM_CALLCONV MMVector2Magnitude(const Vector2& v);
+        float _MM_CALLCONV MMVector2MagnitudeSqr(const Vector2& v);
+
+        //////////////////////////////////////////////////////////
         // MM Vector3 Operations
         //////////////////////////////////////////////////////////
         
@@ -413,6 +403,7 @@ namespace Hatchit {
 
 
 #include <ht_mathmm.inl>
+#include <ht_mathvector2.inl>
 #include <ht_mathvector3.inl>
 #include <ht_mathvector4.inl>
 #include <ht_mathmatrix.inl>
