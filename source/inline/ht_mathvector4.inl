@@ -7,7 +7,7 @@ namespace Hatchit
         /** Returns a normalized version of the vector
         * \return The normalized vector
         */
-        inline Vector4 _MM_CALLCONV MMVector4Normalize(Vector4 v)
+        inline Vector4 _MM_CALLCONV MMVector4Normalize(const Vector4& v)
         {
             __m128 normalizedVec = _mm_mul_ps(v.m_vector, v.m_vector);
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
@@ -23,7 +23,7 @@ namespace Hatchit
         /** Returns the magnitude of the vector
         * \return The magnitude as a float
         */
-        inline float _MM_CALLCONV MMVector4Magnitude(Vector4 v)
+        inline float _MM_CALLCONV MMVector4Magnitude(const Vector4& v)
         {
             __m128 val = _mm_mul_ps(v.m_vector, v.m_vector);
             val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
@@ -36,9 +36,9 @@ namespace Hatchit
         /** Returns the dot product of two vectors
         * \return The dot product as a float
         */
-        inline float _MM_CALLCONV MMVector4Dot(Vector4 lhs, Vector4 rhs)
+        inline float _MM_CALLCONV MMVector4Dot(const Vector4& v, const Vector4& u)
         {
-            __m128 dotProd = _mm_mul_ps(lhs.m_vector, rhs.m_vector);
+            __m128 dotProd = _mm_mul_ps(v.m_vector, u.m_vector);
             dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(2, 3, 0, 1)));
             dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(0, 1, 2, 3)));
             float returnValue;
@@ -56,8 +56,7 @@ namespace Hatchit
         //Create a Vector4 with the elements x, y and z
         inline Vector4::Vector4(float x, float y, float z, float w)
         {
-            float dataArray[4] { x, y, z, w };
-            m_vector = _mm_load_ps(&dataArray[0]);
+            m_vector = MMVectorSet(x, y, z, w);
         }
 
         //Create a copy of an existing Vector4
@@ -188,7 +187,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return True if this Vector4 has a larger magnitude than the other Vector4
         */
-        inline bool Vector4::operator>(Vector4 rhs) const
+        inline bool Vector4::operator>(const Vector4& rhs) const
         {
             return MMVector4Magnitude(*this) > MMVector4Magnitude(rhs);
         }
@@ -197,7 +196,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return True if this Vector4 has a smaller magnitude than the other Vector4
         */
-        inline bool Vector4::operator<(Vector4 rhs) const
+        inline bool Vector4::operator<(const Vector4& rhs) const
         {
             return MMVector4Magnitude(*this) < MMVector4Magnitude(rhs);
         }
@@ -206,7 +205,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return True if this Vector4 has the same values of the other Vector4
         */
-        inline bool Vector4::operator==(Vector4 rhs) const
+        inline bool Vector4::operator==(const Vector4& rhs) const
         {
             //This may have too little of epsilon to be considered accurate.
             //Could add and subtract epsilon from rhs.m_vector, compare less than /
@@ -220,7 +219,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return True if this Vector4 does not have the same values as the other Vector4
         */
-        inline bool Vector4::operator!=(Vector4 rhs) const
+        inline bool Vector4::operator!=(const Vector4& rhs) const
         {
             return !operator==(rhs);
         }
@@ -229,7 +228,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return The product of this * u as a float
         */
-        inline Vector4 Vector4::operator*(Vector4 rhs) const
+        inline Vector4 Vector4::operator*(const Vector4& rhs) const
         {
             return Vector4(_mm_mul_ps(m_vector, rhs.m_vector));
         }
@@ -238,7 +237,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return A new vector with the sums of all the pairs of elements
         */
-        inline Vector4 Vector4::operator+(Vector4 rhs) const
+        inline Vector4 Vector4::operator+(const Vector4& rhs) const
         {
             return Vector4(_mm_add_ps(m_vector, rhs.m_vector));
         }
@@ -247,7 +246,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return A new vector with the differences of all the pairs of elemens
         */
-        inline Vector4 Vector4::operator-(Vector4 u) const
+        inline Vector4 Vector4::operator-(const Vector4& u) const
         {
             Vector4 vec;
 
@@ -262,7 +261,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return This vector with the sums of all the pairs of elements
         */
-        inline Vector4& Vector4::operator+=(Vector4 rhs)
+        inline Vector4& Vector4::operator+=(const Vector4& rhs)
         {
             m_vector = _mm_add_ps(m_vector, rhs.m_vector);
             return *this;
@@ -272,7 +271,7 @@ namespace Hatchit
         * \param u The other Vector4
         * \return This vector with the differences of all the pairs of elements
         */
-        inline Vector4& Vector4::operator-=(Vector4 rhs)
+        inline Vector4& Vector4::operator-=(const Vector4& rhs)
         {
             m_vector = _mm_sub_ps(m_vector, rhs.m_vector);
             return *this;

@@ -73,7 +73,7 @@ namespace Hatchit
         * \param up The vector representing which way is up for this camera
         * \return The resulting view matrix in a Matrix4
         */
-        inline Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up)
+        inline Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& lookAt, const Vector3& center, const Vector3& up)
         {
             //Calculate axes
             Vector3 zAxis = MMVector3Normalize((lookAt - center));
@@ -342,7 +342,7 @@ namespace Hatchit
         * c1, c2, c3, 0
         * d1, d2, d3, 1
         */
-        inline Matrix4::Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+        inline Matrix4::Matrix4(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d)
         {
             float one = 1;
             __m128 o = _mm_load_ss(&one);
@@ -375,7 +375,7 @@ namespace Hatchit
         * c1, c2, c3, c4
         * d1, d2, d3, d4
         */
-        inline Matrix4::Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d)
+        inline Matrix4::Matrix4(const Vector4& a, const Vector4& b, const Vector4& c, const Vector4& d)
         {
 			this->m_rows[0] = a.m_vector;
 			this->m_rows[1] = b.m_vector;
@@ -388,7 +388,7 @@ namespace Hatchit
         * \param mat The other Matrix4 to multiply into this one
         * \return The product of this matrix * mat as a Matrix4
         */
-        inline Matrix4 Matrix4::operator*(const Matrix4 m)
+        inline Matrix4 Matrix4::operator*(const Matrix4& m) const
         {
             Matrix4 result;
 
@@ -428,7 +428,7 @@ namespace Hatchit
         * \param vec The Vector3 to multiply into this matrix
         * \return The product of this matrix * vec as a Vector3
         */
-        inline Vector3 Matrix4::operator*(Vector3 vec)
+        inline Vector3 Matrix4::operator*(const Vector3& vec) const
         {
             Vector3 result;
 
@@ -456,7 +456,7 @@ namespace Hatchit
         * \param vec The Vector4 to multiply into this matrix
         * \return The product of this matrix * vec as a Vector4
         */
-        inline Vector4 Matrix4::operator*(Vector4 vec)
+        inline Vector4 Matrix4::operator*(const Vector4& vec) const
         {
             Vector4 result;
 

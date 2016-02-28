@@ -72,7 +72,7 @@ namespace Hatchit {
         * \param s The scalar to multiply this Vector3 by
         * \return A Vector3 after all the elements have been multiplied by s
         */
-        inline Vector3 Vector3::operator*(float s)
+        inline Vector3 Vector3::operator*(float s) const
         {
             Vector3 vec;
 
@@ -88,7 +88,7 @@ namespace Hatchit {
         * \param s The scalar to divide this Vector3 by
         * \return A Vector3 after all the elements have been divided by s
         */
-        inline Vector3 Vector3::operator/(float s)
+        inline Vector3 Vector3::operator/(float s) const
         {
             Vector3 vec;
 
@@ -107,7 +107,7 @@ namespace Hatchit {
         * \param s The scalar to subtract this Vector3 by
         * \return A Vector3 after all the elements have been subtracted by s
         */
-        inline Vector3 Vector3::operator-(float s)
+        inline Vector3 Vector3::operator-(float s) const
         {
             Vector3 vec;
 
@@ -123,7 +123,7 @@ namespace Hatchit {
         * \param s The scalar to add this Vector3 by
         * \return A Vector3 after all the elements have been added by s
         */
-        inline Vector3 Vector3::operator+(float s)
+        inline Vector3 Vector3::operator+(float s) const
         {
             Vector3 vec;
 
@@ -178,7 +178,7 @@ namespace Hatchit {
         * \param s The scalar to add this Vector3 by
         * \return This Vector3 after all the elements have been added by s
         */
-        inline Vector3 Vector3::operator+=(float s)
+        inline Vector3 Vector3::operator+=(float s) 
         {
             m_vector = _mm_add_ps(m_vector, _mm_set_ps1(s));
 
@@ -189,7 +189,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return True if this Vector3 has a larger magnitude than the other Vector3
         */
-        inline bool Vector3::operator>(Vector3 u)
+        inline bool Vector3::operator>(const Vector3& u) const
         {
             return Hatchit::Math::MMVector3Magnitude(*this) > Hatchit::Math::MMVector3Magnitude(u);
         }
@@ -198,7 +198,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return True if this Vector3 has a smaller magnitude than the other Vector3
         */
-        inline bool Vector3::operator<(Vector3 u)
+        inline bool Vector3::operator<(const Vector3& u) const
         {
             return MMVector3Magnitude(*this) < MMVector3Magnitude(u);
         }
@@ -207,7 +207,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return True if this Vector3 has the same values of the other Vector3
         */
-        inline bool Vector3::operator==(Vector3 u)
+        inline bool Vector3::operator==(const Vector3& u) const
         {
             return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 15;
         }
@@ -216,7 +216,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return True if this Vector3 does not have the same values as the other Vector3
         */
-        inline bool Vector3::operator!=(Vector3 u)
+        inline bool Vector3::operator!=(const Vector3& u) const
         {
             return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
         }
@@ -225,7 +225,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return The product of this * u as a vector
         */
-        inline Vector3 Vector3::operator* (Vector3 u)
+        inline Vector3 Vector3::operator* (const Vector3& u) const
         {
             Vector3 v;
             v.m_vector = _mm_mul_ps(this->m_vector, u.m_vector);
@@ -237,7 +237,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return A new vector with the sums of all the pairs of elements
         */
-        inline Vector3 Vector3::operator+(Vector3 u)
+        inline Vector3 Vector3::operator+(const Vector3& u) const
         {
             Vector3 vec;
 
@@ -252,7 +252,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return A new vector with the differences of all the pairs of elemens
         */
-        inline Vector3 Vector3::operator-(Vector3 u)
+        inline Vector3 Vector3::operator-(const Vector3& u) const
         {
             Vector3 vec;
 
@@ -267,7 +267,7 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return This vector with the sums of all the pairs of elements
         */
-        inline Vector3 Vector3::operator+=(Vector3 u)
+        inline Vector3 Vector3::operator+=(const Vector3& u)
         {
             m_vector = _mm_add_ps(m_vector, u.m_vector);
 
@@ -278,11 +278,23 @@ namespace Hatchit {
         * \param u The other Vector3
         * \return This vector with the differences of all the pairs of elements
         */
-        inline Vector3 Vector3::operator-=(Vector3 u)
+        inline Vector3 Vector3::operator-=(const Vector3& u)
         {
             m_vector = _mm_sub_ps(m_vector, u.m_vector);
 
             return (*this);
+        }
+
+        /** Fetches an element of this Vector at the index i by reference
+        * \param i The index of the element to fetch
+        * \return A float that is stored in this Vector3 at the index i
+        * This will throw an index out of range exception if you go beyond an index if 1
+        */
+        inline const float& Vector3::operator[](int i) const
+        {
+            assert(i < 3);
+
+            return this->m_data[i];
         }
 
         /** Fetches an element of this Vector at the index i
@@ -290,20 +302,19 @@ namespace Hatchit {
         * \return A float that is stored in this Vector3 at the index i
         * This will throw an index out of range exception if you go beyond an index if 1
         */
-        inline float& Vector3::operator[](int i)
+        /*inline float Vector3::operator[](int i) const
         {
             assert(i < 3);
 
             return this->m_data[i];
-        }
-
+        }*/
 
         /** Executes the Dot product on two Vector3s as v * u
         * \param v The first Vector3
         * \param u The second Vector3
         * \return The Dot product of v and u as a float
         */
-        inline float _MM_CALLCONV MMVector3Dot(Vector3 v, Vector3 u)
+        inline float _MM_CALLCONV MMVector3Dot(const Vector3& v, const Vector3& u)
         {
             __m128 temp;
             __m128 sq = _mm_mul_ps(v.m_vector, u.m_vector);
@@ -318,7 +329,7 @@ namespace Hatchit {
         * \param u The second Vector3
         * \return The cross product of v and u as a Vector3
         */
-        inline Vector3 _MM_CALLCONV MMVector3Cross(Vector3 v, Vector3 u)
+        inline Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u)
         {
             Vector3 output;
 
@@ -342,7 +353,7 @@ namespace Hatchit {
         * NOTE:
         * This function is only partially intrinsic
         */
-        inline Vector3 _MM_CALLCONV MMVector3Normalize(Vector3 v)
+        inline Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v)
         {
             float magnitude = MMVector3Magnitude(v);
 
@@ -360,7 +371,7 @@ namespace Hatchit {
         /** Returns the magnitude of the vector
         * \return The magnitude as a float
         */
-        inline float _MM_CALLCONV MMVector3Magnitude(Vector3 v)
+        inline float _MM_CALLCONV MMVector3Magnitude(const Vector3& v)
         {
             __m128 val = _mm_mul_ps(v.m_vector, v.m_vector);
 

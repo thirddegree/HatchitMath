@@ -106,16 +106,16 @@ namespace Hatchit {
                 float yx, float yy, float yz, float yw,
                 float zx, float zy, float zz, float zw,
                 float wx, float wy, float wz, float ww);
-            Matrix4(Vector3 a, Vector3 b, Vector3 c, Vector3 d);
-            Matrix4(Vector4 a, Vector4 b, Vector4 c, Vector4 d);
+            Matrix4(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d);
+            Matrix4(const Vector4& a, const Vector4& b, const Vector4& c, const Vector4& d);
 
             /****************************************************
             *	Operators
             *****************************************************/
 
-            Matrix4 operator*   (Matrix4 mat);
-            Vector3 operator*   (Vector3 vec);
-            Vector4 operator*   (Vector4 vec);
+            Matrix4 operator*   (const Matrix4& mat) const;
+            Vector3 operator*   (const Vector3& vec) const;
+            Vector4 operator*   (const Vector4& vec) const;
             float*  operator[]  (int row);          
 
         public:
@@ -237,25 +237,26 @@ namespace Hatchit {
             *	Operators
             *****************************************************/
 
-            operator const __m128(void) const;
-            Vector3 operator*   (float s);
-            Vector3 operator/   (float s);
-            Vector3 operator-   (float s);
-            Vector3 operator+   (float s);
+            operator const __m128(void)   const;
+            Vector3 operator*   (float s) const;
+            Vector3 operator/   (float s) const;
+            Vector3 operator-   (float s) const;
+            Vector3 operator+   (float s) const;
             Vector3 operator*=  (float s);
             Vector3 operator/=  (float s);
             Vector3 operator-=  (float s);
             Vector3 operator+=  (float s);
-            bool    operator>   (Vector3 u);
-            bool    operator<   (Vector3 u);
-            bool    operator==  (Vector3 u);
-            bool    operator!=  (Vector3 u);
-            Vector3 operator*   (Vector3 u);
-            Vector3 operator+   (Vector3 u);
-            Vector3 operator-   (Vector3 u);
-            Vector3 operator+=  (Vector3 u);
-            Vector3 operator-=  (Vector3 u);
-            float&  operator[]  (int i);
+            bool    operator>   (const Vector3& u) const;
+            bool    operator<   (const Vector3& u) const;
+            bool    operator==  (const Vector3& u) const;
+            bool    operator!=  (const Vector3& u) const;
+            Vector3 operator*   (const Vector3& u) const;
+            Vector3 operator+   (const Vector3& u) const;
+            Vector3 operator-   (const Vector3& u) const;
+            Vector3 operator+=  (const Vector3& u);
+            Vector3 operator-=  (const Vector3& u);
+            const float&  operator[]  (int i) const;
+          
 
             union
             {
@@ -300,24 +301,24 @@ namespace Hatchit {
             *	Operators
             *****************************************************/
             operator __m128(void) const;  
-            Vector4 operator* (float s) const; 
-            Vector4 operator/ (float s) const;  
-            Vector4 operator- (float s) const;
-            Vector4 operator+ (float s) const;  
+            Vector4 operator*   (float s) const; 
+            Vector4 operator/   (float s) const;  
+            Vector4 operator-   (float s) const;
+            Vector4 operator+   (float s) const;  
             Vector4& operator*= (float s);
             Vector4& operator/= (float s);
             Vector4& operator-= (float s);
             Vector4& operator+= (float s);
-            bool operator>(Vector4 u) const;
-            bool operator<(Vector4 u) const;
-            bool operator==(Vector4 u) const;
-            bool operator!=(Vector4 u) const;
-            Vector4 operator* (Vector4 u) const;
-            Vector4 operator+ (Vector4 u) const;
-            Vector4 operator- (Vector4 u) const;
-            Vector4& operator+= (Vector4 u);
-            Vector4& operator-= (Vector4 u); 
-            float& operator[] (size_t i);
+            bool operator>      (const Vector4& u) const;
+            bool operator<      (const Vector4& u) const;
+            bool operator==     (const Vector4& u) const;
+            bool operator!=     (const Vector4& u) const;
+            Vector4 operator*   (const Vector4& u) const;
+            Vector4 operator+   (const Vector4& u) const;
+            Vector4 operator-   (const Vector4& u) const;
+            Vector4& operator+= (const Vector4& u);
+            Vector4& operator-= (const Vector4& u);
+            float& operator[]   (size_t i);
             const float& operator[] (size_t i) const;
             operator Vector3() const;
             operator Vector2() const;
@@ -368,7 +369,7 @@ namespace Hatchit {
 		Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3& v);
         Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
-        Matrix4 _MM_CALLCONV MMMatrixLookAt(Vector3 lookAt, Vector3 center, Vector3 up);
+        Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& lookAt, const Vector3& center, const Vector3& up);
         Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
         Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
 
@@ -385,18 +386,18 @@ namespace Hatchit {
         // MM Vector3 Operations
         //////////////////////////////////////////////////////////
         
-        Vector3 _MM_CALLCONV MMVector3Cross(Vector3 v, Vector3 u);
-        float	_MM_CALLCONV MMVector3Dot(Vector3 v, Vector3 u);
-        Vector3 _MM_CALLCONV MMVector3Normalize(Vector3 v);
-        float   _MM_CALLCONV MMVector3Magnitude(Vector3 v);
+        Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u);
+        float	_MM_CALLCONV MMVector3Dot(const Vector3& v, const Vector3& u);
+        Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v);
+        float   _MM_CALLCONV MMVector3Magnitude(const Vector3& v);
 
         
         //////////////////////////////////////////////////////////
         // MM Vector4 Operations
         //////////////////////////////////////////////////////////
-        float   _MM_CALLCONV MMVector4Dot(Vector4 lhs, Vector4 rhs);
-        Vector4 _MM_CALLCONV MMVector4Normalize(Vector4 v);
-        float   _MM_CALLCONV MMVector4Magnitude(Vector4 v);
+        float   _MM_CALLCONV MMVector4Dot(const Vector4& v, const Vector4& u);
+        Vector4 _MM_CALLCONV MMVector4Normalize(const Vector4& v);
+        float   _MM_CALLCONV MMVector4Magnitude(const Vector4& v);
     }
 }
 
