@@ -196,7 +196,7 @@ namespace Hatchit
             //greater than, logic and the components and then check in the future
             //If this is too strict.
             __m128 compMask = _mm_cmpeq_ps(m_vector, rhs.m_vector);
-            return _mm_movemask_ps(compMask) == 7;
+            return _mm_movemask_ps(compMask) == 15;
         }
 
         /** Compares the values of this Vector4 to another given Vector4

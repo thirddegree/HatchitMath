@@ -21,6 +21,66 @@ namespace Hatchit
 			               0, 0, 0, 1);
 		}
 
+		inline Matrix4 _MM_CALLCONV MMMatrixRotationX(float r)
+		{
+			Matrix4 result;
+
+			result.m_rows[0] = _mm_set_ss(1);
+			result.m_rows[1] = _mm_setr_ps(0, cosf(r),-sinf(r), 0);
+			result.m_rows[2] = _mm_setr_ps(0, sinf(r), cosf(r), 0);
+			result.m_rows[3] = _mm_set_ss(1);
+			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
+
+			return result;
+		}
+
+		inline Matrix4 _MM_CALLCONV MMMatrixRotationY(float r)
+		{
+			Matrix4 result;
+
+			result.m_rows[0] = _mm_setr_ps(cosf(r), 0, sinf(0), 0);
+			result.m_rows[1] = _mm_set_ss(1);
+			result.m_rows[1] = _mm_shuffle_ps(result.m_rows[1], result.m_rows[1], _MM_SHUFFLE(2, 2, 0, 2));
+			result.m_rows[2] = _mm_setr_ps(-sinf(r), 0, cosf(r), 0);
+			result.m_rows[3] = _mm_set_ss(1);
+			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
+
+			return result;
+		}
+
+		inline Matrix4 _MM_CALLCONV MMMatrixRotationZ(float r)
+		{
+			Matrix4 result;
+
+			result.m_rows[0] = _mm_setr_ps(cosf(r), -sinf(r), 0, 0);
+			result.m_rows[1] = _mm_setr_ps(sinf(r), cosf(r), 0, 0);
+			result.m_rows[2] = _mm_set_ss(1);
+			result.m_rows[2] = _mm_shuffle_ps(result.m_rows[2], result.m_rows[2], _MM_SHUFFLE(2, 0, 2, 2));
+			result.m_rows[3] = _mm_set_ss(1);
+			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
+
+			return result;
+		}
+
+		inline Matrix4 _MM_CALLCONV MMMatrixRotationXYZ(const Vector3 & r)
+		{
+			return (MMMatrixRotationY(r.y) * MMMatrixRotationX(r.x)) * MMMatrixRotationZ(r.z);
+		}
+
+
+		inline Matrix4 _MM_CALLCONV MMMatrixScale(const Vector3 & scale)
+		{
+			Matrix4 result;
+
+			result.m_rows[0] = _mm_set_ss(scale.x);
+			result.m_rows[3] = _mm_set_ps(0, scale.y, scale.z, 1);
+			result.m_rows[1] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 0, 1, 0));
+			result.m_rows[2] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 0, 0));
+			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(3, 0, 0, 0));
+
+			return result;
+		}
+
         /** Generates an orthographic projection from the given values
         * \param left The lefthand bound
         * \param right The righthand bound
@@ -58,7 +118,7 @@ namespace Hatchit
             float v = -(zfar + znear) / depth;
             float qn = -2 * (zfar * znear) / depth;
 
-            float h = 1 / tanf(0.5f * fov);
+            float h = atanf(0.5f * fov);
             float w = h / aspect;
 
             return Matrix4(w, 0, 0, 0,
@@ -268,7 +328,7 @@ namespace Hatchit
 
             result.m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
-            //calculate determinant using first element in each row
+            //calculate determinant usinfg first element in each row
 
             det = _mm_movelh_ps(_mm_unpacklo_ps(result.m_rows[0], result.m_rows[1]), _mm_unpacklo_ps(result.m_rows[2], result.m_rows[3]));
             det = _mm_mul_ps(det, mat.m_rows[0]);
