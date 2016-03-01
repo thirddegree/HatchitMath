@@ -367,12 +367,16 @@ namespace Hatchit {
         // MM Matrix Operations
         //////////////////////////////////////////////////////////
 		Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3& v);
+		Matrix4 _MM_CALLCONV MMMatrixRotationX(float r);
+		Matrix4 _MM_CALLCONV MMMatrixRotationY(float r);
+		Matrix4 _MM_CALLCONV MMMatrixRotationZ(float r);
+		Matrix4 _MM_CALLCONV MMMatrixRotationXYZ(const Vector3& r);
+		Matrix4 _MM_CALLCONV MMMatrixScale(const Vector3& scale);
         Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& lookAt, const Vector3& center, const Vector3& up);
         Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
         Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
-
         //////////////////////////////////////////////////////////
         // MM Vector2 Operations
         //////////////////////////////////////////////////////////
