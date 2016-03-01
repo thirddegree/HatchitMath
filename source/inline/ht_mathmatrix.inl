@@ -118,7 +118,7 @@ namespace Hatchit
             float v = -(zfar + znear) / depth;
             float qn = -2 * (zfar * znear) / depth;
 
-            float h = 1 / tanf(0.5f * fov);
+            float h = atanf(0.5f * fov);
             float w = h / aspect;
 
             return Matrix4(w, 0, 0, 0,
