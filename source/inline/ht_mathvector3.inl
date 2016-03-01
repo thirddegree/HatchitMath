@@ -12,45 +12,21 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////////////////
 
         //Create a Vector3 with all 3 elements being 0
-        inline Vector3::Vector3()
-        {
-            this->m_vector = _mm_setzero_ps();
-        }
+        inline Vector3::Vector3() : m_vector(_mm_setzero_ps()) {}
 
         //Create a Vector3 with the elements x, y and z
-        inline Vector3::Vector3(float x, float y, float z)
-        {
-            float zero = 0;
-
-            __m128 xx = _mm_load_ss(&x);
-            __m128 xy = _mm_load_ss(&y);
-            __m128 xz = _mm_load_ss(&z);
-            __m128 xw = _mm_load_ss(&zero);
-
-            this->m_vector = _mm_movelh_ps(_mm_unpacklo_ps(xx, xy), _mm_unpacklo_ps(xz, xw));
-        }
+        inline Vector3::Vector3(float x, float y, float z) : m_vector(MMVectorSet(x, y, z, 0.0f)) {}
 
         //Create a copy of an existing Vector3
-        inline Vector3::Vector3(const Vector3& other)
-        {
-            this->m_vector = other.m_vector;
-        }
+        inline Vector3::Vector3(const Vector3& other) : m_vector(other.m_vector) {}
 
         //Create a Vector3 with the first three elements of a given Vector4 all divided by the 4th element
-        inline Vector3::Vector3(Hatchit::Math::Vector4& v4)
-        {
-            //We'll just ignore the last element of the __m128 so just do a copy by value
-            this->m_vector = (__m128)v4;
-
-            _MM_ALIGN16 float temp[4];
-            _mm_store_ps(temp, m_vector);
-            m_vector = _mm_set_ps(0, temp[2], temp[1], temp[0]);
-        }
+        inline Vector3::Vector3(Hatchit::Math::Vector4& v4) : m_vector(MMVectorSet(v4.x / v4.w, v4.y / v4.w, v4.z / v4.w, 0.0f)) {}
 
         //Allocate a 16byte aligned array of Vector3
         inline void* Vector3::operator new(size_t _size)
         {
-            return aligned_malloc(sizeof(__m128), _size);
+            return aligned_malloc(_size, 16);
         }
 
         //Delete an array of Vector3
@@ -90,12 +66,11 @@ namespace Hatchit {
         */
         inline Vector3 Vector3::operator/(float s) const
         {
+            assert(s != 0.0f);
+
             Vector3 vec;
 
-            //Do division only once and then multiply by the inverse
-            float invS = 1 / s;
-
-            __m128 product = _mm_mul_ps(m_vector, _mm_set_ps1(invS));
+            __m128 product = _mm_div_ps(m_vector, _mm_set_ps1(s));
 
             vec.m_vector = product;
 
@@ -111,7 +86,7 @@ namespace Hatchit {
         {
             Vector3 vec;
 
-            __m128 product = _mm_sub_ps(m_vector, _mm_set_ps1(s));
+            __m128 product = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
 
             vec.m_vector = product;
 
@@ -127,7 +102,7 @@ namespace Hatchit {
         {
             Vector3 vec;
 
-            __m128 product = _mm_add_ps(m_vector, _mm_set_ps1(s));
+            __m128 product = _mm_add_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
 
             vec.m_vector = product;
 
@@ -153,10 +128,7 @@ namespace Hatchit {
         */
         inline Vector3 Vector3::operator/=(float s)
         {
-            //Do division only once and then multiply by the inverse
-            float invS = 1 / s;
-
-            m_vector = _mm_mul_ps(m_vector, _mm_set_ps1(invS));
+            m_vector = _mm_div_ps(m_vector, _mm_set_ps1(s));
 
             return (*this);
         }
@@ -168,7 +140,7 @@ namespace Hatchit {
         */
         inline Vector3 Vector3::operator-=(float s)
         {
-            m_vector = _mm_sub_ps(m_vector, _mm_set_ps1(s));
+            m_vector = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
 
             return (*this);
         }
@@ -180,7 +152,7 @@ namespace Hatchit {
         */
         inline Vector3 Vector3::operator+=(float s) 
         {
-            m_vector = _mm_add_ps(m_vector, _mm_set_ps1(s));
+            m_vector = _mm_add_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
 
             return (*this);
         }
@@ -241,9 +213,7 @@ namespace Hatchit {
         {
             Vector3 vec;
 
-            __m128 sum = _mm_add_ps(m_vector, u.m_vector);
-
-            vec.m_vector = sum;
+            vec.m_vector = _mm_add_ps(m_vector, u.m_vector);
 
             return vec;
         }
@@ -256,9 +226,7 @@ namespace Hatchit {
         {
             Vector3 vec;
 
-            __m128 diff = _mm_sub_ps(m_vector, u.m_vector);
-
-            vec.m_vector = diff;
+            vec.m_vector = _mm_sub_ps(m_vector, u.m_vector);
 
             return vec;
         }
@@ -318,8 +286,8 @@ namespace Hatchit {
         {
             __m128 temp;
             __m128 sq = _mm_mul_ps(v.m_vector, u.m_vector);
-            temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 1, 0, 2)));
-            temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
+            temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(1, 3, 2, 0)));
+            temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(2, 1, 3, 0)));
 
             return Hatchit::Math::MMVectorGetX(temp);
         }
@@ -333,10 +301,10 @@ namespace Hatchit {
         {
             Vector3 output;
 
-            __m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
-            __m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
-            __m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
-            __m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+            __m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(2, 1, 3, 0));
+            __m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(1, 3, 2, 0));
+            __m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(1, 3, 2, 0));
+            __m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(2, 1, 3, 0));
 
             x00 = _mm_mul_ps(x00, x10);
             x11 = _mm_mul_ps(x01, x11);
@@ -350,20 +318,17 @@ namespace Hatchit {
         /** Normalizes a Vector3
         * \param v The Vector3 to normalize
         * \return A normalized version of v
-        * NOTE:
-        * This function is only partially intrinsic
         */
         inline Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v)
         {
-            float magnitude = MMVector3Magnitude(v);
-
-            if (magnitude == 0)
-                magnitude = 1;
-
+            assert(MMVector3Magnitude(v) > 0.0f);
             Vector3 normalizedVec;
 
-            float invMag = 1 / magnitude;
-            normalizedVec.m_vector = _mm_mul_ps(v.m_vector, MMVectorSet(invMag, invMag, invMag, invMag));
+            __m128 vecMul = _mm_mul_ps(v.m_vector, v.m_vector);
+            __m128 addedVec = _mm_add_ps(v.m_vector, _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(2, 1, 3, 0)));
+            addedVec = _mm_add_ps(addedVec, _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(1, 3, 2, 0)));
+            MMVectorSetW(addedVec, 1.0f);
+            normalizedVec.m_vector = _mm_mul_ps(v.m_vector, addedVec);
 
             return normalizedVec;
         }
@@ -373,13 +338,7 @@ namespace Hatchit {
         */
         inline float _MM_CALLCONV MMVector3Magnitude(const Vector3& v)
         {
-            __m128 val = _mm_mul_ps(v.m_vector, v.m_vector);
-
-            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(3, 2, 1, 1)));
-            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(3, 2, 2, 2)));
-            val = _mm_sqrt_ss(val);
-
-            return MMVectorGetX(val);
+            return sqrtf(MMVector3Dot(v, v));
         }
 
         /** An outstream operator for a Vector3 to interace with an ostream
