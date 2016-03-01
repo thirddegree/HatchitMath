@@ -26,8 +26,8 @@ namespace Hatchit
 			Matrix4 result;
 
 			result.m_rows[0] = _mm_set_ss(1);
-			result.m_rows[1] = _mm_set_ps(0, cos(r),-sin(r), 0);
-			result.m_rows[2] = _mm_set_ps(0, sin(r), cos(r), 0);
+			result.m_rows[1] = _mm_setr_ps(0, cosf(r),-sinf(r), 0);
+			result.m_rows[2] = _mm_setr_ps(0, sinf(r), cosf(r), 0);
 			result.m_rows[3] = _mm_set_ss(1);
 			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
 
@@ -38,10 +38,10 @@ namespace Hatchit
 		{
 			Matrix4 result;
 
-			result.m_rows[0] = _mm_set_ps(cos(r), 0, sin(0), 0);
+			result.m_rows[0] = _mm_setr_ps(cosf(r), 0, sinf(0), 0);
 			result.m_rows[1] = _mm_set_ss(1);
 			result.m_rows[1] = _mm_shuffle_ps(result.m_rows[1], result.m_rows[1], _MM_SHUFFLE(2, 2, 0, 2));
-			result.m_rows[2] = _mm_set_ps(-sin(r), 0, cos(r), 0);
+			result.m_rows[2] = _mm_setr_ps(-sinf(r), 0, cosf(r), 0);
 			result.m_rows[3] = _mm_set_ss(1);
 			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
 
@@ -52,8 +52,8 @@ namespace Hatchit
 		{
 			Matrix4 result;
 
-			result.m_rows[0] = _mm_set_ps(cos(r), -sin(r), 0, 0);
-			result.m_rows[1] = _mm_set_ps(sin(r), cos(r), 0, 0);
+			result.m_rows[0] = _mm_setr_ps(cosf(r), -sinf(r), 0, 0);
+			result.m_rows[1] = _mm_setr_ps(sinf(r), cosf(r), 0, 0);
 			result.m_rows[2] = _mm_set_ss(1);
 			result.m_rows[2] = _mm_shuffle_ps(result.m_rows[2], result.m_rows[2], _MM_SHUFFLE(2, 0, 2, 2));
 			result.m_rows[3] = _mm_set_ss(1);
@@ -328,7 +328,7 @@ namespace Hatchit
 
             result.m_rows[3] = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
-            //calculate determinant using first element in each row
+            //calculate determinant usinfg first element in each row
 
             det = _mm_movelh_ps(_mm_unpacklo_ps(result.m_rows[0], result.m_rows[1]), _mm_unpacklo_ps(result.m_rows[2], result.m_rows[3]));
             det = _mm_mul_ps(det, mat.m_rows[0]);
