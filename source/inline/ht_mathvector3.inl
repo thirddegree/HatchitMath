@@ -286,8 +286,8 @@ namespace Hatchit {
         {
             __m128 temp;
             __m128 sq = _mm_mul_ps(v.m_vector, u.m_vector);
-            temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(1, 3, 2, 0)));
-            temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(2, 1, 3, 0)));
+            temp = _mm_add_ps(sq, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 1, 0, 2)));
+            temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
 
             return Hatchit::Math::MMVectorGetX(temp);
         }
@@ -301,10 +301,10 @@ namespace Hatchit {
         {
             Vector3 output;
 
-            __m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(2, 1, 3, 0));
-            __m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(1, 3, 2, 0));
-            __m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(1, 3, 2, 0));
-            __m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(2, 1, 3, 0));
+            __m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+            __m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+            __m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+            __m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
 
             x00 = _mm_mul_ps(x00, x10);
             x11 = _mm_mul_ps(x01, x11);
@@ -325,8 +325,8 @@ namespace Hatchit {
             Vector3 normalizedVec;
 
             __m128 vecMul = _mm_mul_ps(v.m_vector, v.m_vector);
-            __m128 addedVec = _mm_add_ps(v.m_vector, _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(2, 1, 3, 0)));
-            addedVec = _mm_add_ps(addedVec, _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(1, 3, 2, 0)));
+            __m128 addedVec = _mm_add_ps(v.m_vector, _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2)));
+            addedVec = _mm_add_ps(addedVec, _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1)));
             MMVectorSetW(addedVec, 1.0f);
             normalizedVec.m_vector = _mm_mul_ps(v.m_vector, addedVec);
 
