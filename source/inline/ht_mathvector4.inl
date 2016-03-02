@@ -48,42 +48,26 @@ namespace Hatchit
 
 
         //Create a Vector4 with all 4 elements being 0
-        inline Vector4::Vector4() : m_vector() 
-        {
-
-        }
+        inline Vector4::Vector4() : m_vector(_mm_setzero_ps()) {}
 
         //Create a Vector4 with the elements x, y and z
-        inline Vector4::Vector4(float x, float y, float z, float w)
-        {
-            m_vector = MMVectorSet(x, y, z, w);
-        }
+		inline Vector4::Vector4(float x, float y, float z, float w) : m_vector(MMVectorSet(x, y, z, w)) {}
 
         //Create a copy of an existing Vector4
-        inline Vector4::Vector4(const Vector4& other)
-        {
-            m_vector = other.m_vector;
-        }
+		inline Vector4::Vector4(const Vector4& other) : m_vector(other.m_vector) {}
 
         //Create a Vector4 with the first three elements of a given Vector3 and a fourth given float w
         //NOTE:
         // Why is this not allowed to be const?
-        inline Vector4::Vector4(const Vector3& v3, float w)
-        {
-            m_vector = static_cast<__m128>(v3);
-            m_vector = MMVectorSetWRaw(m_vector, &w);
-        }
+		inline Vector4::Vector4(const Vector3& v3, float w) : m_vector(MMVectorSetWRaw(static_cast<__m128>(v3), &w)) {}
 
         //Create a Vector4 with an intrinsic vector type.
-        inline Vector4::Vector4(__m128 v) : m_vector(std::move(v))
-        {
-
-        }
+        inline Vector4::Vector4(__m128 v) : m_vector(std::move(v)) {}
 
         //Allocate a 16byte aligned array of Vector4s
         inline void* Vector4::operator new(size_t _size)
         {
-            return aligned_malloc(sizeof(__m128), _size);
+            return aligned_malloc(_size, vectorAlignment);
         }
         
         //Delete an array of Vector4s
@@ -248,13 +232,7 @@ namespace Hatchit
         */
         inline Vector4 Vector4::operator-(const Vector4& u) const
         {
-            Vector4 vec;
-
-            __m128 diff = _mm_sub_ps(m_vector, u.m_vector);
-
-            vec.m_vector = diff;
-
-            return vec;
+            return Vector4(_mm_sub_ps(m_vector, u.m_vector));
         }
 
         /** Adds all of the elements from a given vector to this one
