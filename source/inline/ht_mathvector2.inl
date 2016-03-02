@@ -31,7 +31,7 @@ namespace Hatchit {
         inline Vector2::Vector2() : m_vector(_mm_setzero_ps()) {}
 
         //Create a Vector2 with the elements described by x and y
-        inline Vector2::Vector2(float x, float y) : m_vector(_mm_setr_ps(x, y, 0.0f, 0.0f)) {}
+        inline Vector2::Vector2(float x, float y) : m_vector(MMVectorSet(x, y, 0.0f, 0.0f)) {}
 
         //Create a Vector2 with the elements of another Vector2
         inline Vector2::Vector2(const Vector2& other) : m_vector(other.m_vector) {}
@@ -80,7 +80,7 @@ namespace Hatchit {
         */
         inline Vector2 Vector2::operator+(float s) const
         {
-            return Vector2(_mm_add_ps(m_vector, _mm_setr_ps(s, s, 0.0f, 0.0f)));
+            return Vector2(_mm_add_ps(m_vector, MMVectorSet(s, s, 0.0f, 0.0f)));
         }
         /** Subtracts all elements in Vector2 by a given scalar
         * This operator returns a new Vector2
@@ -89,7 +89,7 @@ namespace Hatchit {
         */
         inline Vector2 Vector2::operator-(float s) const
         {
-            return Vector2(_mm_sub_ps(m_vector, _mm_setr_ps(s, s, 0.0f, 0.0f)));
+            return Vector2(_mm_sub_ps(m_vector, MMVectorSet(s, s, 0.0f, 0.0f)));
         }
         /** Multiplies all elements in Vector2 by a given scalar
         * This operator returns a new Vector2
@@ -117,7 +117,7 @@ namespace Hatchit {
         */
         inline Vector2& Vector2::operator+=(float s)
         {
-            m_vector = _mm_add_ps(m_vector, _mm_setr_ps(s, s, 0.0f, 0.0f));
+            m_vector = _mm_add_ps(m_vector, MMVectorSet(s, s, 0.0f, 0.0f));
             return *this;
         }
         /** Subtracts all elements in this Vector2 by a given scalar
@@ -127,7 +127,7 @@ namespace Hatchit {
         */
         inline Vector2& Vector2::operator-=(float s)
         {
-            m_vector = _mm_sub_ps(m_vector, _mm_setr_ps(s, s, 0.0f, 0.0f));
+            m_vector = _mm_sub_ps(m_vector, MMVectorSet(s, s, 0.0f, 0.0f));
             return *this;
         }
         /** Multiplies all elements in this Vector2 by a given scalar
@@ -294,8 +294,7 @@ namespace Hatchit {
         inline float _MM_CALLCONV MMVector2Dot(const Vector2& v, const Vector2& u)
         {
             __m128 vecMul = _mm_mul_ps(static_cast<__m128>(v), static_cast<__m128>(u));
-            __m128 vecSum = _mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(1, 0, 3, 2)));
-            return MMVectorGetX(vecSum);
+            return MMVectorGetX(_mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(1, 0, 3, 2))));
         }
 
         /** Normalizes a Vector2
