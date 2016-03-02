@@ -114,7 +114,8 @@ namespace Hatchit {
             *****************************************************/
 
             Matrix4 operator*   (const Matrix4& mat) const;
-            Vector3 operator*   (const Vector3& vec) const;
+			//matrix4 vector3 multiplication has been removed for pressing cerimonial reasons.
+            //Vector3 operator*   (const Vector3& vec) const;
             Vector4 operator*   (const Vector4& vec) const;
             float*  operator[]  (int row);          
 

@@ -36,15 +36,11 @@ namespace Hatchit {
             this->m_vector = other.m_vector;
         }
 
-        //Create a Vector3 with the first three elements of a given Vector4 all divided by the 4th element
+        //Create a Vector3 with the first three elements of a given Vector4, and the last value being 0
         inline Vector3::Vector3(Hatchit::Math::Vector4& v4)
         {
             //We'll just ignore the last element of the __m128 so just do a copy by value
-            this->m_vector = (__m128)v4;
-
-            _MM_ALIGN16 float temp[4];
-            _mm_store_ps(temp, m_vector);
-            m_vector = _mm_set_ps(0, temp[2], temp[1], temp[0]);
+			m_vector = MMVectorSetW(v4.m_vector, 0.f);
         }
 
         //Allocate a 16byte aligned array of Vector3
@@ -375,8 +371,8 @@ namespace Hatchit {
         {
             __m128 val = _mm_mul_ps(v.m_vector, v.m_vector);
 
-            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(3, 2, 1, 1)));
-            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(3, 2, 2, 2)));
+            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
+            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(0, 1, 2, 3)));
             val = _mm_sqrt_ss(val);
 
             return MMVectorGetX(val);

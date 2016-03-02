@@ -209,21 +209,6 @@ TEST(Matrix4, Matrix4MultiplicationOperator)
   ASSERT_EQ(result[3][3], 51);
 }
 
-TEST(Matrix4, Vector3MultiplicationOperator)
-{
-  Matrix4 matrix(1,2,3,4,
-                 4,3,2,1,
-                 3,2,4,1,
-                 3,1,4,2);
-  Vector3 vector(1,2,3);
-
-  Vector3 result = matrix * vector;
-
-  ASSERT_EQ(result[0], 18);
-  ASSERT_EQ(result[1], 17);
-  ASSERT_EQ(result[2], 20);
-}
-
 TEST(Matrix4, Vector4MultiplicationOperator)
 {
   Matrix4 matrix(1,2,3,4,
@@ -235,7 +220,7 @@ TEST(Matrix4, Vector4MultiplicationOperator)
   Vector4 result = matrix * vector;
 
   ASSERT_EQ(result[0], 30);
-  ASSERT_EQ(result[1], 20);
+  ASSERT_EQ(result[1], 23);
   ASSERT_EQ(result[2], 23);
   ASSERT_EQ(result[3], 25);
 }

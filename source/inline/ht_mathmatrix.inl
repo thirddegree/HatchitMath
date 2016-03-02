@@ -483,33 +483,33 @@ namespace Hatchit
             return result; //newMat;
         }
 
-        /** Multiplies this Matrix4 by a given Vector3 and returns the
-        * resulting Vector3
-        * \param vec The Vector3 to multiply into this matrix
-        * \return The product of this matrix * vec as a Vector3
-        */
-        inline Vector3 Matrix4::operator*(const Vector3& vec) const
-        {
-            Vector3 result;
+        ///** Multiplies this Matrix4 by a given Vector3 and returns the
+        //* resulting Vector3
+        //* \param vec The Vector3 to multiply into this matrix
+        //* \return The product of this matrix * vec as a Vector3
+        //*/
+        //inline Vector3 Matrix4::operator*(const Vector3& vec) const
+        //{
+        //    Vector3 result;
 
-            __m128 x = _mm_mul_ps(m_rows[0], vec.m_vector);
-            x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 1, 2, 3)));
-            x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 3, 0, 1)));
+        //    __m128 x = _mm_mul_ps(m_rows[0], vec.m_vector);
+        //    x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 1, 2, 3)));
+        //    x = _mm_add_ps(x, _mm_shuffle_ps(x, x, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            __m128 y = _mm_mul_ps(m_rows[1], vec.m_vector);
-            y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 1, 2, 3)));
-            y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 3, 0, 1)));
+        //    __m128 y = _mm_mul_ps(m_rows[1], vec.m_vector);
+        //    y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(0, 1, 2, 3)));
+        //    y = _mm_add_ps(y, _mm_shuffle_ps(y, y, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            __m128 z = _mm_mul_ps(m_rows[2], vec.m_vector);
-            z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 1, 2, 3)));
-            z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 3, 0, 1)));
+        //    __m128 z = _mm_mul_ps(m_rows[2], vec.m_vector);
+        //    z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 1, 2, 3)));
+        //    z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            __m128 w = _mm_setzero_ps();
+        //    __m128 w = _mm_setzero_ps();
 
-            result.m_vector = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
+        //    result.m_vector = _mm_movelh_ps(_mm_unpacklo_ps(x, y), _mm_unpacklo_ps(z, w));
 
-            return result;
-        }
+        //    return result;
+        //}
 
         /** Multiplies this Matrix4 by a given Vector4 and returns the
         * resulting Vector4
