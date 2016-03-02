@@ -67,7 +67,7 @@ namespace Hatchit
         //Allocate a 16byte aligned array of Vector4s
         inline void* Vector4::operator new(size_t _size)
         {
-            return aligned_malloc(_size, 16);
+            return aligned_malloc(_size, vectorAlignment);
         }
         
         //Delete an array of Vector4s
