@@ -274,7 +274,7 @@ namespace Hatchit
             return data[i];
         }
 
-        //Returns a Vector3 with the first three elements from this vector and the last one being 0
+        //Returns a Vector4 with the first three elements from this vector and the last one being 0
         inline Vector4::operator Vector3() const
         {
             _MM_ALIGN16 float vecArray[4];

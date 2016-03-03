@@ -6,7 +6,6 @@ namespace Hatchit {
 
     namespace Math {
 
-
         //////////////////////////////////////////////////////////////////////
         // MMVECTOR3 Implementation
         //////////////////////////////////////////////////////////////////////
@@ -20,9 +19,6 @@ namespace Hatchit {
         //Create a copy of an existing Vector3
         inline Vector3::Vector3(const Vector3& other) : m_vector(other.m_vector) {}
 
-        //Create a Vector3 with the first three elements of a given Vector4 all divided by the 4th element
-        inline Vector3::Vector3(Hatchit::Math::Vector4& v4) : m_vector(MMVectorSet(v4.x / v4.w, v4.y / v4.w, v4.z / v4.w, 0.0f)) {}
-
         //Allocate a 16byte aligned array of Vector3
         inline void* Vector3::operator new(size_t _size)
         {
@@ -35,80 +31,93 @@ namespace Hatchit {
             aligned_free(p);
         }
 
-        /** Casts a Vector3 object to a __m128
-        * This operator casts a Vector3 to an instrinsic __m128
-        */
-        inline Vector3::operator const __m128(void) const
-        {
-            return m_vector;
-        }
+		/** Casts a Vector3 object to a __m128
+		* This operator casts a Vector3 to an instrinsic __m128
+		*/
+		inline Vector3::operator const __m128(void) const
+		{
+			return m_vector;
+		}
 
-        /** Multiplies all elements in this Vector3 by a given scalar
-        * This operation returns a new Vector3
-        * \param s The scalar to multiply this Vector3 by
-        * \return A Vector3 after all the elements have been multiplied by s
-        */
-        inline Vector3 Vector3::operator*(float s) const
-        {
-            Vector3 vec;
+		//----------------------Vector_float operators
+		/** Adds all elements in this Vector3 by a given scalar
+		* This operation returns a new Vector3
+		* \param s The scalar to add this Vector3 by
+		* \return A Vector3 after all the elements have been added by s
+		*/
+		inline Vector3 Vector3::operator+(float s) const
+		{
+			Vector3 result;
+			result.m_vector = _mm_add_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
+			return result;
+		}
+		/** Subtracts all elements in this Vector3 by a given scalar
+		* This operation returns a new Vector3
+		* \param s The scalar to subtract this Vector3 by
+		* \return A Vector3 after all the elements have been subtracted by s
+		*/
+		inline Vector3 Vector3::operator-(float s) const
+		{
+			Vector3 vec;
 
-            __m128 product = _mm_mul_ps(m_vector, _mm_set_ps1(s));
+			__m128 product = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
 
-            vec.m_vector = product;
+			vec.m_vector = product;
 
-            return vec;
-        }
+			return vec;
+		}
+		/** Multiplies all elements in this Vector3 by a given scalar
+		* This operation returns a new Vector3
+		* \param s The scalar to multiply this Vector3 by
+		* \return A Vector3 after all the elements have been multiplied by s
+		*/
+		inline Vector3 Vector3::operator*(float s) const
+		{
+			Vector3 vec;
 
-        /** Divides all elements in this Vector3 by a given scalar
-        * This operation returns a new Vector3
-        * \param s The scalar to divide this Vector3 by
-        * \return A Vector3 after all the elements have been divided by s
-        */
-        inline Vector3 Vector3::operator/(float s) const
-        {
-            assert(s != 0.0f);
+			__m128 product = _mm_mul_ps(m_vector, _mm_set_ps1(s));
 
-            Vector3 vec;
+			vec.m_vector = product;
 
-            __m128 product = _mm_div_ps(m_vector, _mm_set_ps1(s));
+			return vec;
+		}
+		/** Divides all elements in this Vector3 by a given scalar
+		* This operation returns a new Vector3
+		* \param s The scalar to divide this Vector3 by
+		* \return A Vector3 after all the elements have been divided by s
+		*/
+		inline Vector3 Vector3::operator/(float s) const
+		{
+			assert(s != 0.0f);
 
-            vec.m_vector = product;
+			Vector3 vec;
 
-            return vec;
-        }
+			__m128 product = _mm_div_ps(m_vector, _mm_set_ps1(s));
 
-        /** Subtracts all elements in this Vector3 by a given scalar
-        * This operation returns a new Vector3
-        * \param s The scalar to subtract this Vector3 by
-        * \return A Vector3 after all the elements have been subtracted by s
-        */
-        inline Vector3 Vector3::operator-(float s) const
-        {
-            Vector3 vec;
+			vec.m_vector = product;
 
-            __m128 product = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
-
-            vec.m_vector = product;
-
-            return vec;
-        }
-
-        /** Adds all elements in this Vector3 by a given scalar
-        * This operation returns a new Vector3
-        * \param s The scalar to add this Vector3 by
-        * \return A Vector3 after all the elements have been added by s
-        */
-        inline Vector3 Vector3::operator+(float s) const
-        {
-            Vector3 vec;
-
-            __m128 product = _mm_add_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
-
-            vec.m_vector = product;
-
-            return vec;
-        }
-
+			return vec;
+		}
+		/** Adds all elements in this Vector3 by a given scalar
+		* This operation affects the elements in this Vector3
+		* \param s The scalar to add this Vector3 by
+		* \return This Vector3 after all the elements have been added by s
+		*/
+		inline Vector3 Vector3::operator+=(float s)
+		{
+			m_vector = _mm_add_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
+			return (*this);
+		}
+		/** Subtracts all elements in this Vector3 by a given scalar
+		* This operation affects the elements in this Vector3
+		* \param s The scalar to subtract this Vector3 by
+		* \return This Vector3 after all the elements have been subtracted by s
+		*/
+		inline Vector3 Vector3::operator-=(float s)
+		{
+			m_vector = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
+			return (*this);
+		}
         /** Multiplies all elements in this Vector3 by a given scalar
         * This operation affects the elements in this Vector3
         * \param s The scalar to multiply this Vector3 by
@@ -117,10 +126,8 @@ namespace Hatchit {
         inline Vector3 Vector3::operator*=(float s)
         {
             m_vector = _mm_mul_ps(m_vector, _mm_set_ps1(s));
-
             return (*this);
         }
-
         /** Divides all elements in this Vector3 by a given scalar
         * This operation affects the elements in this Vector3
         * \param s The scalar to divide this Vector3 by
@@ -129,108 +136,50 @@ namespace Hatchit {
         inline Vector3 Vector3::operator/=(float s)
         {
             m_vector = _mm_div_ps(m_vector, _mm_set_ps1(s));
-
             return (*this);
         }
 
-        /** Subtracts all elements in this Vector3 by a given scalar
-        * This operation affects the elements in this Vector3
-        * \param s The scalar to subtract this Vector3 by
-        * \return This Vector3 after all the elements have been subtracted by s
-        */
-        inline Vector3 Vector3::operator-=(float s)
-        {
-            m_vector = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
-
-            return (*this);
-        }
-
-        /** Adds all elements in this Vector3 by a given scalar
-        * This operation affects the elements in this Vector3
-        * \param s The scalar to add this Vector3 by
-        * \return This Vector3 after all the elements have been added by s
-        */
-        inline Vector3 Vector3::operator+=(float s) 
-        {
-            m_vector = _mm_add_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
-
-            return (*this);
-        }
-
-        /** Compares the magnitue of this Vector3 to another given Vector3
-        * \param u The other Vector3
-        * \return True if this Vector3 has a larger magnitude than the other Vector3
-        */
-        inline bool Vector3::operator>(const Vector3& u) const
-        {
-            return Hatchit::Math::MMVector3Magnitude(*this) > Hatchit::Math::MMVector3Magnitude(u);
-        }
-
-        /** Compares the magnitue of this Vector3 to another given Vector3
-        * \param u The other Vector3
-        * \return True if this Vector3 has a smaller magnitude than the other Vector3
-        */
-        inline bool Vector3::operator<(const Vector3& u) const
-        {
-            return MMVector3Magnitude(*this) < MMVector3Magnitude(u);
-        }
-
-        /** Compares the values of this Vector3 to another given Vector3
-        * \param u The other Vector3
-        * \return True if this Vector3 has the same values of the other Vector3
-        */
-        inline bool Vector3::operator==(const Vector3& u) const
-        {
-            return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 15;
-        }
-
-        /** Compares the values of this Vector3 to another given Vector3
-        * \param u The other Vector3
-        * \return True if this Vector3 does not have the same values as the other Vector3
-        */
-        inline bool Vector3::operator!=(const Vector3& u) const
-        {
-            return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
-        }
-
-        /** Executes memberwise multiplication on two vectors
-        * \param u The other Vector3
-        * \return The product of this * u as a vector
-        */
-        inline Vector3 Vector3::operator* (const Vector3& u) const
-        {
-            Vector3 v;
-            v.m_vector = _mm_mul_ps(this->m_vector, u.m_vector);
-
-            return v;
-        }
-
-        /** Adds all of the elements from a given vector to this one
-        * \param u The other Vector3
-        * \return A new vector with the sums of all the pairs of elements
-        */
-        inline Vector3 Vector3::operator+(const Vector3& u) const
-        {
-            Vector3 vec;
-
-            vec.m_vector = _mm_add_ps(m_vector, u.m_vector);
-
-            return vec;
-        }
-
-        /** Subtracts all of the elements from this vector by a given vector
-        * \param u The other Vector3
-        * \return A new vector with the differences of all the pairs of elemens
-        */
-        inline Vector3 Vector3::operator-(const Vector3& u) const
-        {
-            Vector3 vec;
-
-            vec.m_vector = _mm_sub_ps(m_vector, u.m_vector);
-
-            return vec;
-        }
-
+		//----------------------Vector_Vector operators
+		/** Adds all of the elements from a given vector to this one
+		* \param u The other Vector3
+		* \return A new vector with the sums of all the pairs of elements
+		*/
+		inline Vector3 Vector3::operator+(const Vector3& u) const
+		{
+			Vector3 vec;
+			vec.m_vector = _mm_add_ps(m_vector, u.m_vector);
+			return vec;
+		}
+		/** Subtracts all of the elements from this vector by a given vector
+		* \param u The other Vector3
+		* \return A new vector with the differences of all the pairs of elemens
+		*/
+		inline Vector3 Vector3::operator-(const Vector3& u) const
+		{
+			Vector3 vec;
+			vec.m_vector = _mm_sub_ps(m_vector, u.m_vector);
+			return vec;
+		}
+		/** Executes memberwise multiplication on two vectors
+		* \param u The other Vector3
+		* \return The product of this * u as a vector
+		*/
+		inline Vector3 Vector3::operator* (const Vector3& u) const
+		{
+			Vector3 v;
+			v.m_vector = _mm_mul_ps(this->m_vector, u.m_vector);
+			return v;
+		}
+		/** Executes memberwise division on two vectors
+		* \param u The other Vector3
+		* \return The quocient of this / u as a vector
+		*/
+		inline Vector3 Vector3::operator/(const Vector3 & u) const
+		{
+			Vector3 v;
+			v.m_vector = _mm_div_ps(this->m_vector, u.m_vector);
+			return v;
+		}
         /** Adds all of the elements from a given vector to this one
         * \param u The other Vector3
         * \return This vector with the sums of all the pairs of elements
@@ -238,10 +187,8 @@ namespace Hatchit {
         inline Vector3 Vector3::operator+=(const Vector3& u)
         {
             m_vector = _mm_add_ps(m_vector, u.m_vector);
-
             return (*this);
         }
-
         /** Subtracts all of the elements from this vector by a given one
         * \param u The other Vector3
         * \return This vector with the differences of all the pairs of elements
@@ -249,10 +196,59 @@ namespace Hatchit {
         inline Vector3 Vector3::operator-=(const Vector3& u)
         {
             m_vector = _mm_sub_ps(m_vector, u.m_vector);
-
             return (*this);
         }
+		/** memberwise multiplication that stores the result in the first operand
+		* \param u other vector3
+		* \return this
+		*/
+		inline Vector3 Vector3::operator*=(const Vector3 & u)
+		{
+			m_vector = _mm_mul_ps(m_vector, u.m_vector);
+			return (*this);
+		}
+		/** memberwise division that stores the result in the first operand
+		* \param u other vector3
+		* \return this
+		*/
+		inline Vector3 Vector3::operator/=(const Vector3 & u)
+		{
+			m_vector = _mm_div_ps(m_vector, u.m_vector);
+			return (*this);
+		}
 
+		/** Compares the magnitue of this Vector3 to another given Vector3
+		* \param u The other Vector3
+		* \return True if this Vector3 has a larger magnitude than the other Vector3
+		*/
+		inline bool Vector3::operator>(const Vector3& u) const
+		{
+			return Hatchit::Math::MMVector3Magnitude(*this) > Hatchit::Math::MMVector3Magnitude(u);
+		}
+		/** Compares the magnitue of this Vector3 to another given Vector3
+		* \param u The other Vector3
+		* \return True if this Vector3 has a smaller magnitude than the other Vector3
+		*/
+		inline bool Vector3::operator<(const Vector3& u) const
+		{
+			return MMVector3Magnitude(*this) < MMVector3Magnitude(u);
+		}
+		/** Compares the values of this Vector3 to another given Vector3
+		* \param u The other Vector3
+		* \return True if this Vector3 has the same values of the other Vector3
+		*/
+		inline bool Vector3::operator==(const Vector3& u) const
+		{
+			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) == 15;
+		}
+		/** Compares the values of this Vector3 to another given Vector3
+		* \param u The other Vector3
+		* \return True if this Vector3 does not have the same values as the other Vector3
+		*/
+		inline bool Vector3::operator!=(const Vector3& u) const
+		{
+			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
+		}
         /** Fetches an element of this Vector at the index i by reference
         * \param i The index of the element to fetch
         * \return A float that is stored in this Vector3 at the index i
@@ -261,9 +257,18 @@ namespace Hatchit {
         inline const float& Vector3::operator[](int i) const
         {
             assert(i < 3);
-
             return this->m_data[i];
         }
+		/** Fetches an element of this Vector at the index i by reference
+		* \param i The index of the element to fetch
+		* \return A float that is stored in this Vector3 at the index i
+		* This will throw an index out of range exception if you go beyond an index if 1
+		*/
+		inline const float& Vector3::operator[](int i)
+		{
+			assert(i < 3);
+			return this->m_data[i];
+		}
 
         /** Fetches an element of this Vector at the index i
         * \param i The index of the element to fetch
@@ -348,7 +353,6 @@ namespace Hatchit {
         inline std::ostream& operator<<(std::ostream& output, Vector3& v)
         {
             output << v.x << " " << v.y << " " << v.z;
-
             return output;
         }
 
@@ -359,7 +363,6 @@ namespace Hatchit {
         inline std::istream& operator>>(std::istream& input, Vector3& v)
         {
             input >> v.x >> v.y >> v.z;
-
             return input;
         }
     }

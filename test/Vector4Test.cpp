@@ -103,4 +103,5 @@ TEST(Vector4, Vector3ConversionOperator)
   ASSERT_EQ(result[0], vector[0]);
   ASSERT_EQ(result[1], vector[1]);
   ASSERT_EQ(result[2], vector[2]);
+  ASSERT_EQ(result[3], 0);
 }

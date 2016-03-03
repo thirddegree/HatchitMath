@@ -114,7 +114,8 @@ namespace Hatchit {
             *****************************************************/
 
             Matrix4 operator*   (const Matrix4& mat) const;
-            Vector3 operator*   (const Vector3& vec) const;
+			//matrix4 vector3 multiplication has been removed for pressing cerimonial reasons.
+            //Vector3 operator*   (const Vector3& vec) const;
             Vector4 operator*   (const Vector4& vec) const;
             float*  operator[]  (int row);          
 
@@ -225,7 +226,6 @@ namespace Hatchit {
             Vector3();
             Vector3(float x, float y, float z);
             Vector3(const Vector3& other);
-            Vector3(Vector4& v4);
 
             /****************************************************
             *	 Custom allocation/deallocation
@@ -238,24 +238,29 @@ namespace Hatchit {
             *****************************************************/
 
             operator const __m128(void)   const;
+			Vector3 operator+   (float s) const;
+			Vector3 operator-   (float s) const;
             Vector3 operator*   (float s) const;
             Vector3 operator/   (float s) const;
-            Vector3 operator-   (float s) const;
-            Vector3 operator+   (float s) const;
+			Vector3 operator+=  (float s);
+			Vector3 operator-=  (float s);
             Vector3 operator*=  (float s);
             Vector3 operator/=  (float s);
-            Vector3 operator-=  (float s);
-            Vector3 operator+=  (float s);
+			Vector3 operator+   (const Vector3& u) const;
+			Vector3 operator-   (const Vector3& u) const;
+			Vector3 operator*   (const Vector3& u) const;
+			Vector3 operator/   (const Vector3& u) const;
+			Vector3 operator+=  (const Vector3& u);
+			Vector3 operator-=  (const Vector3& u);
+			Vector3 operator*=  (const Vector3& u);
+			Vector3 operator/=  (const Vector3& u);
+
             bool    operator>   (const Vector3& u) const;
             bool    operator<   (const Vector3& u) const;
             bool    operator==  (const Vector3& u) const;
             bool    operator!=  (const Vector3& u) const;
-            Vector3 operator*   (const Vector3& u) const;
-            Vector3 operator+   (const Vector3& u) const;
-            Vector3 operator-   (const Vector3& u) const;
-            Vector3 operator+=  (const Vector3& u);
-            Vector3 operator-=  (const Vector3& u);
             const float&  operator[]  (int i) const;
+			const float&  operator[]  (int i);
           
 
             union
