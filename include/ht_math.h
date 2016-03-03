@@ -147,6 +147,7 @@ namespace Hatchit {
             *	Constructors
             *****************************************************/
             Vector2();
+			Vector2(float x);
             Vector2(float x, float y);
             Vector2(const Vector2& other);
             explicit Vector2(const __m128& vector);

@@ -30,6 +30,9 @@ namespace Hatchit {
         //Create a Vector2 with both elements being 0
         inline Vector2::Vector2() : m_vector(_mm_setzero_ps()) {}
 
+		//Create a Vector2 with both elements being x
+		inline Vector2::Vector2(float x) : m_vector(_mm_set_ps1(x)) {}
+
         //Create a Vector2 with the elements described by x and y
         inline Vector2::Vector2(float x, float y) : m_vector(MMVectorSet(x, y, 0.0f, 0.0f)) {}
 
@@ -38,6 +41,7 @@ namespace Hatchit {
 
         //Create a Vector2 object using the data from an __m128 vector
         inline Vector2::Vector2(const __m128& vector) : m_vector(vector) {}
+
         //Create a Vector2 object using the data from an __m128 vector
         inline Vector2::Vector2(__m128&& vector) : m_vector(vector) {}
 
