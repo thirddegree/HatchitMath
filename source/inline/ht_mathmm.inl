@@ -165,5 +165,10 @@ namespace Hatchit {
             return result;
         }
 
+        inline bool _MM_CALLCONV MMVectorEqual(__m128 v, __m128 u)
+        {
+            __m128 compMask = _mm_cmpeq_ps(v, u);
+            return _mm_movemask_ps(compMask) == 15;
+        }
     }
 }

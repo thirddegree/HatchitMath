@@ -195,8 +195,7 @@ namespace Hatchit
             //Could add and subtract epsilon from rhs.m_vector, compare less than /
             //greater than, logic and the components and then check in the future
             //If this is too strict.
-            __m128 compMask = _mm_cmpeq_ps(m_vector, rhs.m_vector);
-            return _mm_movemask_ps(compMask) == 15;
+            return MMVectorEqual(m_vector, rhs.m_vector);
         }
 
         /** Compares the values of this Vector4 to another given Vector4

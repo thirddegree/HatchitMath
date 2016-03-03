@@ -215,7 +215,7 @@ namespace Hatchit {
         // Vector3 definition
         /////////////////////////////////////////////////////////
 
-        class Vector3
+        class _MM_ALIGN16 Vector3
         {
             friend class Matrix4;
         public:
@@ -281,7 +281,7 @@ namespace Hatchit {
         // MM Vector4 Definition
         /////////////////////////////////////////////////////////
 
-        class Vector4
+        class _MM_ALIGN16 Vector4
         {
         public:
 
@@ -343,6 +343,63 @@ namespace Hatchit {
         std::istream& operator>> (std::istream& input,  Vector4& h);
 
         /////////////////////////////////////////////////////////
+        // MM Quaternion Definition
+        /////////////////////////////////////////////////////////
+
+        class _MM_ALIGN16 Quaternion
+        {
+        public:
+
+            /****************************************************
+            *	Constructors
+            *****************************************************/
+
+            Quaternion();
+            Quaternion(const Vector3& axis, float angle);
+            Quaternion(float x, float y, float z, float w);
+            Quaternion(float roll, float pitch, float yaw);
+            explicit Quaternion(__m128 quatData);
+
+            /****************************************************
+            *	 Custom allocation/deallocation
+            *****************************************************/
+
+            void* operator new(size_t _size);
+            void  operator delete(void* p);
+            void* operator new[](size_t size);
+            void  operator delete[](void* p);
+
+            /****************************************************
+            *	Operators
+            *****************************************************/
+
+            bool        operator==  (const Quaternion& p_rhs)   const;
+            bool        operator!=  (const Quaternion& p_rhs)   const;
+
+            Quaternion  operator+   (const Quaternion& p_rhs)   const;
+            Quaternion  operator-   (const Quaternion& p_rhs)   const;
+            Quaternion  operator*   (const Quaternion& p_rhs)   const;
+
+            Quaternion& operator+=  (const Quaternion& p_rhs);
+            Quaternion& operator-=  (const Quaternion& p_rhs);
+            Quaternion& operator*=  (const Quaternion& p_rhs);
+
+            explicit operator __m128() const;
+
+        public:
+            union
+            {
+                __m128 m_quaternion;
+                struct
+                {
+                    float x, y, z, w;
+                };
+                float data[4];
+            };
+        };
+
+
+        /////////////////////////////////////////////////////////
         // MM Instrinsic Functions
         /////////////////////////////////////////////////////////
 
@@ -366,6 +423,8 @@ namespace Hatchit {
         __m128 _MM_CALLCONV MMVectorSetW(__m128 v, float w);
 
         __m128 _MM_CALLCONV MMVectorSetXRaw(__m128 v, const float* x);
+
+        bool   _MM_CALLCONV MMVectorEqual(__m128 v, __m128 u);
 
 
         //////////////////////////////////////////////////////////
@@ -407,6 +466,16 @@ namespace Hatchit {
         float   _MM_CALLCONV MMVector4Dot(const Vector4& v, const Vector4& u);
         Vector4 _MM_CALLCONV MMVector4Normalize(const Vector4& v);
         float   _MM_CALLCONV MMVector4Magnitude(const Vector4& v);
+
+
+        //////////////////////////////////////////////////////////
+        // MM Quaternion Operations
+        //////////////////////////////////////////////////////////
+        float   _MM_CALLCONV MMQuaternionDot(const Quaternion& q, const Quaternion& r);
+        Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q);
+        float   _MM_CALLCONV MMQuaternionMagnitude(const Quaternion& q);
+        float   _MM_CALLCONV MMQuaternionMagnitudeSqr(const Quaternion& q);
+        Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q);
     }
 }
 
@@ -417,3 +486,4 @@ namespace Hatchit {
 #include <ht_mathvector3.inl>
 #include <ht_mathvector4.inl>
 #include <ht_mathmatrix.inl>
+#include <ht_mathquaternion.inl>
