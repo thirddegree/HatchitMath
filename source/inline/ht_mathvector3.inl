@@ -333,7 +333,7 @@ namespace Hatchit {
             __m128 addedVec = _mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 1, 0, 2)));
             addedVec = _mm_add_ps(addedVec, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 0, 2, 1)));
             addedVec = MMVectorSetW(_mm_rsqrt_ps(addedVec), 1.0f);
-            normalizedVec.m_vector = _mm_div_ps(v.m_vector, addedVec);
+            normalizedVec.m_vector = _mm_mul_ps(v.m_vector, addedVec);
 
             return normalizedVec;
         }
