@@ -4,9 +4,20 @@ namespace Hatchit {
 
     namespace Math {
 
+        //////////////////////////////////////////////////////////////////////
+        // MMVECTOR3 Implementation
+        //////////////////////////////////////////////////////////////////////
+
+        //Create an identity Quaternion
         inline Quaternion::Quaternion() : m_quaternion(MMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)) {}
+
+        //Create a Quaternion with elements x, y, z, w (q = w + xi + yj + zk)
         inline Quaternion::Quaternion(float x, float y, float z, float w) : m_quaternion(MMVectorSet(x, y, z, w)) {}
+
+        //Create a Quaternion from a rotation based on axis and angle
         inline Quaternion::Quaternion(const Vector3& axis, float angle) : m_quaternion(MMVectorSetW(static_cast<__m128>(axis * sinf(angle / 2)), cosf(angle / 2))) {}
+
+        //Create a Quaternion from rotation on x, y, and z axis
         inline Quaternion::Quaternion(float roll, float pitch, float yaw) : m_quaternion()
         {
             //TODO: Who wants to make this intrinsic?  Anyone?
@@ -31,26 +42,73 @@ namespace Hatchit {
             m_quaternion = _mm_add_ps(vecA, vecD);
         }
 
+        //Create a Quaternion from existing __m128 data
         inline Quaternion::Quaternion(__m128 quatData) : m_quaternion(std::move(quatData)) {}
 
+        //Allocate a 16 byte aligned Quaternion
+        inline void* Quaternion::operator new(size_t size)
+        {
+            return aligned_malloc(size, vectorAlignment);
+        }
+        
+        //Delete a 16 byte aligned Quaternion
+        inline void Quaternion::operator delete(void* p)
+        {
+            aligned_free(p);
+        }
+
+        //Allocate a 16 byte aligned Quaternion array
+        inline void* Quaternion::operator new[](size_t size)
+        {
+            return aligned_malloc(size, vectorAlignment);
+        }
+
+        //Delete a 16 byte aligned Quaternion
+        inline void Quaternion::operator delete[](void* p)
+        {
+            aligned_free(p);
+        }
+
+        /** Compares the values of this Quaternion to another given Quaternion
+        * \param p_rhs The other Quaternion
+        * \return True if this Quaternion has the same values of the other Quaternion
+        */
         inline bool Quaternion::operator==(const Quaternion& p_rhs) const
         {
             return MMVectorEqual(m_quaternion, p_rhs.m_quaternion);
         }
 
+        /** Compares the values of this Quaternion to another given Quaternion
+        * \param p_rhs The Other Quaternion
+        * \return True if this Quaternion does not have the same values of the other Quaternion
+        */
         inline bool Quaternion::operator!=(const Quaternion& p_rhs) const
         {
             return !operator==(p_rhs);
         }
 
+        /** Adds the components of this Quaternion to another given Quaternion
+        * \param p_rhs The other Quaternion
+        * \return Quaternion with components summed (w = w1 + w2, ...)
+        */
         inline Quaternion Quaternion::operator+(const Quaternion& p_rhs) const
         {
             return Quaternion(_mm_add_ps(m_quaternion, p_rhs.m_quaternion));
         }
+
+        /** Subtracts the components of this Quaternion with another given Quaternion
+        * \param p_rhs The other Quaternion
+        * \return Quaternion with components subtracted (w = w1 - w2, ...)
+        */
         inline Quaternion Quaternion::operator-(const Quaternion& p_rhs) const
         {
             return Quaternion(_mm_sub_ps(m_quaternion, p_rhs.m_quaternion));
         }
+
+        /** Multiplies the quaternion with another Quaternion using the Hamilton Product
+        * \param p_rhs The other Quaternion
+        * \return Quaternion result of the Hamilton product of the two quaternions.
+        */
         inline Quaternion Quaternion::operator*(const Quaternion& p_rhs) const
         {
             static const __m128 maskB = _mm_castsi128_ps(_mm_setr_epi32(-1, 0, -1, 0));
@@ -72,16 +130,31 @@ namespace Hatchit {
             return Quaternion(_mm_add_ps(splatA, splatC));
         }
 
+        /** Adds the components of the other quaternion into this quaternion
+        * \param p_rhs The other Quaternion
+        * \return Reference to modified quaternion
+        */
         inline Quaternion& Quaternion::operator+=(const Quaternion& p_rhs)
         {
             m_quaternion = _mm_add_ps(m_quaternion, p_rhs.m_quaternion);
             return *this;
         }
+
+        /** Subtracts the components of the other quaternion from this quaternion
+        * \param p_rhs The other Quaternion
+        * \return Reference to modified quaternion
+        */
         inline Quaternion& Quaternion::operator-=(const Quaternion& p_rhs)
         {
             m_quaternion = _mm_sub_ps(m_quaternion, p_rhs.m_quaternion);
             return *this;
         }
+
+        /** Multiplies the two given quaternions using the Hamilton Product and stores
+        * the results back into the first Quaternion
+        * \param p_rhs The other Quaternion
+        * \return Reference to modified quaternion
+        */
         inline Quaternion& Quaternion::operator*=(const Quaternion& p_rhs)
         {
             static const __m128 maskB = _mm_castsi128_ps(_mm_setr_epi32(-1, 0, -1, 0));
@@ -104,11 +177,20 @@ namespace Hatchit {
             return *this;
         }
 
+        /** Returns copy of internal __m128 structure
+        * \return Copy of internal __m128 structure.
+        */
         inline Quaternion::operator __m128() const
         {
             return m_quaternion;
         }
 
+        /** Performs dot product of two quaternions
+        * (w1 * w2 + x1 * x2 + ...)
+        * \param q The first quaternion
+        * \param r The second quaternion
+        * \return result of the dot product.
+        */
         inline float _MM_CALLCONV MMQuaternionDot(const Quaternion& q, const Quaternion& r)
         {
             __m128 dotProd = _mm_mul_ps(q.m_quaternion, r.m_quaternion);
@@ -117,6 +199,10 @@ namespace Hatchit {
             return MMVectorGetX(dotProd);
         }
 
+        /** Creates a copy of given quaternion with unit length
+        * \param q Quaternion to normalize
+        * \return Normalized Quaternion
+        */
         inline Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q)
         {
             __m128 dotProd = _mm_mul_ps(q.m_quaternion, q.m_quaternion);
@@ -126,16 +212,30 @@ namespace Hatchit {
             return Quaternion(_mm_div_ps(q.m_quaternion, dotProd));
         }
 
+        /** Calculates the magnitude (length) of the given quaternion
+        * \param q Quaternion to calculate Magnitude from
+        * \return magnitude (length) of quaternion
+        */
         inline float _MM_CALLCONV MMQuaternionMagnitude(const Quaternion& q)
         {
             return sqrtf(MMQuaternionMagnitudeSqr(q));
         }
 
+        /** Calculates the square magnitude (square length) of the given quaternion
+        * NOTE: This function is faster then MMQuaternionMagnitude, use when comparing
+        * magnitudes of quaternions
+        * \param q Quaternion to calculate square magnitude from
+        * \return Square of magnitude (length) of quaternion
+        */
         inline float _MM_CALLCONV MMQuaternionMagnitudeSqr(const Quaternion& q)
         {
             return MMQuaternionDot(q, q);
         }
 
+        /** Calculates the conjugate of the given Quaternion
+        * \param q Quaternion to get conjugate from
+        * \return Conjugate of Quaternion.
+        */
         inline Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q)
         {
             static const __m128 signMask = _mm_castsi128_ps(_mm_setr_epi32(0, -1, -1, -1));

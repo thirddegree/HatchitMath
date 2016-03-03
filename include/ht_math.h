@@ -349,11 +349,29 @@ namespace Hatchit {
         class _MM_ALIGN16 Quaternion
         {
         public:
+
+            /****************************************************
+            *	Constructors
+            *****************************************************/
+
             Quaternion();
             Quaternion(const Vector3& axis, float angle);
             Quaternion(float x, float y, float z, float w);
             Quaternion(float roll, float pitch, float yaw);
             explicit Quaternion(__m128 quatData);
+
+            /****************************************************
+            *	 Custom allocation/deallocation
+            *****************************************************/
+
+            void* operator new(size_t _size);
+            void  operator delete(void* p);
+            void* operator new[](size_t size);
+            void  operator delete[](void* p);
+
+            /****************************************************
+            *	Operators
+            *****************************************************/
 
             bool        operator==  (const Quaternion& p_rhs)   const;
             bool        operator!=  (const Quaternion& p_rhs)   const;
@@ -361,6 +379,7 @@ namespace Hatchit {
             Quaternion  operator+   (const Quaternion& p_rhs)   const;
             Quaternion  operator-   (const Quaternion& p_rhs)   const;
             Quaternion  operator*   (const Quaternion& p_rhs)   const;
+
             Quaternion& operator+=  (const Quaternion& p_rhs);
             Quaternion& operator-=  (const Quaternion& p_rhs);
             Quaternion& operator*=  (const Quaternion& p_rhs);
