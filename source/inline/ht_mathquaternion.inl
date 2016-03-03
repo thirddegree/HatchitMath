@@ -138,7 +138,7 @@ namespace Hatchit {
 
         inline Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q)
         {
-            static const __m128 signMask = _mm_castsi128_ps(_mm_setr_epi32(0, -1, 0, -1));
+            static const __m128 signMask = _mm_castsi128_ps(_mm_setr_epi32(0, -1, -1, -1));
             return Quaternion(_mm_xor_ps(q.m_quaternion, signMask));
         }
     }
