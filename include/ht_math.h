@@ -164,7 +164,7 @@ namespace Hatchit {
             *	Operators
             *****************************************************/
 
-                            operator __m128(void)           const;
+                explicit    operator __m128(void)           const;
             Vector2         operator+   (float s)           const;
             Vector2         operator-   (float s)           const;
             Vector2         operator*   (float s)           const;
@@ -237,7 +237,7 @@ namespace Hatchit {
             *	Operators
             *****************************************************/
 
-            operator const __m128(void)   const;
+            explicit operator const __m128(void)   const;
 			Vector3 operator+   (float s) const;
 			Vector3 operator-   (float s) const;
             Vector3 operator*   (float s) const;
@@ -305,7 +305,7 @@ namespace Hatchit {
             /****************************************************
             *	Operators
             *****************************************************/
-            operator __m128(void) const;  
+            explicit operator __m128(void) const;  
             Vector4 operator*   (float s) const; 
             Vector4 operator/   (float s) const;  
             Vector4 operator-   (float s) const;

@@ -242,7 +242,7 @@ TEST(Vector3, ArrayNotationOperator)
 TEST(Vector3, Vector4ConversionOperator)
 {
   Vector3 vector(1,2,3);
-  Vector4 result = (Vector4)vector;
+  Vector4 result = Vector4(vector, 1.f);
 
   ASSERT_EQ(result[0], 1);
   ASSERT_EQ(result[1], 2);
