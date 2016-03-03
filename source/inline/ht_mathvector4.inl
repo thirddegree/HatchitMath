@@ -1,4 +1,5 @@
 #include <ht_malloc.h>
+#include "..\..\include\ht_math.h"
 
 namespace Hatchit
 {
@@ -49,6 +50,9 @@ namespace Hatchit
 
         //Create a Vector4 with all 4 elements being 0
         inline Vector4::Vector4() : m_vector(_mm_setzero_ps()) {}
+
+		//Create a vector4 using x and y from a vector 2 and z and w from floats
+		inline Vector4::Vector4(const Vector2 & xy, float z, float w) : m_vector(_mm_set_ps(xy[0], xy[1], z, w)) {}
 
         //Create a Vector4 with the elements x, y and z
 		inline Vector4::Vector4(float x, float y, float z, float w) : m_vector(MMVectorSet(x, y, z, w)) {}
@@ -195,8 +199,7 @@ namespace Hatchit
             //Could add and subtract epsilon from rhs.m_vector, compare less than /
             //greater than, logic and the components and then check in the future
             //If this is too strict.
-            __m128 compMask = _mm_cmpeq_ps(m_vector, rhs.m_vector);
-            return _mm_movemask_ps(compMask) == 15;
+            return MMVectorEqual(m_vector, rhs.m_vector);
         }
 
         /** Compares the values of this Vector4 to another given Vector4

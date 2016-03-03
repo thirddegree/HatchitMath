@@ -287,7 +287,7 @@ TEST(Vector3Static, Normalize)
 
     float inv = 1.0f / 7.07107f;
 
-    ASSERT_NEAR(normal.x, 3.0f * inv, 0.00001f);
-    ASSERT_NEAR(normal.y, 4.0f * inv, 0.00001f);
-    ASSERT_NEAR(normal.z, 5.0f * inv, 0.00001f);
+    ASSERT_NEAR(normal.x, 3.0f * inv, 0.0001f);
+    ASSERT_NEAR(normal.y, 4.0f * inv, 0.0001f);
+    ASSERT_NEAR(normal.z, 5.0f * inv, 0.0001f);
 }

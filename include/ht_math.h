@@ -147,6 +147,7 @@ namespace Hatchit {
             *	Constructors
             *****************************************************/
             Vector2();
+			Vector2(float xy);
             Vector2(float x, float y);
             Vector2(const Vector2& other);
             explicit Vector2(const __m128& vector);
@@ -173,10 +174,6 @@ namespace Hatchit {
             Vector2&        operator-=  (float s);
             Vector2&        operator*=  (float s);
             Vector2&        operator/=  (float s);
-            bool            operator>   (const Vector2& u)  const;
-            bool            operator<   (const Vector2& u)  const;
-            bool            operator==  (const Vector2& u)  const;
-            bool            operator!=  (const Vector2& u)  const;
             Vector2         operator+   (const Vector2& u)  const;
             Vector2         operator-   (const Vector2& u)  const;
             Vector2         operator*   (const Vector2& u)  const;
@@ -185,6 +182,11 @@ namespace Hatchit {
             Vector2&        operator-=  (const Vector2& u);
             Vector2&        operator*=  (const Vector2& u);
             Vector2&        operator/=  (const Vector2& u);
+
+			bool            operator>   (const Vector2& u)  const;
+			bool            operator<   (const Vector2& u)  const;
+			bool            operator==  (const Vector2& u)  const;
+			bool            operator!=  (const Vector2& u)  const;
             const float&    operator[]  (size_t i)          const;
             float&          operator[]  (size_t i);
 
@@ -215,7 +217,7 @@ namespace Hatchit {
         // Vector3 definition
         /////////////////////////////////////////////////////////
 
-        class Vector3
+        class _MM_ALIGN16 Vector3
         {
             friend class Matrix4;
         public:
@@ -224,6 +226,8 @@ namespace Hatchit {
             *	Constructors
             *****************************************************/
             Vector3();
+			Vector3(float xyz);
+			Vector3(Vector2 xy, float z);
             Vector3(float x, float y, float z);
             Vector3(const Vector3& other);
 
@@ -281,7 +285,7 @@ namespace Hatchit {
         // MM Vector4 Definition
         /////////////////////////////////////////////////////////
 
-        class Vector4
+        class _MM_ALIGN16 Vector4
         {
         public:
 
@@ -290,9 +294,10 @@ namespace Hatchit {
             *****************************************************/
             
             Vector4();
+			Vector4(const Vector2& xy, float z, float w);
+			Vector4(const Vector3& xyz, float w);
             Vector4(float x, float y, float z, float w);
             Vector4(const Vector4& other);
-            Vector4(const Vector3& v3, float w);
             explicit Vector4(__m128 v);
 
 			/****************************************************
@@ -343,6 +348,63 @@ namespace Hatchit {
         std::istream& operator>> (std::istream& input,  Vector4& h);
 
         /////////////////////////////////////////////////////////
+        // MM Quaternion Definition
+        /////////////////////////////////////////////////////////
+
+        class _MM_ALIGN16 Quaternion
+        {
+        public:
+
+            /****************************************************
+            *	Constructors
+            *****************************************************/
+
+            Quaternion();
+            Quaternion(const Vector3& axis, float angle);
+            Quaternion(float x, float y, float z, float w);
+            Quaternion(float roll, float pitch, float yaw);
+            explicit Quaternion(__m128 quatData);
+
+            /****************************************************
+            *	 Custom allocation/deallocation
+            *****************************************************/
+
+            void* operator new(size_t _size);
+            void  operator delete(void* p);
+            void* operator new[](size_t size);
+            void  operator delete[](void* p);
+
+            /****************************************************
+            *	Operators
+            *****************************************************/
+
+            bool        operator==  (const Quaternion& p_rhs)   const;
+            bool        operator!=  (const Quaternion& p_rhs)   const;
+
+            Quaternion  operator+   (const Quaternion& p_rhs)   const;
+            Quaternion  operator-   (const Quaternion& p_rhs)   const;
+            Quaternion  operator*   (const Quaternion& p_rhs)   const;
+
+            Quaternion& operator+=  (const Quaternion& p_rhs);
+            Quaternion& operator-=  (const Quaternion& p_rhs);
+            Quaternion& operator*=  (const Quaternion& p_rhs);
+
+            explicit operator __m128() const;
+
+        public:
+            union
+            {
+                __m128 m_quaternion;
+                struct
+                {
+                    float x, y, z, w;
+                };
+                float data[4];
+            };
+        };
+
+
+        /////////////////////////////////////////////////////////
         // MM Instrinsic Functions
         /////////////////////////////////////////////////////////
 
@@ -366,6 +428,8 @@ namespace Hatchit {
         __m128 _MM_CALLCONV MMVectorSetW(__m128 v, float w);
 
         __m128 _MM_CALLCONV MMVectorSetXRaw(__m128 v, const float* x);
+
+        bool   _MM_CALLCONV MMVectorEqual(__m128 v, __m128 u);
 
 
         //////////////////////////////////////////////////////////
@@ -399,6 +463,7 @@ namespace Hatchit {
         float	_MM_CALLCONV MMVector3Dot(const Vector3& v, const Vector3& u);
         Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v);
         float   _MM_CALLCONV MMVector3Magnitude(const Vector3& v);
+		float   _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v);
 
         
         //////////////////////////////////////////////////////////
@@ -407,6 +472,16 @@ namespace Hatchit {
         float   _MM_CALLCONV MMVector4Dot(const Vector4& v, const Vector4& u);
         Vector4 _MM_CALLCONV MMVector4Normalize(const Vector4& v);
         float   _MM_CALLCONV MMVector4Magnitude(const Vector4& v);
+
+
+        //////////////////////////////////////////////////////////
+        // MM Quaternion Operations
+        //////////////////////////////////////////////////////////
+        float   _MM_CALLCONV MMQuaternionDot(const Quaternion& q, const Quaternion& r);
+        Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q);
+        float   _MM_CALLCONV MMQuaternionMagnitude(const Quaternion& q);
+        float   _MM_CALLCONV MMQuaternionMagnitudeSqr(const Quaternion& q);
+        Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q);
     }
 }
 
@@ -417,3 +492,4 @@ namespace Hatchit {
 #include <ht_mathvector3.inl>
 #include <ht_mathvector4.inl>
 #include <ht_mathmatrix.inl>
+#include <ht_mathquaternion.inl>

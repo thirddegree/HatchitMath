@@ -117,7 +117,6 @@ namespace Hatchit {
             __m128 temp = _mm_set_ss(w);
 
             result = _mm_move_ss(result, temp);
-
             result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(0, 2, 1, 3));
 
             return result;
@@ -165,5 +164,10 @@ namespace Hatchit {
             return result;
         }
 
+        inline bool _MM_CALLCONV MMVectorEqual(__m128 v, __m128 u)
+        {
+            __m128 compMask = _mm_cmpeq_ps(v, u);
+            return _mm_movemask_ps(compMask) == 15;
+        }
     }
 }
