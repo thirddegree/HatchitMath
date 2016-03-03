@@ -319,14 +319,13 @@ namespace Hatchit {
         */
         inline Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v)
         {
-            assert(MMVector3Magnitude(v) > 0.0f);
+            assert(MMVector3MagnitudeSqr(v) > 0.0f);
             Vector3 normalizedVec;
 
             __m128 vecMul = _mm_mul_ps(v.m_vector, v.m_vector);
             __m128 addedVec = _mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 1, 0, 2)));
             addedVec = _mm_add_ps(addedVec, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 0, 2, 1)));
-            addedVec = MMVectorSetW(_mm_rsqrt_ps(addedVec), 1.0f);
-            normalizedVec.m_vector = _mm_mul_ps(v.m_vector, addedVec);
+            normalizedVec.m_vector = _mm_mul_ps(v.m_vector, _mm_rsqrt_ps(addedVec));
 
             return normalizedVec;
         }
@@ -338,6 +337,14 @@ namespace Hatchit {
         {
             return sqrtf(MMVector3Dot(v, v));
         }
+
+		/** Returns the magnitude of the vector
+		* \return The magnitude as a float
+		*/
+		inline float _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v)
+		{
+			return MMVector3Dot(v, v);
+		}
 
         /** An outstream operator for a Vector3 to interace with an ostream
         * \param output The ostream to output to

@@ -463,6 +463,7 @@ namespace Hatchit {
         float	_MM_CALLCONV MMVector3Dot(const Vector3& v, const Vector3& u);
         Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v);
         float   _MM_CALLCONV MMVector3Magnitude(const Vector3& v);
+		float   _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v);
 
         
         //////////////////////////////////////////////////////////
