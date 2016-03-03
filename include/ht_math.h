@@ -238,24 +238,29 @@ namespace Hatchit {
             *****************************************************/
 
             operator const __m128(void)   const;
+			Vector3 operator+   (float s) const;
+			Vector3 operator-   (float s) const;
             Vector3 operator*   (float s) const;
             Vector3 operator/   (float s) const;
-            Vector3 operator-   (float s) const;
-            Vector3 operator+   (float s) const;
+			Vector3 operator+=  (float s);
+			Vector3 operator-=  (float s);
             Vector3 operator*=  (float s);
             Vector3 operator/=  (float s);
-            Vector3 operator-=  (float s);
-            Vector3 operator+=  (float s);
+			Vector3 operator+   (const Vector3& u) const;
+			Vector3 operator-   (const Vector3& u) const;
+			Vector3 operator*   (const Vector3& u) const;
+			Vector3 operator/   (const Vector3& u) const;
+			Vector3 operator+=  (const Vector3& u);
+			Vector3 operator-=  (const Vector3& u);
+			Vector3 operator*=  (const Vector3& u);
+			Vector3 operator/=  (const Vector3& u);
+
             bool    operator>   (const Vector3& u) const;
             bool    operator<   (const Vector3& u) const;
             bool    operator==  (const Vector3& u) const;
             bool    operator!=  (const Vector3& u) const;
-            Vector3 operator*   (const Vector3& u) const;
-            Vector3 operator+   (const Vector3& u) const;
-            Vector3 operator-   (const Vector3& u) const;
-            Vector3 operator+=  (const Vector3& u);
-            Vector3 operator-=  (const Vector3& u);
             const float&  operator[]  (int i) const;
+			const float&  operator[]  (int i);
           
 
             union
