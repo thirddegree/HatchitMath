@@ -117,7 +117,6 @@ namespace Hatchit {
             __m128 temp = _mm_set_ss(w);
 
             result = _mm_move_ss(result, temp);
-
             result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(0, 2, 1, 3));
 
             return result;

@@ -147,7 +147,7 @@ namespace Hatchit {
             *	Constructors
             *****************************************************/
             Vector2();
-			Vector2(float x);
+			Vector2(float xy);
             Vector2(float x, float y);
             Vector2(const Vector2& other);
             explicit Vector2(const __m128& vector);
@@ -174,10 +174,6 @@ namespace Hatchit {
             Vector2&        operator-=  (float s);
             Vector2&        operator*=  (float s);
             Vector2&        operator/=  (float s);
-            bool            operator>   (const Vector2& u)  const;
-            bool            operator<   (const Vector2& u)  const;
-            bool            operator==  (const Vector2& u)  const;
-            bool            operator!=  (const Vector2& u)  const;
             Vector2         operator+   (const Vector2& u)  const;
             Vector2         operator-   (const Vector2& u)  const;
             Vector2         operator*   (const Vector2& u)  const;
@@ -186,6 +182,11 @@ namespace Hatchit {
             Vector2&        operator-=  (const Vector2& u);
             Vector2&        operator*=  (const Vector2& u);
             Vector2&        operator/=  (const Vector2& u);
+
+			bool            operator>   (const Vector2& u)  const;
+			bool            operator<   (const Vector2& u)  const;
+			bool            operator==  (const Vector2& u)  const;
+			bool            operator!=  (const Vector2& u)  const;
             const float&    operator[]  (size_t i)          const;
             float&          operator[]  (size_t i);
 
@@ -225,6 +226,8 @@ namespace Hatchit {
             *	Constructors
             *****************************************************/
             Vector3();
+			Vector3(float xyz);
+			Vector3(Vector2 xy, float z);
             Vector3(float x, float y, float z);
             Vector3(const Vector3& other);
 
@@ -291,9 +294,10 @@ namespace Hatchit {
             *****************************************************/
             
             Vector4();
+			Vector4(const Vector2& xy, float z, float w);
+			Vector4(const Vector3& xyz, float w);
             Vector4(float x, float y, float z, float w);
             Vector4(const Vector4& other);
-            Vector4(const Vector3& v3, float w);
             explicit Vector4(__m128 v);
 
 			/****************************************************

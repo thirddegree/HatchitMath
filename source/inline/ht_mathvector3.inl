@@ -13,6 +13,12 @@ namespace Hatchit {
         //Create a Vector3 with all 3 elements being 0
         inline Vector3::Vector3() : m_vector(_mm_setzero_ps()) {}
 
+		//Create a Vector3 with the same value in all elements
+		inline Vector3::Vector3(float xyz) : m_vector(_mm_set_ps1(xyz)) {}
+
+		//Create a Vector3 using x and y from a Vector2, and z from a float
+		inline Vector3::Vector3(Vector2 xy, float z) : m_vector(MMVectorSetZRaw(static_cast<__m128>(xy), &z)) {}
+
         //Create a Vector3 with the elements x, y and z
         inline Vector3::Vector3(float x, float y, float z) : m_vector(MMVectorSet(x, y, z, 0.0f)) {}
 
@@ -59,11 +65,7 @@ namespace Hatchit {
 		inline Vector3 Vector3::operator-(float s) const
 		{
 			Vector3 vec;
-
-			__m128 product = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
-
-			vec.m_vector = product;
-
+			vec.m_vector = _mm_sub_ps(m_vector, MMVectorSet(s, s, s, 0.0f));
 			return vec;
 		}
 		/** Multiplies all elements in this Vector3 by a given scalar
@@ -73,13 +75,9 @@ namespace Hatchit {
 		*/
 		inline Vector3 Vector3::operator*(float s) const
 		{
-			Vector3 vec;
-
-			__m128 product = _mm_mul_ps(m_vector, _mm_set_ps1(s));
-
-			vec.m_vector = product;
-
-			return vec;
+			Vector3 result;
+			result.m_vector = _mm_mul_ps(m_vector, _mm_set_ps1(s));
+			return result;
 		}
 		/** Divides all elements in this Vector3 by a given scalar
 		* This operation returns a new Vector3
@@ -89,14 +87,9 @@ namespace Hatchit {
 		inline Vector3 Vector3::operator/(float s) const
 		{
 			assert(s != 0.0f);
-
-			Vector3 vec;
-
-			__m128 product = _mm_div_ps(m_vector, _mm_set_ps1(s));
-
-			vec.m_vector = product;
-
-			return vec;
+			Vector3 result;
+			result.m_vector = _mm_div_ps(m_vector, _mm_set_ps1(s));
+			return result;
 		}
 		/** Adds all elements in this Vector3 by a given scalar
 		* This operation affects the elements in this Vector3
