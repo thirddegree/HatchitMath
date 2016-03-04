@@ -239,26 +239,6 @@ TEST(Vector3, ArrayNotationOperator)
   ASSERT_EQ(vector[2], 5);
 }
 
-TEST(Vector3, Vector4ConversionOperator)
-{
-  Vector3 vector(1,2,3);
-  Vector4 result = (Vector4)vector;
-
-  ASSERT_EQ(result[0], 1);
-  ASSERT_EQ(result[1], 2);
-  ASSERT_EQ(result[2], 3);
-  ASSERT_EQ(result[3], 1);
-}
-
-/*TEST(Vector3, Vector2ConversionOperator)
-{
-  Vector3 vector(1,2,3);
-  Vector2 result = (Vector2)vector;
-
-  ASSERT_EQ(result[0], 1);
-  ASSERT_EQ(result[1], 2);
-}*/
-
 TEST(Vector3Static, DotProduct)
 {
     Vector3 vector1(1,2,3);
@@ -287,7 +267,7 @@ TEST(Vector3Static, Normalize)
 
     float inv = 1.0f / 7.07107f;
 
-    ASSERT_NEAR(normal.x, 3.0f * inv, 0.0001f);
-    ASSERT_NEAR(normal.y, 4.0f * inv, 0.0001f);
-    ASSERT_NEAR(normal.z, 5.0f * inv, 0.0001f);
+    ASSERT_NEAR(normal.x, 3.0f * inv, 0.00001f);
+    ASSERT_NEAR(normal.y, 4.0f * inv, 0.00001f);
+    ASSERT_NEAR(normal.z, 5.0f * inv, 0.00001f);
 }

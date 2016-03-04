@@ -532,7 +532,7 @@ namespace Hatchit
             z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(0, 1, 2, 3)));
             z = _mm_add_ps(z, _mm_shuffle_ps(z, z, _MM_SHUFFLE(2, 3, 0, 1)));
 
-            __m128 w = _mm_mul_ps(m_rows[2], vec.m_vector);
+            __m128 w = _mm_mul_ps(m_rows[3], vec.m_vector);
             w = _mm_add_ps(w, _mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 1, 2, 3)));
             w = _mm_add_ps(w, _mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 3, 0, 1)));
 
