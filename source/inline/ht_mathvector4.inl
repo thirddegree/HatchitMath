@@ -1,5 +1,5 @@
 #include <ht_malloc.h>
-#include "..\..\include\ht_math.h"
+#include <ht_math.h>
 
 namespace Hatchit
 {
