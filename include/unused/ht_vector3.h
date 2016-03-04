@@ -27,16 +27,18 @@
 #include <ht_platform.h>
 #include <iostream>
 #include <ostream>
+#include <ht_scalar.h>
 
 namespace Hatchit
 {
 	namespace Math
 	{
-		class Vector4;
 		class Vector2;
+		class Vector4;
 
 		class HT_API Vector3
 		{
+		friend class Matrix4;
 		public:
 			//Constructors
 			///Create a Vector3 with all 3 elements being 0
@@ -48,8 +50,13 @@ namespace Hatchit
 			///Create a Vector3 with the first three elements of a given Vector4 all divided by the 4th element
 			Vector3(Vector4& v4);
 
-			//Destructor
-			virtual ~Vector3();
+			//Custom allocation/deallocation
+			///Allocate a 16byte aligned array of Vector3s
+			void* operator new(size_t _size);
+			///Delete an array of Vector3s
+			void  operator delete(void* p);
+			///Fetch the Vector3's SSE intrinsic __m128
+			operator const __m128(void) const;
 
 			//Accessors & Mutators
 			///Returns the first element \return The first element
@@ -214,7 +221,7 @@ namespace Hatchit
 			operator Vector2();
 
 		private:
-			float vector[3];
+			__m128 m_vector;
 		};
 
 		/** An insertion operator for a Vector3 to interace with an ostream

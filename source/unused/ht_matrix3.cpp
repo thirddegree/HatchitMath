@@ -12,8 +12,7 @@
 **
 **/
 
-#include <ht_matrix3.h>
-#include <ht_matrix4.h>
+#include <ht_math.h>
 
 namespace Hatchit {
 
@@ -164,11 +163,6 @@ namespace Hatchit {
 
         float* Matrix3::operator[](int i){ return matrix[i]; }
 
-        /*
-        Destructor
-        */
-
-        Matrix3::~Matrix3(){}
 
 
     }

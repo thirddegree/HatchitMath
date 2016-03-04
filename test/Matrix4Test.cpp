@@ -13,8 +13,7 @@
 **/
 
 #include <gtest/gtest.h>
-#include "ht_matrix3.h"
-#include "ht_matrix4.h"
+#include "ht_math.h"
 
 using namespace Hatchit;
 using namespace Math;
@@ -83,13 +82,13 @@ TEST(Matrix4, Vector3Constructor)
 
   /** The resulting matrix fills in a few values so that it will match this
    * layout:
-   * 1, 2, 3 0
+   * 1, 2, 3, 0
    * 4, 5, 6, 0
    * 7, 8, 9, 0
    * 10, 11, 12, 1
    */
   Matrix4 matrix(row1, row2, row3, row4);
-
+  
   for(int i = 0; i < 4; i++)
   {
     Vector3 row = rows[i];
@@ -117,7 +116,7 @@ TEST(Matrix4, Vector4Constructor)
   Vector4 rows[] = {row1, row2, row3, row4};
 
   Matrix4 matrix(row1, row2, row3,row4);
-
+  
   for(int i = 0; i < 4; i++)
   {
     Vector4 row = rows[i];
@@ -132,7 +131,7 @@ TEST(Matrix4, Transposition)
                  4,3,2,1,
                  3,2,4,1,
                  3,1,4,2);
-  Matrix4 transpose = matrix.getTranspose();
+  Matrix4 transpose = MMMatrixTranspose(matrix);
 
   //Result taken from wolfram alpha
   //http://www.wolframalpha.com/input/?i=matrix+transpose&a=*C.matrix+transpose-_*Calculator.dflt-&f2={{1%2C2%2C3%2C4}%2C{4%2C3%2C2%2C1}%2C{3%2C2%2C4%2C1}%2C{3%2C1%2C4%2C2}}&f=MatrixOperations.theMatrix_{{1%2C2%2C3%2C4}%2C{4%2C3%2C2%2C1}%2C{3%2C2%2C4%2C1}%2C{3%2C1%2C4%2C2}}
@@ -163,26 +162,17 @@ TEST(Matrix4, Inversion)
                  4,3,2,1,
                  3,2,4,1,
                  3,1,4,2);
-  Matrix4 inversion = matrix.getInverse();
+  Matrix4 inversion = MMMatrixInverse(matrix);
 
-  float* result = (inversion * matrix).getAsArray();
-  float* identity = Matrix4().getAsArray();
+  float* result = (inversion * matrix).data;
+  float* identity = Matrix4().data;
 
   // A matrix multiplied by its inverse should be an identity matrix
   for(int i = 0; i < 16; i++)
   {
     // Using ASSERT_NEAR because floating point values aren't exact
-    ASSERT_NEAR(result[i], identity[i], 0.000001f);
+    ASSERT_NEAR(result[i], identity[i], 0.0002f);
   }
-}
-
-TEST(Matrix4, GetAsArray)
-{
-    Matrix4 matrix(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
-    float* array = matrix.getAsArray();
-
-    for(int i = 0; i < 16; i++)
-      ASSERT_EQ(array[i], i+1);
 }
 
 TEST(Matrix4, Matrix4MultiplicationOperator)
@@ -219,21 +209,6 @@ TEST(Matrix4, Matrix4MultiplicationOperator)
   ASSERT_EQ(result[3][3], 51);
 }
 
-TEST(Matrix4, Vector3MultiplicationOperator)
-{
-  Matrix4 matrix(1,2,3,4,
-                 4,3,2,1,
-                 3,2,4,1,
-                 3,1,4,2);
-  Vector3 vector(1,2,3);
-
-  Vector3 result = matrix * vector;
-
-  ASSERT_EQ(result[0], 18);
-  ASSERT_EQ(result[1], 17);
-  ASSERT_EQ(result[2], 20);
-}
-
 TEST(Matrix4, Vector4MultiplicationOperator)
 {
   Matrix4 matrix(1,2,3,4,
@@ -250,25 +225,6 @@ TEST(Matrix4, Vector4MultiplicationOperator)
   ASSERT_EQ(result[3], 25);
 }
 
-TEST(Matrix4, Matrix3ConversionOperator)
-{
-  Matrix4 matrix(1,2,3,4,
-                 4,5,6,1,
-                 7,8,9,1,
-                 3,1,4,2);
-  Matrix3 result = (Matrix3)matrix;
-
-  int value = 0;
-  for(int i = 0; i < 3; i++)
-  {
-    for(int j = 0; j < 3; j++)
-    {
-      value++;
-      ASSERT_EQ(result[i][j], value);
-    }
-  }
-}
-
 TEST(Matrix4Static, OrthographicProjection)
 {
   float left = -50;
@@ -278,7 +234,7 @@ TEST(Matrix4Static, OrthographicProjection)
   float _near = 0.1f;
   float _far = 100;
 
-  Matrix4 ortho = Matrix4::GetOrthographicProjection(left, right, bottom, top, _near, _far);
+  Matrix4 ortho = MMMatrixOrthoProj(left, right, bottom, top, _near, _far);
 
   ASSERT_NEAR(ortho[0][0], 0.02f, 0.00001f);
   ASSERT_NEAR(ortho[0][1], 0.0f, 0.00001f);
@@ -303,20 +259,20 @@ TEST(Matrix4Static, OrthographicProjection)
 
 TEST(Matrix4Static, GetPerspectiveProjection)
 {
-  float fov = 90.0f;
+  float fov = PiDiv2;
   float aspect = 16.0f / 9.0f;
   float _near = 0.1f;
   float _far = 100.0f;
 
-  Matrix4 persp = Matrix4::GetPerspectiveProjection(fov, aspect, _near, _far);
+  Matrix4 persp = MMMatrixPerspProj(fov, aspect, _near, _far);
 
-  ASSERT_NEAR(persp[0][0], .34727f, 0.00001f);
+  ASSERT_NEAR(persp[0][0], 1.77778f, 0.00001f);
   ASSERT_NEAR(persp[0][1], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[0][2], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[0][3], 0.0f, 0.00001f);
 
   ASSERT_NEAR(persp[1][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][1], 0.61737f, 0.00001f);
+  ASSERT_NEAR(persp[1][1], 1.0f, 0.00001f);
   ASSERT_NEAR(persp[1][2], 0.0f, 0.00001f);
   ASSERT_NEAR(persp[1][3], 0.0f, 0.00001f);
 
@@ -337,7 +293,7 @@ TEST(Matrix4Static, GetLookAtView)
   Vector3 center(15,20,25);
   Vector3 up(0,1,0);
 
-  Matrix4 lookAt = Matrix4::GetLookAtView(eye,center,up);
+  Matrix4 lookAt = MMMatrixLookAt(eye,center,up);
 
   ASSERT_NEAR(lookAt[0][0], -0.894427f, 0.00001f);
   ASSERT_NEAR(lookAt[0][1], -0.249136f, 0.00001f);

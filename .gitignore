@@ -1,5 +1,6 @@
 # Build directories
 [Bb]uild/
+_[Bb]uild/
 
 # Compiled Object files
 *.slo
@@ -20,3 +21,6 @@
 *.dll
 *.lib
 *.a
+
+# Vim
+*.swp

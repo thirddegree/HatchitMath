@@ -42,10 +42,15 @@ namespace Hatchit
 	{
 		class HT_API Quaternion
 		{
+
 		public:
 			//Constructors
 			///Creates an identity Quaterion with elements 1,0,0,0
 			Quaternion();
+			///creates a quaternion from a pointer to an array of 4 floats
+			Quaternion(float* m_vector);
+
+
 			/** Creates a Quaterion with elements set to the given values
 			 * \param x The first element
 			 * \param y The second element
@@ -75,49 +80,17 @@ namespace Hatchit
 			 * \return The inverse of this Quaterion
 			 */
 			Quaternion getInverse();
+
 			/** Returns this Quaterion's rotation in Angle-Axis form with a Vector4
 			 * \return The rotation described by this Quaterion in Angle-Axis form
 			 */
 			Vector4 getAxisAngle();
+
 			/** Returns this Quaterion's rotation in Matrix form
 			 * \return The rotation described by this quaterion in Matrix3 form
 			 */
-			Matrix3 getRotationMatrix();
+			Matrix4 getRotationMatrix();
 
-			//Accessors and mutators
-
-			///Returns the fourth element \return The first element
-			float getW();
-			///Returns the first element \return The second element
-			float getX();
-			///Returns the second element \return The third element
-			float getY();
-			///Returns the third element \return The fourth element
-			float getZ();
-
-			/** Sets the fourth element
-			 * \param w The float you want to be the first element of this vector
-			 */
-			void setW(float w);
-			/** Sets the first element
-			 * \param x The float you want to be the second element of this vector
-			 */
-			void setX(float x);
-			/** Sets the second element
-			 * \param y The float you want to be the third element of this vector
-			 */
-			void setY(float y);
-			/** Sets the third element
-			 * \param z The float you want to be the fourth element of this vector
-			 */
-			void setZ(float z);
-
-			/** Fetches an element of this Quaterion at the index i
-			 * \param i The index of the element to fetch
-			 * \return A float that is stored in this Quaterion at the index i
-			 * This will throw an index out of range exception if you go beyond an index if 1
-			 */
-			float& operator[] (int i);
 
 			/** Multiplies this quaterion with another and returns the product
 			 * \param other The other quaternion to multiply into this one
@@ -125,8 +98,16 @@ namespace Hatchit
 			 */
 			Quaternion operator* (Quaternion other);
 
-		private:
-			float q[4];
+		public:
+			union
+			{
+				__m128 m_vector;
+				struct
+				{
+					float w, x, y, z;
+				};
+				float data[4];
+			};
 			void normalize();
 		};
 

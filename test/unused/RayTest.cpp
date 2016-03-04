@@ -14,6 +14,7 @@
 
 #include <gtest/gtest.h>
 #include "ht_ray.h"
+#include <cfloat>
 
 using namespace Hatchit;
 using namespace Math;
@@ -27,9 +28,9 @@ TEST(Ray, DirectionConstructor)
   Vector3 direction = ray.getDirection();
 
   //Origin should stay 0,0,0
-  ASSERT_EQ(origin[0], 0);
-  ASSERT_EQ(origin[1], 0);
-  ASSERT_EQ(origin[2], 0);
+  ASSERT_NEAR(origin[0], 0, FLT_EPSILON);
+  ASSERT_NEAR(origin[1], 0, FLT_EPSILON);
+  ASSERT_NEAR(origin[2], 0, FLT_EPSILON);
 
   //Direction should stay 1,2,3
   ASSERT_EQ(direction[0], 1);

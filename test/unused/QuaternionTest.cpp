@@ -15,7 +15,7 @@
 #define _USE_MATH_DEFINES
 
 #include <gtest/gtest.h>
-#include "ht_quaternion.h"
+#include "ht_math.h"
 
 using namespace Hatchit;
 using namespace Math;
@@ -57,6 +57,7 @@ TEST(Quaternion, AxisAngleConstructor)
   //Based off: http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/
 
   float angle = M_PI/2; //90 degrees
+
   Vector4 angleAxis(1, 0, 0, angle);
 
   Quaternion quat(angleAxis);
@@ -113,7 +114,6 @@ TEST(Quaternion, GetRotationMatrix)
   ASSERT_NEAR(mat[2][2], 1, 0.0001f);
 }
 
-//TODO: Finish
 TEST(Quaternion, MultiplicationOperator)
 {
   Quaternion quat1(-sinf(M_PI),3, 4, 3);
