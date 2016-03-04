@@ -17,7 +17,7 @@ namespace Hatchit {
 		inline Vector3::Vector3(float xyz) : m_vector(_mm_set_ps1(xyz)) {}
 
 		//Create a Vector3 using x and y from a Vector2, and z from a float
-		inline Vector3::Vector3(Vector2 xy, float z) : m_vector(MMVectorSetZRaw(static_cast<__m128>(xy), &z)) {}
+		inline Vector3::Vector3(const Vector2& xy, float z) : m_vector(MMVectorSetZRaw(static_cast<__m128>(xy), &z)) {}
 
         //Create a Vector3 with the elements x, y and z
         inline Vector3::Vector3(float x, float y, float z) : m_vector(MMVectorSet(x, y, z, 0.0f)) {}
@@ -325,7 +325,7 @@ namespace Hatchit {
             __m128 vecMul = _mm_mul_ps(v.m_vector, v.m_vector);
             __m128 addedVec = _mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 1, 0, 2)));
             addedVec = _mm_add_ps(addedVec, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 0, 2, 1)));
-            normalizedVec.m_vector = _mm_mul_ps(v.m_vector, _mm_rsqrt_ps(addedVec));
+            normalizedVec.m_vector = _mm_div_ps(v.m_vector, _mm_sqrt_ps(addedVec));
 
             return normalizedVec;
         }
