@@ -115,7 +115,7 @@ namespace Hatchit
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
             float height = 1.0f / tanf(0.5f * fov);
-            float width = height / aspect;
+            float width = height * aspect;
             float depth = zfar - znear;
 
             return Matrix4( width,  0.0f,   0.0f,   0.0f,
