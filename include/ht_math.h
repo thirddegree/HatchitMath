@@ -56,6 +56,11 @@ namespace Hatchit {
 
     namespace Math {
 
+        constexpr float Pi = 3.1415926535897932384626433832795f;
+        constexpr float PiDiv2 = Pi / 2.0f;
+        constexpr float PiDiv4 = Pi / 4.0f;
+        constexpr float PiMul2 = Pi * 2.0f;
+
         class Vector2;
         class Vector3;
         class Vector4;
