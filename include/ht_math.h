@@ -227,7 +227,7 @@ namespace Hatchit {
             *****************************************************/
             Vector3();
 			Vector3(float xyz);
-			Vector3(Vector2 xy, float z);
+			Vector3(const Vector2& xy, float z);
             Vector3(float x, float y, float z);
             Vector3(const Vector3& other);
 
