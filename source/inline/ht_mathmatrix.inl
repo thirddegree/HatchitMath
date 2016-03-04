@@ -114,17 +114,14 @@ namespace Hatchit
         inline Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar)
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
+            float height = 1.0f / tanf(0.5f * fov);
+            float width = height * aspect;
             float depth = zfar - znear;
-            float v = -(zfar + znear) / depth;
-            float qn = -2 * (zfar * znear) / depth;
 
-            float h = atanf(0.5f * fov);
-            float w = h / aspect;
-
-            return Matrix4(w, 0, 0, 0,
-                           0, h, 0, 0,
-                           0, 0, v, -1,
-                           0, 0, qn, 0);
+            return Matrix4( width,  0.0f,   0.0f,   0.0f,
+                            0.0f,   height, 0.0f,   0.0f,
+                            0.0f,   0.0f,   -(zfar + znear) / depth, -1.f,
+                            0.0f,   0.0f,   -(2 * zfar * znear) / depth, 0.0f);
         }
 
         /** Generates a view matrix from the given values
