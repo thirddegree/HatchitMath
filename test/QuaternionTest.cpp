@@ -43,8 +43,8 @@ TEST(Quaternion, ParamaterizedFloatConstructor)
 TEST(Quaterion, EulerAnglesConstructor)
 {
   //90 deg x, 0 deg y, 90 deg z
-  Vector3 euler(M_PI/2,0,M_PI/2);
-  Quaternion quat(euler);
+  //Vector3 euler(M_PI/2,0,M_PI/2);
+  Quaternion quat((M_PI / 2, 0, M_PI / 2);
 
   ASSERT_NEAR(quat.w, .5f, 0.00001f);
   ASSERT_NEAR(quat.x, .5f, 0.00001f);
@@ -58,9 +58,7 @@ TEST(Quaternion, AxisAngleConstructor)
 
   float angle = M_PI/2; //90 degrees
 
-  Vector4 angleAxis(1, 0, 0, angle);
-
-  Quaternion quat(angleAxis);
+  Quaternion quat(1, 0, 0, angle);
 
   ASSERT_NEAR(quat.w, 0.7071f, 0.00001f);
   ASSERT_NEAR(quat.x, 0.7071f, 0.00001f);
@@ -68,16 +66,16 @@ TEST(Quaternion, AxisAngleConstructor)
   ASSERT_NEAR(quat.z, 0.0f, 0.00001f);
 }
 
-TEST(Quaternion, Inversion)
-{
-  Quaternion quat(4,3,2,1);
-  Quaternion inverse = quat.getInverse();
-
-  ASSERT_EQ(inverse.w, 4);
-  ASSERT_EQ(inverse.x, -3);
-  ASSERT_EQ(inverse.y, -2);
-  ASSERT_EQ(inverse.z, -1);
-}
+//TEST(Quaternion, Inversion)
+//{
+//  Quaternion quat(4,3,2,1);
+//  Quaternion inverse = quat.getInverse();
+//
+//  ASSERT_EQ(inverse.w, 4);
+//  ASSERT_EQ(inverse.x, -3);
+//  ASSERT_EQ(inverse.y, -2);
+//  ASSERT_EQ(inverse.z, -1);
+//}
 
 //TEST(Quaterion, GetAxisAngle)
 //{
@@ -121,7 +119,7 @@ TEST(Quaternion, MultiplicationOperator)
 
   Quaternion product = quat1 * quat2;
 
-  std::cout << product << std::endl;
+  //std::cout << product << std::endl;
 
   ASSERT_NEAR(product[0], 1.3f, 0.00001f);
   ASSERT_NEAR(product[1], 3.0f, 0.00001f);
