@@ -13,7 +13,7 @@
 **/
 
 #include <gtest/gtest.h>
-#include "ht_vector2.h"
+#include "ht_math.h"
 
 using namespace Hatchit;
 using namespace Math;
@@ -43,7 +43,7 @@ TEST(Vector2, Magnitude)
 {
   //Magnitude of this vector should be 5; the good ol 3,4,5 triangle rule
   Vector2 vector(3,4);
-  ASSERT_EQ(vector.getMagnitude(), 5);
+  ASSERT_EQ(MMVector2Magnitude(vector), 5);
 }
 
 TEST(Vector2, SettingElementValues)
