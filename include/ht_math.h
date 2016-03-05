@@ -145,67 +145,69 @@ namespace Hatchit {
         // Vector2 definition
         /////////////////////////////////////////////////////////
 
-        class _MM_ALIGN16 Vector2
-        {
-        public:
-            /****************************************************
-            *	Constructors
-            *****************************************************/
-            Vector2();
+		class _MM_ALIGN16 Vector2
+		{
+		public:
+			/****************************************************
+			*	Constructors
+			*****************************************************/
+			Vector2();
 			Vector2(float xy);
-            Vector2(float x, float y);
-            Vector2(const Vector2& other);
-            explicit Vector2(const __m128& vector);
-            explicit Vector2(__m128&& vector);
+			Vector2(float x, float y);
+			Vector2(const Vector2& other);
+			explicit Vector2(const __m128& vector);
+			explicit Vector2(__m128&& vector);
 
-            /****************************************************
-            *	 Custom allocation/deallocation
-            *****************************************************/
-            void* operator new(size_t _size);
-            void  operator delete(void* p);
-            void* operator new[](size_t size);
-            void  operator delete[](void* p);
+			/****************************************************
+			*	 Custom allocation/deallocation
+			*****************************************************/
+			void* operator new(size_t _size);
+			void  operator delete(void* p);
+			void* operator new[](size_t size);
+			void  operator delete[](void* p);
 
-            /****************************************************
-            *	Operators
-            *****************************************************/
+			/****************************************************
+			*	Operators
+			*****************************************************/
 
-                explicit    operator __m128(void)           const;
-            Vector2         operator+   (float s)           const;
-            Vector2         operator-   (float s)           const;
-            Vector2         operator*   (float s)           const;
-            Vector2         operator/   (float s)           const;
-            Vector2&        operator+=  (float s);
-            Vector2&        operator-=  (float s);
-            Vector2&        operator*=  (float s);
-            Vector2&        operator/=  (float s);
-            Vector2         operator+   (const Vector2& u)  const;
-            Vector2         operator-   (const Vector2& u)  const;
-            Vector2         operator*   (const Vector2& u)  const;
-            Vector2         operator/   (const Vector2& u)  const;
-            Vector2&        operator+=  (const Vector2& u);
-            Vector2&        operator-=  (const Vector2& u);
-            Vector2&        operator*=  (const Vector2& u);
-            Vector2&        operator/=  (const Vector2& u);
+			explicit    operator __m128(void)           const;
+			Vector2         operator+   (float s)           const;
+			Vector2         operator-   (float s)           const;
+			Vector2         operator*   (float s)           const;
+			Vector2         operator/   (float s)           const;
+			Vector2&        operator+=  (float s);
+			Vector2&        operator-=  (float s);
+			Vector2&        operator*=  (float s);
+			Vector2&        operator/=  (float s);
+			Vector2         operator+   (const Vector2& u)  const;
+			Vector2         operator-   (const Vector2& u)  const;
+			Vector2         operator*   (const Vector2& u)  const;
+			Vector2         operator/   (const Vector2& u)  const;
+			Vector2&        operator+=  (const Vector2& u);
+			Vector2&        operator-=  (const Vector2& u);
+			Vector2&        operator*=  (const Vector2& u);
+			Vector2&        operator/=  (const Vector2& u);
 
 			bool            operator>   (const Vector2& u)  const;
 			bool            operator<   (const Vector2& u)  const;
 			bool            operator==  (const Vector2& u)  const;
 			bool            operator!=  (const Vector2& u)  const;
-            const float&    operator[]  (size_t i)          const;
-            float&          operator[]  (size_t i);
+			const float&    operator[]  (size_t i)          const;
+			float&          operator[]  (size_t i);
 
-        private:
-            union
-            {
-                __m128 m_vector;
-                struct
-                {
-                    float x;
-                    float y;
-                };
-                float m_data[2];
-            };
+			struct Float2
+			{
+				union
+				{
+					__m128 m_vector;
+					struct
+					{
+						float x;
+						float y;
+					};
+					float m_data[2];
+				};
+			};
         };
         /** An insertion operator for a Vector2 to interface with an ostream
         * \param output the ostream to output to
