@@ -44,7 +44,7 @@ TEST(Quaterion, EulerAnglesConstructor)
 {
   //90 deg x, 0 deg y, 90 deg z
   //Vector3 euler(M_PI/2,0,M_PI/2);
-  Quaternion quat((M_PI / 2, 0, M_PI / 2);
+  Quaternion quat(M_PI / 2, 0, M_PI / 2);
 
   ASSERT_NEAR(quat.w, .5f, 0.00001f);
   ASSERT_NEAR(quat.x, .5f, 0.00001f);
@@ -121,8 +121,8 @@ TEST(Quaternion, MultiplicationOperator)
 
   //std::cout << product << std::endl;
 
-  ASSERT_NEAR(product[0], 1.3f, 0.00001f);
-  ASSERT_NEAR(product[1], 3.0f, 0.00001f);
-  ASSERT_NEAR(product[2], 36.7f, 0.00001f);
-  ASSERT_NEAR(product[3], -6.6f, 0.00001f);
+  ASSERT_NEAR(product.w, 1.3f, 0.00001f);
+  ASSERT_NEAR(product.x, 3.0f, 0.00001f);
+  ASSERT_NEAR(product.y, 36.7f, 0.00001f);
+  ASSERT_NEAR(product.z, -6.6f, 0.00001f);
 }
