@@ -61,7 +61,7 @@ TEST(Vector2, DotProduct)
     Vector2 vector1(1, 2);
     Vector2 vector2(3, 4);
 
-    ASSERT_EQ(MMVector2Dotvector1, vector2), 11);
+    ASSERT_EQ(MMVector2Dot(vector1, vector2), 11);
 }
 
 TEST(Vector2, ScalarMultiplicationOperator)

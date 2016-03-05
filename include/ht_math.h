@@ -66,6 +66,18 @@ namespace Hatchit {
         class Vector4;
         class Matrix4;
 
+		struct Float2
+		{
+			float x;
+			float y;
+
+			Float2() = default;
+			Float2(float _x, float _y) : x(_x), y(_y) {}
+			explicit Float2(const float *pArray) : x(pArray[0]), y(pArray[1]) {}
+
+			Float2& operator= (const Float2& other) { x = other.x; y = other.y; return *this; }
+		};
+
         struct Float3
         {
             float x;
@@ -195,18 +207,15 @@ namespace Hatchit {
 			const float&    operator[]  (size_t i)          const;
 			float&          operator[]  (size_t i);
 
-			struct Float2
+			union
 			{
-				union
+				__m128 m_vector;
+				struct
 				{
-					__m128 m_vector;
-					struct
-					{
-						float x;
-						float y;
-					};
-					float m_data[2];
+					float x;
+					float y;
 				};
+				float m_data[2];
 			};
         };
         /** An insertion operator for a Vector2 to interface with an ostream
