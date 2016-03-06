@@ -24,7 +24,13 @@ TEST(Vector2, DefaultConstructorFillsZeros) {
   ASSERT_EQ(vector.y, 0);
 }
 
-TEST(Vector2, ParamaterizedConstructor) {
+TEST(Vector2, SingleParameterConstructor) {
+	Vector2 vector(5);
+	ASSERT_EQ(vector.x, 5);
+	ASSERT_EQ(vector.y, 5);
+}
+
+TEST(Vector2, TwoParameterConstructor) {
   Vector2 vector(5, 3);
   ASSERT_EQ(vector.x, 5);
   ASSERT_EQ(vector.y, 3);
@@ -39,21 +45,228 @@ TEST(Vector2, CopyConstructor)
   ASSERT_EQ(vector2.y, vector1.y);
 }
 
-TEST(Vector2, Magnitude)
-{
-  //Magnitude of this vector should be 5; the good ol 3,4,5 triangle rule
-  Vector2 vector(3,4);
-  ASSERT_EQ(MMVector2Magnitude(vector), 5);
-}
-
 TEST(Vector2, SettingElementValues)
 {
-  Vector2 vector(3, 4);
-  vector.x = 5;
-  vector.y = 6;
+	Vector2 vector(3, 4);
+	vector.x = 5;
+	vector.y = 6;
 
-  ASSERT_EQ(vector.x, 5);
-  ASSERT_EQ(vector.y, 6);
+	ASSERT_EQ(vector.x, 5);
+	ASSERT_EQ(vector.y, 6);
+}
+
+
+
+TEST(Vector2, FloatAdditionOperator)
+{
+	Vector2 vector1(1, 2);
+
+	Vector2 result = vector1 + 3;
+
+	ASSERT_EQ(result.x, 4);
+	ASSERT_EQ(result.y, 5);
+}
+
+TEST(Vector2, FloatAdditionAssignmentOperator)
+{
+	Vector2 vector1(1, 2);
+
+	vector1 += 3;
+
+	ASSERT_EQ(vector1.x, 4);
+	ASSERT_EQ(vector1.y, 5);
+}
+
+TEST(Vector2, FloatSubtractionOperator)
+{
+	Vector2 vector1(1, 2);
+
+	Vector2 result = vector1 - 3;
+
+	ASSERT_EQ(result.x, -2);
+	ASSERT_EQ(result.y, -1);
+}
+
+TEST(Vector2, FloatSubtractionAssignmentOperator)
+{
+	Vector2 vector1(1, 2);
+
+	vector1 -= 3;
+
+	ASSERT_EQ(vector1.x, -2);
+	ASSERT_EQ(vector1.y, -1);
+}
+
+TEST(Vector2, FloatMultiplicationOperator)
+{
+	Vector2 vector1(1, 2);
+
+	Vector2 result = vector1 * 3;
+
+	ASSERT_EQ(result.x, 3);
+	ASSERT_EQ(result.y, 6);
+}
+
+TEST(Vector2, FloatMultiplicationAssignmentOperator)
+{
+	Vector2 vector1(1, 2);
+
+	vector1 *= 3;
+
+	ASSERT_EQ(vector1.x, 3);
+	ASSERT_EQ(vector1.y, 6);
+}
+
+TEST(Vector2, FloatDivisionOperator)
+{
+	Vector2 vector1(4, 8);
+
+	Vector2 result = vector1 / 2;
+
+	ASSERT_EQ(result.x, 2);
+	ASSERT_EQ(result.y, 4);
+}
+
+TEST(Vector2, FloatDivisionAssignmentOperator)
+{
+	Vector2 vector1(4, 8);
+
+	vector1 /= 2;
+
+	ASSERT_EQ(vector1.x, 2);
+	ASSERT_EQ(vector1.y, 4);
+}
+
+
+
+
+
+TEST(Vector2, VectorAdditionOperator)
+{
+	Vector2 vector1(1, 2);
+	Vector2 vector2(3, 4);
+
+	Vector2 result = vector1 + vector2;
+
+	ASSERT_EQ(result.x, 4);
+	ASSERT_EQ(result.y, 6);
+}
+
+TEST(Vector2, VectorAdditionAssignmentOperator)
+{
+	Vector2 vector1(1, 2);
+	Vector2 vector2(3, 4);
+
+	vector1 += vector2;
+
+	ASSERT_EQ(vector1.x, 4);
+	ASSERT_EQ(vector1.y, 6);
+}
+
+TEST(Vector2, VectorSubtractionOperator)
+{
+	Vector2 vector1(1, 2);
+	Vector2 vector2(3, 4);
+
+	Vector2 result = vector1 - vector2;
+
+	ASSERT_EQ(result.x, -2);
+	ASSERT_EQ(result.y, -2);
+}
+
+TEST(Vector2, VectorSubtractionAssignmentOperator)
+{
+	Vector2 vector1(1, 2);
+	Vector2 vector2(3, 4);
+
+	vector1 -= vector2;
+
+	ASSERT_EQ(vector1.x, -2);
+	ASSERT_EQ(vector1.y, -2);
+}
+
+TEST(Vector2, VectorMultiplicationOperator)
+{
+	Vector2 vector1(1, 2);
+	Vector2 vector2(3, 4);
+
+	Vector2 result = vector1 * vector2;
+
+	ASSERT_EQ(result.x, 3);
+	ASSERT_EQ(result.y, 8);
+}
+
+TEST(Vector2, VectorMultiplicationAssignmentOperator)
+{
+	Vector2 vector1(1, 2);
+	Vector2 vector2(3, 4);
+
+	vector1 *= vector2;
+
+	ASSERT_EQ(vector1.x, 3);
+	ASSERT_EQ(vector1.y, 8);
+}
+
+TEST(Vector2, VectorDivisionOperator)
+{
+	Vector2 vector1(4, 9);
+	Vector2 vector2(2, 3);
+
+	Vector2 result = vector1 / vector2;
+
+	ASSERT_EQ(result.x, 2);
+	ASSERT_EQ(result.y, 3);
+}
+
+TEST(Vector2, VectorDivisionAssignmentOperator)
+{
+	Vector2 vector1(4, 9);
+	Vector2 vector2(2, 3);
+
+	vector1 /= vector2;
+
+	ASSERT_EQ(vector1.x, 2);
+	ASSERT_EQ(vector1.y, 3);
+}
+
+TEST(Vector2, FloatCompareOperators)
+{
+	Vector2 vector(3, 4);
+	ASSERT_TRUE(vector > 4.5);
+	ASSERT_TRUE(vector < 5.5);
+}
+
+TEST(Vector2, VectorCompareOperator)
+{
+	Vector2 vector1(3, 4);
+	Vector2 vector2(4, 4);
+
+	ASSERT_TRUE(vector1 < vector2);
+	ASSERT_TRUE(vector2 > vector1);
+}
+
+TEST(Vector2, VectorEqualityOperator)
+{
+	Vector2 vector1(3, 4);
+	Vector2 vector2(3, 4);
+
+	ASSERT_TRUE(vector1 == vector2);
+}
+
+TEST(Vector2, VectorInequalityOperator)
+{
+	Vector2 vector1(3, 4);
+	Vector2 vector2(4, 4);
+
+	ASSERT_TRUE(vector1 != vector2);
+}
+
+TEST(Vector2, ArrayNotationOperator)
+{
+	Vector2 vector1(3, 4);
+
+	ASSERT_EQ(vector1[0], 3);
+	ASSERT_EQ(vector1[1], 4);
 }
 
 TEST(Vector2, DotProduct)
@@ -64,32 +277,18 @@ TEST(Vector2, DotProduct)
     ASSERT_EQ(MMVector2Dot(vector1, vector2), 11);
 }
 
-TEST(Vector2, ScalarMultiplicationOperator)
+TEST(Vector2, MagnitudeSqr)
 {
-  Vector2 vector(1, 2);
-  Vector2 result = vector * 2;
-
-  ASSERT_EQ(result.x, 2);
-  ASSERT_EQ(result.y, 4);
+	//Magnitude of this vector should be 5; the good ol 3,4,5 triangle rule
+	Vector2 vector(3, 4);
+	ASSERT_NEAR(MMVector2MagnitudeSqr(vector), 25, 0.00001f);
 }
 
-TEST(Vector2, VectorAdditionOperator)
+TEST(Vector2, Magnitude)
 {
-    Vector2 vector1(1, 2);
-    Vector2 vector2(3, 4);
-
-    Vector2 result = vector1 + vector2;
-
-    ASSERT_EQ(result.x, 4);
-    ASSERT_EQ(result.y, 6);
-}
-
-TEST(Vector2, ArrayNotationOperator)
-{
-  Vector2 vector(3, 4);
-
-  ASSERT_EQ(vector[0], 3);
-  ASSERT_EQ(vector[1], 4);
+	//Magnitude of this vector should be 5; the good ol 3,4,5 triangle rule
+	Vector2 vector(3, 4);
+	ASSERT_NEAR(MMVector2Magnitude(vector), 5, 0.00001f);
 }
 
 TEST(Vector2Static, Normalize)
@@ -100,6 +299,6 @@ TEST(Vector2Static, Normalize)
 
     float inv = 1.0f / 5.0f;
 
-    ASSERT_EQ(normal.x, 3.0f * inv);
-    ASSERT_EQ(normal.y, 4.0f * inv);
+    ASSERT_NEAR(normal.x, 3.0f * inv, 0.00001f);
+    ASSERT_NEAR(normal.y, 4.0f * inv, 0.00001f);
 }

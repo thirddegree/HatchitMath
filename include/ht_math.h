@@ -200,6 +200,8 @@ namespace Hatchit {
 			Vector2&        operator*=  (const Vector2& u);
 			Vector2&        operator/=  (const Vector2& u);
 
+			bool            operator>   (float s)  const;
+			bool            operator<   (float s)  const;
 			bool            operator>   (const Vector2& u)  const;
 			bool            operator<   (const Vector2& u)  const;
 			bool            operator==  (const Vector2& u)  const;
