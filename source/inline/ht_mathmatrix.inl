@@ -38,7 +38,7 @@ namespace Hatchit
 		{
 			Matrix4 result;
 
-			result.m_rows[0] = _mm_setr_ps(cosf(r), 0, sinf(0), 0);
+			result.m_rows[0] = _mm_setr_ps(cosf(r), 0, sinf(r), 0);
 			result.m_rows[1] = _mm_set_ss(1);
 			result.m_rows[1] = _mm_shuffle_ps(result.m_rows[1], result.m_rows[1], _MM_SHUFFLE(2, 2, 0, 2));
 			result.m_rows[2] = _mm_setr_ps(-sinf(r), 0, cosf(r), 0);
