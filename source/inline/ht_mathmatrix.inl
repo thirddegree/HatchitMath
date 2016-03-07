@@ -9,77 +9,77 @@ namespace Hatchit
         // Matrix4 Implementation
         /////////////////////////////////////////////////////////////
 
-		/**Generates a translation matrix with the given vector3 values
-		*\param v vector3 to translate by
-		*\return the translation matrix
-		*/
-		inline Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3 & v)
-		{
-			return Matrix4(1, 0, 0, v.x,
-			               0, 1, 0, v.y,
-			               0, 0, 1, v.z,
-			               0, 0, 0, 1);
-		}
+        /**Generates a translation matrix with the given vector3 values
+        *\param v vector3 to translate by
+        *\return the translation matrix
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixTranslation(const Vector3 & v)
+        {
+            return Matrix4(1, 0, 0, v.x,
+                           0, 1, 0, v.y,
+                           0, 0, 1, v.z,
+                           0, 0, 0, 1);
+        }
 
-		inline Matrix4 _MM_CALLCONV MMMatrixRotationX(float r)
-		{
-			Matrix4 result;
+        inline Matrix4 _MM_CALLCONV MMMatrixRotationX(float r)
+        {
+            Matrix4 result;
 
-			result.m_rows[0] = _mm_set_ss(1);
-			result.m_rows[1] = _mm_setr_ps(0, cosf(r),-sinf(r), 0);
-			result.m_rows[2] = _mm_setr_ps(0, sinf(r), cosf(r), 0);
-			result.m_rows[3] = _mm_set_ss(1);
-			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
+            result.m_rows[0] = _mm_set_ss(1);
+            result.m_rows[1] = _mm_setr_ps(0, cosf(r),-sinf(r), 0);
+            result.m_rows[2] = _mm_setr_ps(0, sinf(r), cosf(r), 0);
+            result.m_rows[3] = _mm_set_ss(1);
+            result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
 
-			return result;
-		}
+            return result;
+        }
 
-		inline Matrix4 _MM_CALLCONV MMMatrixRotationY(float r)
-		{
-			Matrix4 result;
+        inline Matrix4 _MM_CALLCONV MMMatrixRotationY(float r)
+        {
+            Matrix4 result;
 
-			result.m_rows[0] = _mm_setr_ps(cosf(r), 0, sinf(r), 0);
-			result.m_rows[1] = _mm_set_ss(1);
-			result.m_rows[1] = _mm_shuffle_ps(result.m_rows[1], result.m_rows[1], _MM_SHUFFLE(2, 2, 0, 2));
-			result.m_rows[2] = _mm_setr_ps(-sinf(r), 0, cosf(r), 0);
-			result.m_rows[3] = _mm_set_ss(1);
-			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
+            result.m_rows[0] = _mm_setr_ps(cosf(r), 0, sinf(r), 0);
+            result.m_rows[1] = _mm_set_ss(1);
+            result.m_rows[1] = _mm_shuffle_ps(result.m_rows[1], result.m_rows[1], _MM_SHUFFLE(2, 2, 0, 2));
+            result.m_rows[2] = _mm_setr_ps(-sinf(r), 0, cosf(r), 0);
+            result.m_rows[3] = _mm_set_ss(1);
+            result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
 
-			return result;
-		}
+            return result;
+        }
 
-		inline Matrix4 _MM_CALLCONV MMMatrixRotationZ(float r)
-		{
-			Matrix4 result;
+        inline Matrix4 _MM_CALLCONV MMMatrixRotationZ(float r)
+        {
+            Matrix4 result;
 
-			result.m_rows[0] = _mm_setr_ps(cosf(r), -sinf(r), 0, 0);
-			result.m_rows[1] = _mm_setr_ps(sinf(r), cosf(r), 0, 0);
-			result.m_rows[2] = _mm_set_ss(1);
-			result.m_rows[2] = _mm_shuffle_ps(result.m_rows[2], result.m_rows[2], _MM_SHUFFLE(2, 0, 2, 2));
-			result.m_rows[3] = _mm_set_ss(1);
-			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
+            result.m_rows[0] = _mm_setr_ps(cosf(r), -sinf(r), 0, 0);
+            result.m_rows[1] = _mm_setr_ps(sinf(r), cosf(r), 0, 0);
+            result.m_rows[2] = _mm_set_ss(1);
+            result.m_rows[2] = _mm_shuffle_ps(result.m_rows[2], result.m_rows[2], _MM_SHUFFLE(2, 0, 2, 2));
+            result.m_rows[3] = _mm_set_ss(1);
+            result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 2, 2));
 
-			return result;
-		}
+            return result;
+        }
 
-		inline Matrix4 _MM_CALLCONV MMMatrixRotationXYZ(const Vector3 & r)
-		{
-			return (MMMatrixRotationY(r.y) * MMMatrixRotationX(r.x)) * MMMatrixRotationZ(r.z);
-		}
+        inline Matrix4 _MM_CALLCONV MMMatrixRotationXYZ(const Vector3 & r)
+        {
+            return (MMMatrixRotationY(r.y) * MMMatrixRotationX(r.x)) * MMMatrixRotationZ(r.z);
+        }
 
 
-		inline Matrix4 _MM_CALLCONV MMMatrixScale(const Vector3 & scale)
-		{
-			Matrix4 result;
+        inline Matrix4 _MM_CALLCONV MMMatrixScale(const Vector3 & scale)
+        {
+            Matrix4 result;
 
-			result.m_rows[0] = _mm_set_ss(scale.x);
-			result.m_rows[3] = _mm_set_ps(0, scale.y, scale.z, 1);
-			result.m_rows[1] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 0, 1, 0));
-			result.m_rows[2] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 0, 0));
-			result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(3, 0, 0, 0));
+            result.m_rows[0] = _mm_set_ss(scale.x);
+            result.m_rows[3] = _mm_set_ps(0, scale.y, scale.z, 1);
+            result.m_rows[1] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 0, 1, 0));
+            result.m_rows[2] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 0, 0));
+            result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(3, 0, 0, 0));
 
-			return result;
-		}
+            return result;
+        }
 
         /** Generates an orthographic projection from the given values
         * \param left The lefthand bound
@@ -114,33 +114,33 @@ namespace Hatchit
         inline Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar)
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
-            float height = 1.0f / atanf(0.5f * fov);
+            float height = 1 / tanf(0.5f * fov);
             float width = height * aspect;
             float depth = zfar - znear;
 
             return Matrix4( width,  0.0f,   0.0f,   0.0f,
                             0.0f,   height, 0.0f,   0.0f,
-                            0.0f,   0.0f,   -(zfar + znear) / depth, -1.f,
-                            0.0f,   0.0f,   -(2 * zfar * znear) / depth, 0.0f);
+                            0.0f,   0.0f,   -(zfar + znear) / depth, -(2 * zfar * znear) / depth,
+                            0.0f,   0.0f, -1.f , 0.0f);
         }
 
         /** Generates a view matrix from the given values
+        * \param eye The point that the camera is located
         * \param lookAt The point for the camera to look at
-        * \param center The point that the camera is located
         * \param up The vector representing which way is up for this camera
         * \return The resulting view matrix in a Matrix4
         */
-        inline Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& lookAt, const Vector3& center, const Vector3& up)
+        inline Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& eye, const Vector3& lookAt, const Vector3& up)
         {
             //Calculate axes
-            Vector3 zAxis = MMVector3Normalize((lookAt - center));
-            Vector3 xAxis = MMVector3Normalize(MMVector3Cross(up, zAxis));
-            Vector3 yAxis = MMVector3Cross(zAxis, xAxis);
+            Vector3 zAxis = MMVector3Normalize((lookAt - eye));
+            Vector3 xAxis = MMVector3Normalize(MMVector3Cross(zAxis, up));
+            Vector3 yAxis = MMVector3Cross(xAxis, zAxis);
 
             //Create view matrix;
-            return Matrix4(xAxis.x, xAxis.y, xAxis.z, -MMVector3Dot(xAxis, lookAt),
-                           yAxis.x, yAxis.y, yAxis.z, -MMVector3Dot(yAxis, lookAt),
-                           zAxis.x, zAxis.y, zAxis.z, -MMVector3Dot(zAxis, lookAt),
+            return Matrix4(xAxis.x, xAxis.y, xAxis.z, -MMVector3Dot(xAxis, eye),
+                           yAxis.x, yAxis.y, yAxis.z, -MMVector3Dot(yAxis, eye),
+                           -zAxis.x, -zAxis.y, -zAxis.z, MMVector3Dot(zAxis, eye),
                            0, 0, 0, 1);
         }
 
@@ -217,7 +217,7 @@ namespace Hatchit
             temp2 = _mm_mul_ps(_mm_shuffle_ps(mat.m_rows[3], mat.m_rows[3], _MM_SHUFFLE(0, 3, 1, 2)),  //row 3 shifted backwards (ignoring 2nd value)
                                _mm_shuffle_ps(mat.m_rows[2], mat.m_rows[2], _MM_SHUFFLE(2, 0, 1, 3))); //row 2 shifted forwards (ignoring 2nd value)
             
-			//-
+            //-
             x = _mm_mul_ps(_mm_sub_ps(temp2, temp1), mat.m_rows[1]); //multiply 3 rows together
             x = _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(3, 2, 0, 0)),
                 _mm_add_ps(_mm_shuffle_ps(x, x, _MM_SHUFFLE(0, 3, 2, 2)),
@@ -345,7 +345,7 @@ namespace Hatchit
         {
             __m128 v = _mm_set_ss(1);
             this->m_rows[0] = v;
-			this->m_rows[1] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 0, 2));
+            this->m_rows[1] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 2, 0, 2));
             this->m_rows[2] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(2, 0, 2, 2));
             this->m_rows[3] = _mm_shuffle_ps(v, v, _MM_SHUFFLE(0, 2, 2, 2));
         }
@@ -353,7 +353,7 @@ namespace Hatchit
         //Creates a 4x4 matrix from an array of 16 values
         inline Matrix4::Matrix4(float rawArray[])
         {
-			this->m_rows[0] = _mm_load_ps(rawArray);
+            this->m_rows[0] = _mm_load_ps(rawArray);
             this->m_rows[1] = _mm_load_ps(rawArray + 4);
             this->m_rows[2] = _mm_load_ps(rawArray + 8);
             this->m_rows[3] = _mm_load_ps(rawArray + 12);
@@ -431,10 +431,10 @@ namespace Hatchit
         */
         inline Matrix4::Matrix4(const Vector4& a, const Vector4& b, const Vector4& c, const Vector4& d)
         {
-			this->m_rows[0] = a.m_vector;
-			this->m_rows[1] = b.m_vector;
-			this->m_rows[2] = c.m_vector;
-			this->m_rows[3] = d.m_vector;
+            this->m_rows[0] = a.m_vector;
+            this->m_rows[1] = b.m_vector;
+            this->m_rows[2] = c.m_vector;
+            this->m_rows[3] = d.m_vector;
         }
 
         /** Multiplies this Matrix4 by another given Matrix4 and returns the
