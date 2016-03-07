@@ -210,6 +210,26 @@ namespace Hatchit {
 			return (*this);
 		}
 
+
+		/** Compares the magnitue of this Vector3 to a float
+		* \param s the float
+		* \return True if this Vector3 has a larger magnitude the float
+		*/
+		inline bool Vector3::operator>(float s) const
+		{
+			return Hatchit::Math::MMVector3Magnitude(*this) > s;
+		}
+		/** Compares the magnitue of this Vector3 to a float
+		* \param s the float
+		* \return True if this Vector3 has a smaller magnitude than the float
+		*/
+		inline bool Vector3::operator<(float s) const
+		{
+			return MMVector3Magnitude(*this) < s;
+		}
+
+
+
 		/** Compares the magnitue of this Vector3 to another given Vector3
 		* \param u The other Vector3
 		* \return True if this Vector3 has a larger magnitude than the other Vector3
@@ -226,6 +246,8 @@ namespace Hatchit {
 		{
 			return MMVector3Magnitude(*this) < MMVector3Magnitude(u);
 		}
+
+
 		/** Compares the values of this Vector3 to another given Vector3
 		* \param u The other Vector3
 		* \return True if this Vector3 has the same values of the other Vector3
@@ -242,6 +264,12 @@ namespace Hatchit {
 		{
 			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
 		}
+
+
+
+
+
+
         /** Fetches an element of this Vector at the index i by reference
         * \param i The index of the element to fetch
         * \return A float that is stored in this Vector3 at the index i
@@ -252,6 +280,7 @@ namespace Hatchit {
             assert(i < 3);
             return this->m_data[i];
         }
+
 		/** Fetches an element of this Vector at the index i by reference
 		* \param i The index of the element to fetch
 		* \return A float that is stored in this Vector3 at the index i
@@ -263,17 +292,6 @@ namespace Hatchit {
 			return this->m_data[i];
 		}
 
-        /** Fetches an element of this Vector at the index i
-        * \param i The index of the element to fetch
-        * \return A float that is stored in this Vector3 at the index i
-        * This will throw an index out of range exception if you go beyond an index if 1
-        */
-        /*inline float Vector3::operator[](int i) const
-        {
-            assert(i < 3);
-
-            return this->m_data[i];
-        }*/
 
         /** Executes the Dot product on two Vector3s as v * u
         * \param v The first Vector3
@@ -313,6 +331,23 @@ namespace Hatchit {
             return output;
         }
 
+
+		/** Returns the magnitude of the vector
+		* \return The magnitude as a float
+		*/
+		inline float _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v)
+		{
+			return MMVector3Dot(v, v);
+		}
+
+		/** Returns the magnitude of the vector
+		* \return The magnitude as a float
+		*/
+		inline float _MM_CALLCONV MMVector3Magnitude(const Vector3& v)
+		{
+			return sqrtf(MMVector3Dot(v, v));
+		}
+
         /** Normalizes a Vector3
         * \param v The Vector3 to normalize
         * \return A normalized version of v
@@ -329,22 +364,6 @@ namespace Hatchit {
 
             return normalizedVec;
         }
-
-        /** Returns the magnitude of the vector
-        * \return The magnitude as a float
-        */
-        inline float _MM_CALLCONV MMVector3Magnitude(const Vector3& v)
-        {
-            return sqrtf(MMVector3Dot(v, v));
-        }
-
-		/** Returns the magnitude of the vector
-		* \return The magnitude as a float
-		*/
-		inline float _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v)
-		{
-			return MMVector3Dot(v, v);
-		}
 
         /** An outstream operator for a Vector3 to interace with an ostream
         * \param output The ostream to output to

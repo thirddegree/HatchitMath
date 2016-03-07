@@ -114,7 +114,7 @@ namespace Hatchit
         inline Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar)
         {
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
-            float height = 1.0f / tanf(0.5f * fov);
+            float height = 1.0f / atanf(0.5f * fov);
             float width = height * aspect;
             float depth = zfar - znear;
 
@@ -138,13 +138,10 @@ namespace Hatchit
             Vector3 yAxis = MMVector3Cross(zAxis, xAxis);
 
             //Create view matrix;
-            return Matrix4(xAxis.x, yAxis.x, zAxis.x, 0,
-                           xAxis.y, yAxis.y, zAxis.y, 0,
-                           xAxis.z, yAxis.z, zAxis.z, 0,
-                           MMVector3Dot(xAxis * -1, lookAt),
-                           MMVector3Dot(yAxis * -1, lookAt),
-                           MMVector3Dot(zAxis * -1, lookAt),
-                           1);
+            return Matrix4(xAxis.x, xAxis.y, xAxis.z, -MMVector3Dot(xAxis, lookAt),
+                           yAxis.x, yAxis.y, yAxis.z, -MMVector3Dot(yAxis, lookAt),
+                           zAxis.x, zAxis.y, zAxis.z, -MMVector3Dot(zAxis, lookAt),
+                           0, 0, 0, 1);
         }
 
         /** Returns the transpose of a matrix as a Matrix4

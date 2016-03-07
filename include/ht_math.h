@@ -277,6 +277,8 @@ namespace Hatchit {
 			Vector3 operator*=  (const Vector3& u);
 			Vector3 operator/=  (const Vector3& u);
 
+			bool    operator>   (float s) const;
+			bool    operator<   (float s) const;
             bool    operator>   (const Vector3& u) const;
             bool    operator<   (const Vector3& u) const;
             bool    operator==  (const Vector3& u) const;
