@@ -297,16 +297,47 @@ namespace Hatchit {
             return m_data[i];
         }
 
-        inline std::ostream& operator<<(std::ostream& output, const Vector2& v)
-        {
-            assert(false);  //Not implemented!
-            return output;
-        }
-        inline std::istream& operator>>(std::istream& input, const Vector2& v)
-        {
-            assert(false); //Not implemented!
-            return input;
-        }
+		/** Calculates the dot product of two vectors
+		* \param v, u: vectors used to calculate the dot product
+		* \return dot product as a float
+		*/
+		inline float Vector2::Dot(const Vector2 & v, const Vector2 & u)
+		{
+			return MMVector2Dot(v, u);
+		}
+
+		/** Calculates the magnitude squared of this vector
+		* \return magnitude squared as a float
+		*/
+		inline float Vector2::MagnitudeSquared() const
+		{
+			return MMVector2MagnitudeSqr(*this);
+		}
+
+		/** Calculates the magnitude of this vector
+		* \return magnitude as a float
+		*/
+		inline float Vector2::Magnitude() const
+		{
+			return MMVector2Magnitude(*this);
+		}
+
+		/** Calculates a normalized copy of this float
+		* \return the copy
+		*/
+		inline Vector2 Vector2::Normalized() const
+		{
+			return MMVector2Normalized(*this);
+		}
+
+		/** Normalizes this vector in place
+		* \return the same vector
+		*/
+		inline Vector2 Vector2::Normalize()
+		{
+			*this = MMVector2Normalized(*this);
+			return *this;
+		}
 
         /** Executes the Dot product on two Vector2s as v * u
         * \param v The first Vector2
@@ -345,12 +376,23 @@ namespace Hatchit {
         * NOTE:
         * This function is only partially intrinsic
         */
-        inline Vector2 _MM_CALLCONV MMVector2Normalize(const Vector2& v)
+        inline Vector2 _MM_CALLCONV MMVector2Normalized(const Vector2& v)
         {
             assert(MMVector2MagnitudeSqr(v) > 0);
             __m128 vecMul = _mm_mul_ps(static_cast<__m128>(v), static_cast<__m128>(v));
             __m128 vecSum = _mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 2, 0, 1)));
             return Vector2(_mm_div_ps(static_cast<__m128>(v), _mm_sqrt_ps(vecSum)));
         }
+
+
+		/** An insertion operator for a Vector2 to interface with an ostream
+		* \param output the ostream to output to
+		* \param v the Vector2 to interface with the ostream
+		*/
+		inline std::ostream& operator<<(std::ostream& output, const Vector2& v)
+		{
+			output << v.x << " " << v.y;
+			return output;
+		}
     }
 }

@@ -133,8 +133,8 @@ namespace Hatchit
         inline Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& eye, const Vector3& lookAt, const Vector3& up)
         {
             //Calculate axes
-            Vector3 zAxis = MMVector3Normalize((lookAt - eye));
-            Vector3 xAxis = MMVector3Normalize(MMVector3Cross(zAxis, up));
+            Vector3 zAxis = MMVector3Normalized((lookAt - eye));
+            Vector3 xAxis = MMVector3Normalized(MMVector3Cross(zAxis, up));
             Vector3 yAxis = MMVector3Cross(xAxis, zAxis);
 
             //Create view matrix;
@@ -554,20 +554,5 @@ namespace Hatchit
 
             return output;
         }
-
-        /** An insertion operator for a Matrix4 to interace with an ostream
-        * \param output The ostream to output to
-        * \param h The Matrix4 to interface with the ostream
-        */
-        inline std::istream& operator>>(std::istream& input, Matrix4& m)
-        {
-            input >> m.xx >> m.xy >> m.xz >> m.xw
-                  >> m.yx >> m.yy >> m.yz >> m.yw
-                  >> m.zx >> m.zy >> m.zz >> m.zw
-                  >> m.wx >> m.wy >> m.wz >> m.ww;
-
-            return input;
-        }
-
     }
 }

@@ -293,6 +293,81 @@ namespace Hatchit {
 		}
 
 
+		/** Calculates the cross product of two vectors
+		* \param v, u: vectors used to calculate the cross product
+		* \return cross product as a vector3
+		*/
+		inline Vector3 Vector3::Cross(const Vector3 & v, const Vector3 & u)
+		{
+			return MMVector3Cross(v, u);
+		}
+
+		/** Calculates the dot product of two vectors
+		* \param v, u: vectors used to calculate the dot product
+		* \return dot product as a float
+		*/
+		inline float Vector3::Dot(const Vector3 & v, const Vector3 & u)
+		{
+			return MMVector3Dot(v, u);
+		}
+
+		/** Calculates the magnitude squared of this vector
+		* \return magnitude squared as a float
+		*/
+		inline float Vector3::MagnitudeSquared() const
+		{
+			return MMVector3MagnitudeSqr(*this);
+		}
+
+		/** Calculates the magnitude of this vector
+		* \return magnitude as a float
+		*/
+		inline float Vector3::Magnitude() const
+		{
+			return MMVector3Magnitude(*this);
+		}
+
+		/** Calculates a normalized copy of this float
+		* \return the copy
+		*/
+		inline Vector3 Vector3::Normalized() const
+		{
+			return MMVector3Normalized(*this);
+		}
+
+		/** Normalizes this vector in place
+		* \return the same vector
+		*/
+		inline Vector3 Vector3::Normalize()
+		{
+			*this = MMVector3Normalized(*this);
+			return *this;
+		}
+
+		/** Executes the cross product on two given Vector3s as v X u
+		* \param v The first Vector3
+		* \param u The second Vector3
+		* \return The cross product of v and u as a Vector3
+		*/
+		inline Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u)
+		{
+			Vector3 output;
+
+			__m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+			__m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+			__m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+			__m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+
+			x00 = _mm_mul_ps(x00, x10);
+			x11 = _mm_mul_ps(x01, x11);
+
+			__m128 val = _mm_sub_ps(x00, x11);
+
+			output.m_vector = val;
+			return output;
+		}
+
+
         /** Executes the Dot product on two Vector3s as v * u
         * \param v The first Vector3
         * \param u The second Vector3
@@ -306,29 +381,6 @@ namespace Hatchit {
             temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
 
             return Hatchit::Math::MMVectorGetX(temp);
-        }
-
-        /** Executes the cross product on two given Vector3s as v X u
-        * \param v The first Vector3
-        * \param u The second Vector3
-        * \return The cross product of v and u as a Vector3
-        */
-        inline Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u)
-        {
-            Vector3 output;
-
-            __m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
-            __m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
-            __m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
-            __m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
-
-            x00 = _mm_mul_ps(x00, x10);
-            x11 = _mm_mul_ps(x01, x11);
-
-            __m128 val = _mm_sub_ps(x00, x11);
-
-            output.m_vector = val;
-            return output;
         }
 
 
@@ -352,7 +404,7 @@ namespace Hatchit {
         * \param v The Vector3 to normalize
         * \return A normalized version of v
         */
-        inline Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v)
+        inline Vector3 _MM_CALLCONV MMVector3Normalized(const Vector3& v)
         {
             assert(MMVector3MagnitudeSqr(v) > 0.0f);
             Vector3 normalizedVec;
@@ -373,16 +425,6 @@ namespace Hatchit {
         {
             output << v.x << " " << v.y << " " << v.z;
             return output;
-        }
-
-        /** An insertion operator for a Vector3 to interace with an ostream
-        * \param output The ostream to output to
-        * \param h The Vector3 to interface with the ostream
-        */
-        inline std::istream& operator>>(std::istream& input, Vector3& v)
-        {
-            input >> v.x >> v.y >> v.z;
-            return input;
         }
     }
 }

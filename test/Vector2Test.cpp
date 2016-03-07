@@ -274,31 +274,31 @@ TEST(Vector2, DotProduct)
     Vector2 vector1(1, 2);
     Vector2 vector2(3, 4);
 
-    ASSERT_EQ(MMVector2Dot(vector1, vector2), 11);
+    ASSERT_EQ(Vector2::Dot(vector1, vector2), 11);
 }
 
 TEST(Vector2, MagnitudeSqr)
 {
 	//Magnitude of this vector should be 5; the good ol 3,4,5 triangle rule
 	Vector2 vector(3, 4);
-	ASSERT_NEAR(MMVector2MagnitudeSqr(vector), 25, 0.00001f);
+	ASSERT_NEAR(vector.MagnitudeSquared(), 25, 0.00001f);
 }
 
 TEST(Vector2, Magnitude)
 {
 	//Magnitude of this vector should be 5; the good ol 3,4,5 triangle rule
 	Vector2 vector(3, 4);
-	ASSERT_NEAR(MMVector2Magnitude(vector), 5, 0.00001f);
+	ASSERT_NEAR(vector.Magnitude(), 5, 0.00001f);
 }
 
 TEST(Vector2Static, Normalize)
 {
     Vector2 vector(3, 4);
 
-    Vector2 normal = MMVector2Normalize(vector);
+    vector.Normalize();
 
     float inv = 1.0f / 5.0f;
 
-    ASSERT_NEAR(normal.x, 3.0f * inv, 0.00001f);
-    ASSERT_NEAR(normal.y, 4.0f * inv, 0.00001f);
+    ASSERT_NEAR(vector.x, 3.0f * inv, 0.00001f);
+    ASSERT_NEAR(vector.y, 4.0f * inv, 0.00001f);
 }

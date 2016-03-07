@@ -298,7 +298,7 @@ TEST(Vector3Static, CrossProduct)
   Vector3 vector1(1,2,3);
   Vector3 vector2(4,5,6);
 
-  Vector3 cross = MMVector3Cross(vector1, vector2);
+  Vector3 cross = Vector3::Cross(vector1, vector2);
 
   ASSERT_EQ(cross.x, -3);
   ASSERT_EQ(cross.y, 6);
@@ -309,25 +309,25 @@ TEST(Vector3, MagnitudeSqr)
 {
 	//Magnitude of this vector should be ~7.07107 according to wolfram alpha
 	Vector3 vector(3, 4, 5);
-	ASSERT_EQ(MMVector3MagnitudeSqr(vector), 50);
+	ASSERT_EQ(vector.MagnitudeSquared(), 50);
 }
 
 TEST(Vector3, Magnitude)
 {
 	//Magnitude of this vector should be ~7.07107 according to wolfram alpha
 	Vector3 vector(3, 4, 5);
-	ASSERT_NEAR(MMVector3Magnitude(vector), 7.07107f, 0.00001f);
+	ASSERT_NEAR(vector.Magnitude(), 7.07107f, 0.00001f);
 }
 
 TEST(Vector3Static, Normalize)
 {
     Vector3 vector(3,4,5);
 
-    Vector3 normal = MMVector3Normalize(vector);
+    vector.Normalize();
 
     float inv = 1.0f / 7.07107f;
 
-    ASSERT_NEAR(normal.x, 3.0f * inv, 0.00001f);
-    ASSERT_NEAR(normal.y, 4.0f * inv, 0.00001f);
-    ASSERT_NEAR(normal.z, 5.0f * inv, 0.00001f);
+    ASSERT_NEAR(vector.x, 3.0f * inv, 0.00001f);
+    ASSERT_NEAR(vector.y, 4.0f * inv, 0.00001f);
+    ASSERT_NEAR(vector.z, 5.0f * inv, 0.00001f);
 }

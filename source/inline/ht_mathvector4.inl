@@ -303,22 +303,5 @@ namespace Hatchit
             output << v.x << " " << v.y << " " << v.z << " " << v.w;
             return output;
         }
-
-        /** An insertion operator for a Vector4 to interace with an ostream
-        * \param output The ostream to output to
-        * \param h The Vector4 to interface with the ostream
-        */
-        inline std::istream& operator>>(std::istream& input, Vector4& v)
-        {
-            float x, y, z, w;
-            input >> x >> y >> z >> w;
-
-            v.x = x;
-            v.y = y;
-            v.z = z;
-            v.w = w;
-
-            return input;
-        }
     }
 }

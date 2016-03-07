@@ -259,7 +259,7 @@ TEST(Matrix4Static, OrthographicProjection)
 
 TEST(Matrix4Static, GetPerspectiveProjection)
 {
-  float fov = PiDiv2;
+  float fov = HalfPi;
   float aspect = 16.0f / 9.0f;
   float _near = 0.1f;
   float _far = 100.0f;
