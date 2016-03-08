@@ -106,7 +106,8 @@ namespace Hatchit
 
         /** Generates a perspective projection from the given values
         * \param fov The field of view
-        * \param aspect The aspect ratio
+        * \param width The width of the viewport
+        * \param heigh The height of the viewport
         * \param znear The near plane
         * \param zfar The far plane
         * \return The resulting perspective projection in a Matrix4
