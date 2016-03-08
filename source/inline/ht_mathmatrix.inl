@@ -111,15 +111,17 @@ namespace Hatchit
         * \param zfar The far plane
         * \return The resulting perspective projection in a Matrix4
         */
-        inline Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar)
+        inline Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float width, float height, float znear, float zfar)
         {
+            float aspect = height / width;
+
             //thanks to https://stackoverflow.com/questions/18404890/how-to-build-perspective-projection-matrix-no-api
-            float height = 1 / tanf(0.5f * fov);
-            float width = height * aspect;
+            float h = 1 / tanf(0.5f * fov);
+            float w = h * aspect;
             float depth = zfar - znear;
 
-            return Matrix4( width,  0.0f,   0.0f,   0.0f,
-                            0.0f,   height, 0.0f,   0.0f,
+            return Matrix4( w,  0.0f,   0.0f,   0.0f,
+                            0.0f,   h, 0.0f,   0.0f,
                             0.0f,   0.0f,   -(zfar + znear) / depth, -(2 * zfar * znear) / depth,
                             0.0f,   0.0f, -1.f , 0.0f);
         }
