@@ -417,6 +417,26 @@ namespace Hatchit {
             return normalizedVec;
         }
 
+		/** Compares the magnitue of a Vector3 to a float
+		* \param s the float
+		* \param v the vector
+		* \return True if the vector has a lesser magnitude than the float
+		*/
+		inline bool operator>(const float s, const Vector3 & v)
+		{
+			return s > MMVector3Magnitude(v);
+		}
+
+		/** Compares the magnitue of a Vector3 to a float
+		* \param s the float
+		* \param v the vector
+		* \return True if the vector has a greater magnitude than the float
+		*/
+		inline bool operator<(const float s, const Vector3 & v)
+		{
+			return s < MMVector3Magnitude(v);
+		}
+
         /** An outstream operator for a Vector3 to interace with an ostream
         * \param output The ostream to output to
         * \param h The Vector3 to interface with the ostream

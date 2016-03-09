@@ -28,9 +28,9 @@ TEST(Matrix4, DefaultConstructor)
     for(int j = 0; j < 4; j++)
     {
       if(i == j)
-        ASSERT_EQ(matrix[i][j], 1);
+        EXPECT_FLOAT_EQ(matrix[i][j], 1);
       else
-        ASSERT_EQ(matrix[i][j], 0);
+        EXPECT_FLOAT_EQ(matrix[i][j], 0);
     }
   }
 }
@@ -46,7 +46,7 @@ TEST(Matrix4, ArrayConstructor)
   {
     for(int j = 0; j < 4; j++)
     {
-        ASSERT_EQ(matrix[i][j], array[index]);
+        EXPECT_FLOAT_EQ(matrix[i][j], array[index]);
         index++;
     }
   }
@@ -65,7 +65,7 @@ TEST(Matrix4, FloatConstructor)
     for(int j = 0; j < 4; j++)
     {
         value++;
-        ASSERT_EQ(matrix[i][j], value);
+        EXPECT_FLOAT_EQ(matrix[i][j], value);
     }
   }
 }
@@ -96,11 +96,11 @@ TEST(Matrix4, Vector3Constructor)
     {
       //Special cases when testing the last column
       if(j == 3 && i == 3)
-        ASSERT_EQ(matrix[i][j], 1);
+        EXPECT_FLOAT_EQ(matrix[i][j], 1);
       else if(j == 3)
-        ASSERT_EQ(matrix[i][j], 0);
+        EXPECT_FLOAT_EQ(matrix[i][j], 0);
       else
-        ASSERT_EQ(matrix[i][j], row[j]);
+        EXPECT_FLOAT_EQ(matrix[i][j], row[j]);
     }
   }
 }
@@ -121,7 +121,7 @@ TEST(Matrix4, Vector4Constructor)
   {
     Vector4 row = rows[i];
     for(int j = 0; j < 4; j++)
-        ASSERT_EQ(matrix[i][j], row[j]);
+        EXPECT_FLOAT_EQ(matrix[i][j], row[j]);
   }
 }
 
@@ -135,25 +135,25 @@ TEST(Matrix4, Transposition)
 
   //Result taken from wolfram alpha
   //http://www.wolframalpha.com/input/?i=matrix+transpose&a=*C.matrix+transpose-_*Calculator.dflt-&f2={{1%2C2%2C3%2C4}%2C{4%2C3%2C2%2C1}%2C{3%2C2%2C4%2C1}%2C{3%2C1%2C4%2C2}}&f=MatrixOperations.theMatrix_{{1%2C2%2C3%2C4}%2C{4%2C3%2C2%2C1}%2C{3%2C2%2C4%2C1}%2C{3%2C1%2C4%2C2}}
-  ASSERT_EQ(transpose[0][0], 1);
-  ASSERT_EQ(transpose[0][1], 4);
-  ASSERT_EQ(transpose[0][2], 3);
-  ASSERT_EQ(transpose[0][3], 3);
+  EXPECT_FLOAT_EQ(transpose[0][0], 1);
+  EXPECT_FLOAT_EQ(transpose[0][1], 4);
+  EXPECT_FLOAT_EQ(transpose[0][2], 3);
+  EXPECT_FLOAT_EQ(transpose[0][3], 3);
 
-  ASSERT_EQ(transpose[1][0], 2);
-  ASSERT_EQ(transpose[1][1], 3);
-  ASSERT_EQ(transpose[1][2], 2);
-  ASSERT_EQ(transpose[1][3], 1);
+  EXPECT_FLOAT_EQ(transpose[1][0], 2);
+  EXPECT_FLOAT_EQ(transpose[1][1], 3);
+  EXPECT_FLOAT_EQ(transpose[1][2], 2);
+  EXPECT_FLOAT_EQ(transpose[1][3], 1);
 
-  ASSERT_EQ(transpose[2][0], 3);
-  ASSERT_EQ(transpose[2][1], 2);
-  ASSERT_EQ(transpose[2][2], 4);
-  ASSERT_EQ(transpose[2][3], 4);
+  EXPECT_FLOAT_EQ(transpose[2][0], 3);
+  EXPECT_FLOAT_EQ(transpose[2][1], 2);
+  EXPECT_FLOAT_EQ(transpose[2][2], 4);
+  EXPECT_FLOAT_EQ(transpose[2][3], 4);
 
-  ASSERT_EQ(transpose[3][0], 4);
-  ASSERT_EQ(transpose[3][1], 1);
-  ASSERT_EQ(transpose[3][2], 1);
-  ASSERT_EQ(transpose[3][3], 2);
+  EXPECT_FLOAT_EQ(transpose[3][0], 4);
+  EXPECT_FLOAT_EQ(transpose[3][1], 1);
+  EXPECT_FLOAT_EQ(transpose[3][2], 1);
+  EXPECT_FLOAT_EQ(transpose[3][3], 2);
 }
 
 TEST(Matrix4, Inversion)
@@ -188,25 +188,25 @@ TEST(Matrix4, Matrix4MultiplicationOperator)
 
   Matrix4 result = mat1 * mat2;
 
-  ASSERT_EQ(result[0][0], 60);
-  ASSERT_EQ(result[0][1], 48);
-  ASSERT_EQ(result[0][2], 65);
-  ASSERT_EQ(result[0][3], 47);
+  EXPECT_FLOAT_EQ(result[0][0], 60);
+  EXPECT_FLOAT_EQ(result[0][1], 48);
+  EXPECT_FLOAT_EQ(result[0][2], 65);
+  EXPECT_FLOAT_EQ(result[0][3], 47);
 
-  ASSERT_EQ(result[1][0], 55);
-  ASSERT_EQ(result[1][1], 52);
-  ASSERT_EQ(result[1][2], 60);
-  ASSERT_EQ(result[1][3], 53);
+  EXPECT_FLOAT_EQ(result[1][0], 55);
+  EXPECT_FLOAT_EQ(result[1][1], 52);
+  EXPECT_FLOAT_EQ(result[1][2], 60);
+  EXPECT_FLOAT_EQ(result[1][3], 53);
 
-  ASSERT_EQ(result[2][0], 56);
-  ASSERT_EQ(result[2][1], 51);
-  ASSERT_EQ(result[2][2], 63);
-  ASSERT_EQ(result[2][3], 50);
+  EXPECT_FLOAT_EQ(result[2][0], 56);
+  EXPECT_FLOAT_EQ(result[2][1], 51);
+  EXPECT_FLOAT_EQ(result[2][2], 63);
+  EXPECT_FLOAT_EQ(result[2][3], 50);
 
-  ASSERT_EQ(result[3][0], 55);
-  ASSERT_EQ(result[3][1], 49);
-  ASSERT_EQ(result[3][2], 65);
-  ASSERT_EQ(result[3][3], 51);
+  EXPECT_FLOAT_EQ(result[3][0], 55);
+  EXPECT_FLOAT_EQ(result[3][1], 49);
+  EXPECT_FLOAT_EQ(result[3][2], 65);
+  EXPECT_FLOAT_EQ(result[3][3], 51);
 }
 
 TEST(Matrix4, Vector4MultiplicationOperator)
@@ -219,10 +219,10 @@ TEST(Matrix4, Vector4MultiplicationOperator)
 
   Vector4 result = matrix * vector;
 
-  ASSERT_EQ(result[0], 30);
-  ASSERT_EQ(result[1], 20);
-  ASSERT_EQ(result[2], 23);
-  ASSERT_EQ(result[3], 25);
+  EXPECT_FLOAT_EQ(result[0], 30);
+  EXPECT_FLOAT_EQ(result[1], 20);
+  EXPECT_FLOAT_EQ(result[2], 23);
+  EXPECT_FLOAT_EQ(result[3], 25);
 }
 
 TEST(Matrix4Static, OrthographicProjection)

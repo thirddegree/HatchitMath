@@ -20,20 +20,20 @@ using namespace Math;
 
 TEST(Vector2, DefaultConstructorFillsZeros) {
   Vector2 vector;
-  ASSERT_EQ(vector.x, 0);
-  ASSERT_EQ(vector.y, 0);
+  EXPECT_FLOAT_EQ(vector.x, 0);
+  EXPECT_FLOAT_EQ(vector.y, 0);
 }
 
 TEST(Vector2, SingleParameterConstructor) {
 	Vector2 vector(5);
-	ASSERT_EQ(vector.x, 5);
-	ASSERT_EQ(vector.y, 5);
+	EXPECT_FLOAT_EQ(vector.x, 5);
+	EXPECT_FLOAT_EQ(vector.y, 5);
 }
 
 TEST(Vector2, TwoParameterConstructor) {
   Vector2 vector(5, 3);
-  ASSERT_EQ(vector.x, 5);
-  ASSERT_EQ(vector.y, 3);
+  EXPECT_FLOAT_EQ(vector.x, 5);
+  EXPECT_FLOAT_EQ(vector.y, 3);
 }
 
 TEST(Vector2, CopyConstructor)
@@ -41,8 +41,8 @@ TEST(Vector2, CopyConstructor)
   Vector2 vector1(6, 7);
   Vector2 vector2(vector1);
 
-  ASSERT_EQ(vector2.x, vector1.x);
-  ASSERT_EQ(vector2.y, vector1.y);
+  EXPECT_FLOAT_EQ(vector2.x, vector1.x);
+  EXPECT_FLOAT_EQ(vector2.y, vector1.y);
 }
 
 TEST(Vector2, SettingElementValues)
@@ -51,8 +51,8 @@ TEST(Vector2, SettingElementValues)
 	vector.x = 5;
 	vector.y = 6;
 
-	ASSERT_EQ(vector.x, 5);
-	ASSERT_EQ(vector.y, 6);
+	EXPECT_FLOAT_EQ(vector.x, 5);
+	EXPECT_FLOAT_EQ(vector.y, 6);
 }
 
 
@@ -63,8 +63,8 @@ TEST(Vector2, FloatAdditionOperator)
 
 	Vector2 result = vector1 + 3;
 
-	ASSERT_EQ(result.x, 4);
-	ASSERT_EQ(result.y, 5);
+	EXPECT_FLOAT_EQ(result.x, 4);
+	EXPECT_FLOAT_EQ(result.y, 5);
 }
 
 TEST(Vector2, FloatAdditionAssignmentOperator)
@@ -73,8 +73,8 @@ TEST(Vector2, FloatAdditionAssignmentOperator)
 
 	vector1 += 3;
 
-	ASSERT_EQ(vector1.x, 4);
-	ASSERT_EQ(vector1.y, 5);
+	EXPECT_FLOAT_EQ(vector1.x, 4);
+	EXPECT_FLOAT_EQ(vector1.y, 5);
 }
 
 TEST(Vector2, FloatSubtractionOperator)
@@ -83,8 +83,8 @@ TEST(Vector2, FloatSubtractionOperator)
 
 	Vector2 result = vector1 - 3;
 
-	ASSERT_EQ(result.x, -2);
-	ASSERT_EQ(result.y, -1);
+	EXPECT_FLOAT_EQ(result.x, -2);
+	EXPECT_FLOAT_EQ(result.y, -1);
 }
 
 TEST(Vector2, FloatSubtractionAssignmentOperator)
@@ -93,8 +93,8 @@ TEST(Vector2, FloatSubtractionAssignmentOperator)
 
 	vector1 -= 3;
 
-	ASSERT_EQ(vector1.x, -2);
-	ASSERT_EQ(vector1.y, -1);
+	EXPECT_FLOAT_EQ(vector1.x, -2);
+	EXPECT_FLOAT_EQ(vector1.y, -1);
 }
 
 TEST(Vector2, FloatMultiplicationOperator)
@@ -103,8 +103,8 @@ TEST(Vector2, FloatMultiplicationOperator)
 
 	Vector2 result = vector1 * 3;
 
-	ASSERT_EQ(result.x, 3);
-	ASSERT_EQ(result.y, 6);
+	EXPECT_FLOAT_EQ(result.x, 3);
+	EXPECT_FLOAT_EQ(result.y, 6);
 }
 
 TEST(Vector2, FloatMultiplicationAssignmentOperator)
@@ -113,8 +113,8 @@ TEST(Vector2, FloatMultiplicationAssignmentOperator)
 
 	vector1 *= 3;
 
-	ASSERT_EQ(vector1.x, 3);
-	ASSERT_EQ(vector1.y, 6);
+	EXPECT_FLOAT_EQ(vector1.x, 3);
+	EXPECT_FLOAT_EQ(vector1.y, 6);
 }
 
 TEST(Vector2, FloatDivisionOperator)
@@ -123,8 +123,8 @@ TEST(Vector2, FloatDivisionOperator)
 
 	Vector2 result = vector1 / 2;
 
-	ASSERT_EQ(result.x, 2);
-	ASSERT_EQ(result.y, 4);
+	EXPECT_FLOAT_EQ(result.x, 2);
+	EXPECT_FLOAT_EQ(result.y, 4);
 }
 
 TEST(Vector2, FloatDivisionAssignmentOperator)
@@ -133,8 +133,8 @@ TEST(Vector2, FloatDivisionAssignmentOperator)
 
 	vector1 /= 2;
 
-	ASSERT_EQ(vector1.x, 2);
-	ASSERT_EQ(vector1.y, 4);
+	EXPECT_FLOAT_EQ(vector1.x, 2);
+	EXPECT_FLOAT_EQ(vector1.y, 4);
 }
 
 
@@ -148,8 +148,8 @@ TEST(Vector2, VectorAdditionOperator)
 
 	Vector2 result = vector1 + vector2;
 
-	ASSERT_EQ(result.x, 4);
-	ASSERT_EQ(result.y, 6);
+	EXPECT_FLOAT_EQ(result.x, 4);
+	EXPECT_FLOAT_EQ(result.y, 6);
 }
 
 TEST(Vector2, VectorAdditionAssignmentOperator)
@@ -159,8 +159,8 @@ TEST(Vector2, VectorAdditionAssignmentOperator)
 
 	vector1 += vector2;
 
-	ASSERT_EQ(vector1.x, 4);
-	ASSERT_EQ(vector1.y, 6);
+	EXPECT_FLOAT_EQ(vector1.x, 4);
+	EXPECT_FLOAT_EQ(vector1.y, 6);
 }
 
 TEST(Vector2, VectorSubtractionOperator)
@@ -170,8 +170,8 @@ TEST(Vector2, VectorSubtractionOperator)
 
 	Vector2 result = vector1 - vector2;
 
-	ASSERT_EQ(result.x, -2);
-	ASSERT_EQ(result.y, -2);
+	EXPECT_FLOAT_EQ(result.x, -2);
+	EXPECT_FLOAT_EQ(result.y, -2);
 }
 
 TEST(Vector2, VectorSubtractionAssignmentOperator)
@@ -181,8 +181,8 @@ TEST(Vector2, VectorSubtractionAssignmentOperator)
 
 	vector1 -= vector2;
 
-	ASSERT_EQ(vector1.x, -2);
-	ASSERT_EQ(vector1.y, -2);
+	EXPECT_FLOAT_EQ(vector1.x, -2);
+	EXPECT_FLOAT_EQ(vector1.y, -2);
 }
 
 TEST(Vector2, VectorMultiplicationOperator)
@@ -192,8 +192,8 @@ TEST(Vector2, VectorMultiplicationOperator)
 
 	Vector2 result = vector1 * vector2;
 
-	ASSERT_EQ(result.x, 3);
-	ASSERT_EQ(result.y, 8);
+	EXPECT_FLOAT_EQ(result.x, 3);
+	EXPECT_FLOAT_EQ(result.y, 8);
 }
 
 TEST(Vector2, VectorMultiplicationAssignmentOperator)
@@ -203,8 +203,8 @@ TEST(Vector2, VectorMultiplicationAssignmentOperator)
 
 	vector1 *= vector2;
 
-	ASSERT_EQ(vector1.x, 3);
-	ASSERT_EQ(vector1.y, 8);
+	EXPECT_FLOAT_EQ(vector1.x, 3);
+	EXPECT_FLOAT_EQ(vector1.y, 8);
 }
 
 TEST(Vector2, VectorDivisionOperator)
@@ -214,8 +214,8 @@ TEST(Vector2, VectorDivisionOperator)
 
 	Vector2 result = vector1 / vector2;
 
-	ASSERT_EQ(result.x, 2);
-	ASSERT_EQ(result.y, 3);
+	EXPECT_FLOAT_EQ(result.x, 2);
+	EXPECT_FLOAT_EQ(result.y, 3);
 }
 
 TEST(Vector2, VectorDivisionAssignmentOperator)
@@ -225,8 +225,8 @@ TEST(Vector2, VectorDivisionAssignmentOperator)
 
 	vector1 /= vector2;
 
-	ASSERT_EQ(vector1.x, 2);
-	ASSERT_EQ(vector1.y, 3);
+	EXPECT_FLOAT_EQ(vector1.x, 2);
+	EXPECT_FLOAT_EQ(vector1.y, 3);
 }
 
 TEST(Vector2, FloatCompareOperators)
@@ -234,6 +234,12 @@ TEST(Vector2, FloatCompareOperators)
 	Vector2 vector(3, 4);
 	ASSERT_TRUE(vector > 4.5);
 	ASSERT_TRUE(vector < 5.5);
+	ASSERT_TRUE(4.5 < vector);
+	ASSERT_TRUE(5.5 > vector);
+	ASSERT_FALSE(vector < 4.5);
+	ASSERT_FALSE(vector > 5.5);
+	ASSERT_FALSE(4.5 > vector);
+	ASSERT_FALSE(5.5 < vector);
 }
 
 TEST(Vector2, VectorCompareOperator)
@@ -243,38 +249,44 @@ TEST(Vector2, VectorCompareOperator)
 
 	ASSERT_TRUE(vector1 < vector2);
 	ASSERT_TRUE(vector2 > vector1);
+	ASSERT_FALSE(vector1 > vector2);
+	ASSERT_FALSE(vector2 < vector1);
 }
 
 TEST(Vector2, VectorEqualityOperator)
 {
 	Vector2 vector1(3, 4);
 	Vector2 vector2(3, 4);
+	Vector2 vector3(4, 4);
 
 	ASSERT_TRUE(vector1 == vector2);
+	ASSERT_FALSE(vector1 == vector3);
 }
 
 TEST(Vector2, VectorInequalityOperator)
 {
 	Vector2 vector1(3, 4);
-	Vector2 vector2(4, 4);
+	Vector2 vector2(4, 3);
+	Vector2 vector3(3, 4);
 
 	ASSERT_TRUE(vector1 != vector2);
+	ASSERT_FALSE(vector1 != vector3);
 }
 
 TEST(Vector2, ArrayNotationOperator)
 {
 	Vector2 vector1(3, 4);
 
-	ASSERT_EQ(vector1[0], 3);
-	ASSERT_EQ(vector1[1], 4);
+	EXPECT_FLOAT_EQ(vector1[0], 3);
+	EXPECT_FLOAT_EQ(vector1[1], 4);
 }
 
-TEST(Vector2, DotProduct)
+TEST(Vector2Static, DotProduct)
 {
     Vector2 vector1(1, 2);
     Vector2 vector2(3, 4);
 
-    ASSERT_EQ(Vector2::Dot(vector1, vector2), 11);
+    EXPECT_FLOAT_EQ(Vector2::Dot(vector1, vector2), 11);
 }
 
 TEST(Vector2, MagnitudeSqr)

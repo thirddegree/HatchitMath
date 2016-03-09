@@ -24,20 +24,20 @@ TEST(Quaternion, DefaultConstructor)
 {
   Quaternion quat;
 
-  ASSERT_EQ(quat.w, 1);
-  ASSERT_EQ(quat.x, 0);
-  ASSERT_EQ(quat.y, 0);
-  ASSERT_EQ(quat.z, 0);
+  EXPECT_FLOAT_EQ(quat.w, 1);
+  EXPECT_FLOAT_EQ(quat.x, 0);
+  EXPECT_FLOAT_EQ(quat.y, 0);
+  EXPECT_FLOAT_EQ(quat.z, 0);
 }
 
 TEST(Quaternion, ParamaterizedFloatConstructor)
 {
   Quaternion quat(4,3,2,1);
 
-  ASSERT_EQ(quat.w, 4);
-  ASSERT_EQ(quat.x, 3);
-  ASSERT_EQ(quat.y, 2);
-  ASSERT_EQ(quat.z, 1);
+  EXPECT_FLOAT_EQ(quat.w, 4);
+  EXPECT_FLOAT_EQ(quat.x, 3);
+  EXPECT_FLOAT_EQ(quat.y, 2);
+  EXPECT_FLOAT_EQ(quat.z, 1);
 }
 
 TEST(Quaterion, EulerAnglesConstructor)
@@ -71,10 +71,10 @@ TEST(Quaternion, AxisAngleConstructor)
 //  Quaternion quat(4,3,2,1);
 //  Quaternion inverse = quat.getInverse();
 //
-//  ASSERT_EQ(inverse.w, 4);
-//  ASSERT_EQ(inverse.x, -3);
-//  ASSERT_EQ(inverse.y, -2);
-//  ASSERT_EQ(inverse.z, -1);
+//  EXPECT_FLOAT_EQ(inverse.w, 4);
+//  EXPECT_FLOAT_EQ(inverse.x, -3);
+//  EXPECT_FLOAT_EQ(inverse.y, -2);
+//  EXPECT_FLOAT_EQ(inverse.z, -1);
 //}
 
 //TEST(Quaterion, GetAxisAngle)
@@ -86,10 +86,10 @@ TEST(Quaternion, AxisAngleConstructor)
 //
 //  Vector4 resultAA = quat.getAxisAngle();
 //
-//  ASSERT_EQ(angleAxis[0], resultAA[0]);
-//  ASSERT_EQ(angleAxis[1], resultAA[1]);
-//  ASSERT_EQ(angleAxis[2], resultAA[2]);
-//  ASSERT_EQ(angleAxis[3], resultAA[3]);
+//  EXPECT_FLOAT_EQ(angleAxis[0], resultAA[0]);
+//  EXPECT_FLOAT_EQ(angleAxis[1], resultAA[1]);
+//  EXPECT_FLOAT_EQ(angleAxis[2], resultAA[2]);
+//  EXPECT_FLOAT_EQ(angleAxis[3], resultAA[3]);
 //}
 
 //TEST(Quaternion, GetRotationMatrix)

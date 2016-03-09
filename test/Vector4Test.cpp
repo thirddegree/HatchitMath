@@ -31,10 +31,10 @@ TEST(Vector4, DefaultConstructorFillsZeros)
 
 TEST(Vector4, ParamaterizedConstructor) {
   Vector4 vector(5,4,3,2);
-  ASSERT_EQ(vector.x, 5);
-  ASSERT_EQ(vector.y, 4);
-  ASSERT_EQ(vector.z, 3);
-  ASSERT_EQ(vector.w, 2);
+  EXPECT_FLOAT_EQ(vector.x, 5);
+  EXPECT_FLOAT_EQ(vector.y, 4);
+  EXPECT_FLOAT_EQ(vector.z, 3);
+  EXPECT_FLOAT_EQ(vector.w, 2);
 }
 
 TEST(Vector4, AngleAxisConstructor)
@@ -44,10 +44,10 @@ TEST(Vector4, AngleAxisConstructor)
 
   Vector4 angleAxis(axis, angle);
 
-  ASSERT_EQ(angleAxis.x, 1);
-  ASSERT_EQ(angleAxis.y, 2);
-  ASSERT_EQ(angleAxis.z, 3);
-  ASSERT_EQ(angleAxis.w, 5);
+  EXPECT_FLOAT_EQ(angleAxis.x, 1);
+  EXPECT_FLOAT_EQ(angleAxis.y, 2);
+  EXPECT_FLOAT_EQ(angleAxis.z, 3);
+  EXPECT_FLOAT_EQ(angleAxis.w, 5);
 }
 
 TEST(Vector4, CopyConstructor)
@@ -55,10 +55,10 @@ TEST(Vector4, CopyConstructor)
   Vector4 vector1(6,7,8,9);
   Vector4 vector2(vector1);
 
-  ASSERT_EQ(vector2.x, vector1.x);
-  ASSERT_EQ(vector2.y, vector1.y);
-  ASSERT_EQ(vector2.z, vector1.z);
-  ASSERT_EQ(vector2.w, vector1.w);
+  EXPECT_FLOAT_EQ(vector2.x, vector1.x);
+  EXPECT_FLOAT_EQ(vector2.y, vector1.y);
+  EXPECT_FLOAT_EQ(vector2.z, vector1.z);
+  EXPECT_FLOAT_EQ(vector2.w, vector1.w);
 }
 
 TEST(Vector4, Magnitude)
@@ -79,20 +79,20 @@ TEST(Vector4, SettingElementValues)
   vector.z = 8;
   vector.w = 9;
 
-  ASSERT_EQ(vector.x, 6);
-  ASSERT_EQ(vector.y, 7);
-  ASSERT_EQ(vector.z, 8);
-  ASSERT_EQ(vector.w, 9);
+  EXPECT_FLOAT_EQ(vector.x, 6);
+  EXPECT_FLOAT_EQ(vector.y, 7);
+  EXPECT_FLOAT_EQ(vector.z, 8);
+  EXPECT_FLOAT_EQ(vector.w, 9);
 }
 
 TEST(Vector4, ArrayNotationOperator)
 {
   Vector4 vector(3,4,5,6);
 
-  ASSERT_EQ(vector[0], 3);
-  ASSERT_EQ(vector[1], 4);
-  ASSERT_EQ(vector[2], 5);
-  ASSERT_EQ(vector[3], 6);
+  EXPECT_FLOAT_EQ(vector[0], 3);
+  EXPECT_FLOAT_EQ(vector[1], 4);
+  EXPECT_FLOAT_EQ(vector[2], 5);
+  EXPECT_FLOAT_EQ(vector[3], 6);
 }
 
 TEST(Vector4, Vector3ConversionOperator)
@@ -100,7 +100,7 @@ TEST(Vector4, Vector3ConversionOperator)
   Vector4 vector(1,2,3,4);
   Vector3 result = (Vector3)vector;
 
-  ASSERT_EQ(result[0], vector[0]);
-  ASSERT_EQ(result[1], vector[1]);
-  ASSERT_EQ(result[2], vector[2]);
+  EXPECT_FLOAT_EQ(result[0], vector[0]);
+  EXPECT_FLOAT_EQ(result[1], vector[1]);
+  EXPECT_FLOAT_EQ(result[2], vector[2]);
 }
