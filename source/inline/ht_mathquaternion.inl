@@ -111,23 +111,23 @@ namespace Hatchit {
         */
         inline Quaternion Quaternion::operator*(const Quaternion& p_rhs) const
         {
-			static const __m128 maskB = MMVectorSet(1.f, -1.f, 1.f, -1.f);
-			static const __m128 maskC = MMVectorSet(1.f, 1.f, -1.f, -1.f);
-			static const __m128 maskD = MMVectorSet(-1.f, 1.f, 1.f, -1.f);
-			__m128 splatA = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
-			__m128 splatB = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
-			__m128 splatC = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
-			__m128 splatD = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
+			static const __m128 maskX = MMVectorSet(1.f, -1.f, 1.f, -1.f);
+			static const __m128 maskY = MMVectorSet(1.f, 1.f, -1.f, -1.f);
+			static const __m128 maskZ = MMVectorSet(-1.f, 1.f, 1.f, -1.f);
+			__m128 splatX = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
+			__m128 splatY = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
+			__m128 splatZ = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
+			__m128 splatW = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
 
-			splatA = _mm_mul_ps(splatA, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 3, 2, 1)));
-			splatB = _mm_mul_ps(_mm_mul_ps(splatB, maskB), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 0, 1, 2)));
-			splatC = _mm_mul_ps(_mm_mul_ps(splatC, maskC), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 1, 0, 3)));
-			splatD = _mm_mul_ps(_mm_mul_ps(splatD, maskD), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 2, 3, 0)));
+			splatW = _mm_mul_ps(splatW, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 3, 2, 1)));
+			splatX = _mm_mul_ps(_mm_mul_ps(splatX, maskX), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 0, 1, 2)));
+			splatY = _mm_mul_ps(_mm_mul_ps(splatY, maskY), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 1, 0, 3)));
+			splatZ = _mm_mul_ps(_mm_mul_ps(splatZ, maskZ), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 2, 3, 0)));
 
-			splatA = _mm_add_ps(splatA, splatB);
-			splatC = _mm_add_ps(splatC, splatD);
+			splatX = _mm_add_ps(splatX, splatY);
+			splatZ = _mm_add_ps(splatZ, splatW);
 
-            return Quaternion(_mm_add_ps(splatA, splatC));
+            return Quaternion(_mm_add_ps(splatX, splatZ));
         }
 
         /** Adds the components of the other quaternion into this quaternion
