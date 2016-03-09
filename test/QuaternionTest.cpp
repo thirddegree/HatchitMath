@@ -271,11 +271,11 @@ TEST(Quaternion, ConversionOperatorReturnsInternalM128InExpectedOrder)
 
 	__m128 result = static_cast<__m128>(quatA);
 
-	float actualArray[4];
+	_MM_ALIGN16 float actualArray[4];
 	_mm_store_ps(actualArray, result);
 	for (size_t i = 0; i < 4; ++i)
 	{
-		EXPECT_FLOAT_EQ(actualArray[i], valueArray[i]);
+		EXPECT_FLOAT_EQ(valueArray[i], actualArray[i]);
 	}
 }
 
