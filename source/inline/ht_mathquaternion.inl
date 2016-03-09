@@ -119,10 +119,10 @@ namespace Hatchit {
 			__m128 splatZ = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
 			__m128 splatW = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
 
-			splatW = _mm_mul_ps(splatW, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 3, 2, 1)));
-			splatX = _mm_mul_ps(_mm_mul_ps(splatX, maskX), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 0, 1, 2)));
-			splatY = _mm_mul_ps(_mm_mul_ps(splatY, maskY), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 1, 0, 3)));
-			splatZ = _mm_mul_ps(_mm_mul_ps(splatZ, maskZ), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 2, 3, 0)));
+			splatW = _mm_mul_ps(splatW, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 2, 1, 0)));
+			splatX = _mm_mul_ps(_mm_mul_ps(splatX, maskX), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 1, 2, 3)));
+			splatY = _mm_mul_ps(_mm_mul_ps(splatY, maskY), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 0, 3, 2)));
+			splatZ = _mm_mul_ps(_mm_mul_ps(splatZ, maskZ), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 3, 0, 1)));
 
 			splatX = _mm_add_ps(splatX, splatY);
 			splatZ = _mm_add_ps(splatZ, splatW);
