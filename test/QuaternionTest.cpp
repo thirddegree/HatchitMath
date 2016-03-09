@@ -323,11 +323,11 @@ TEST(Quaternion, NormalizeReturnsNormalizedQuaternion)
 }
 
 #if !defined(NDEBUG)
-TEST(Quaternion, NormalizingZeroQuaternionAsserts)
+TEST(QuaternionDeathTest, NormalizingZeroQuaternionAsserts)
 {
 	Quaternion quat(0.f, 0.f, 0.f, 0.f);
 
-	ASSERT_DEATH(Quaternion actualQuat = MMQuaternionNormalize(quat));
+	ASSERT_DEATH(Quaternion actualQuat = MMQuaternionNormalize(quat), "");
 }
 #else
 TEST(Quaternion, NormalizingAZeroQuaternionDoesntCrash)
