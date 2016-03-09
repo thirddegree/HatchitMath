@@ -73,7 +73,7 @@ TEST(Quaternion, EulerAnglesConstructorCreatesAppropriateQuaternion)
   EXPECT_FLOAT_EQ(quat.w, .5f);
   EXPECT_FLOAT_EQ(quat.x, .5f);
   EXPECT_FLOAT_EQ(quat.y, .5f);
-  EXPECT_FLOAT_EQ(quat.z, -.5f);
+  EXPECT_FLOAT_EQ(quat.z, .5f);
 }
 
 TEST(Quaternion, ExistingM128ConstructorCreatesAppropriateQuaternion)
