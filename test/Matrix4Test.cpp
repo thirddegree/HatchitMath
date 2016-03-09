@@ -280,7 +280,7 @@ TEST(Matrix4Static, GetPerspectiveProjection)
   EXPECT_FLOAT_EQ(persp[2][0], 0.0f);
   EXPECT_FLOAT_EQ(persp[2][1], 0.0f);
   EXPECT_FLOAT_EQ(persp[2][2], -1.002002f);
-  EXPECT_FLOAT_EQ(persp[2][3], -0.2002f);
+  EXPECT_FLOAT_EQ(persp[2][3], -0.2002002f);
 
   EXPECT_FLOAT_EQ(persp[3][0], 0.0f);
   EXPECT_FLOAT_EQ(persp[3][1], 0.0f);
