@@ -111,23 +111,42 @@ namespace Hatchit {
         */
         inline Quaternion Quaternion::operator*(const Quaternion& p_rhs) const
         {
-			static const __m128 maskX = MMVectorSet(1.f, -1.f, 1.f, -1.f);
-			static const __m128 maskY = MMVectorSet(1.f, 1.f, -1.f, -1.f);
-			static const __m128 maskZ = MMVectorSet(-1.f, 1.f, 1.f, -1.f);
-			__m128 splatX = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
-			__m128 splatY = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
-			__m128 splatZ = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
-			__m128 splatW = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
-
-			splatW = _mm_mul_ps(splatW, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 2, 1, 0)));
-			splatX = _mm_mul_ps(_mm_mul_ps(splatX, maskX), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 1, 2, 3)));
-			splatY = _mm_mul_ps(_mm_mul_ps(splatY, maskY), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 0, 3, 2)));
-			splatZ = _mm_mul_ps(_mm_mul_ps(splatZ, maskZ), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 3, 0, 1)));
-
-			splatX = _mm_add_ps(splatX, splatY);
-			splatZ = _mm_add_ps(splatZ, splatW);
-
-            return Quaternion(_mm_add_ps(splatX, splatZ));
+			static const __m128 ControlWZYX = MMVectorSet(1.0f,-1.0f, 1.0f,-1.0f);
+			static const __m128 ControlZWXY = MMVectorSet(1.0f, 1.0f,-1.0f,-1.0f);
+			static const __m128 ControlYXWZ = MMVectorSet(-1.0f, 1.0f, 1.0f,-1.0f);
+			// Copy to SSE registers and use as few as possible for x86
+			__m128 Q2X = p_rhs.m_quaternion;
+			__m128 Q2Y = p_rhs.m_quaternion;
+			__m128 Q2Z = p_rhs.m_quaternion;
+			__m128 vResult = p_rhs.m_quaternion;
+			// Splat with one instruction
+			vResult = _mm_shuffle_ps(vResult,vResult, _MM_SHUFFLE(3, 3, 3, 3));
+			Q2X = _mm_shuffle_ps(Q2X,Q2X, _MM_SHUFFLE(0, 0, 0, 0));
+			Q2Y = _mm_shuffle_ps(Q2Y,Q2Y, _MM_SHUFFLE(1, 1, 1, 1));
+			Q2Z = _mm_shuffle_ps(Q2Z,Q2Z, _MM_SHUFFLE(2, 2, 2, 2));
+			// Retire Q1 and perform Q1*Q2W
+			vResult = _mm_mul_ps(vResult, m_quaternion);
+			__m128 Q1Shuffle = m_quaternion;
+			// Shuffle the copies of Q1
+			Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle, _MM_SHUFFLE(0, 1, 2, 3));
+			// Mul by Q1WZYX
+			Q2X = _mm_mul_ps(Q2X, Q1Shuffle);
+			Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle, _MM_SHUFFLE(2, 3, 0, 1));
+			// Flip the signs on y and z
+			Q2X = _mm_mul_ps(Q2X, ControlWZYX);
+			// Mul by Q1ZWXY
+			Q2Y = _mm_mul_ps(Q2Y, Q1Shuffle);
+			Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle, _MM_SHUFFLE(0, 1, 2, 3));
+			// Flip the signs on z and w
+			Q2Y = _mm_mul_ps(Q2Y, ControlZWXY);
+			// Mul by Q1YXWZ
+			Q2Z = _mm_mul_ps(Q2Z, Q1Shuffle);
+			vResult = _mm_add_ps(vResult, Q2X);
+			// Flip the signs on x and w
+			Q2Z = _mm_mul_ps(Q2Z, ControlYXWZ);
+			Q2Y = _mm_add_ps(Q2Y, Q2Z);
+			vResult = _mm_add_ps(vResult, Q2Y);
+			return Quaternion(vResult);
         }
 
         /** Adds the components of the other quaternion into this quaternion
