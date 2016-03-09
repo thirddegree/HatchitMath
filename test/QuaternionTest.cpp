@@ -340,6 +340,50 @@ TEST(Quaternion, NormalizingAZeroQuaternionDoesntCrash)
 }
 #endif
 
+TEST(Quaternion, NormalizeEstReturnsNormalizedQuaternion)
+{
+	float valueArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	valueArray[1] = 0.5f; //To assure quaternion passed in does not have magnitude of 0
+						  //Calculate expected result
+	float expectedArray[4];
+	float magnitude = sqrtf(valueArray[0] * valueArray[0] + valueArray[1] * valueArray[1] + valueArray[2] * valueArray[2] + valueArray[3] * valueArray[3]);
+	for (size_t i = 0; i < 4; ++i)
+	{
+		expectedArray[i] = valueArray[i] / magnitude;
+	}
+
+	Quaternion quat = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+
+	Quaternion actualQuat = MMQuaternionNormalizeEst(quat);
+
+	EXPECT_NEAR(expectedArray[3], actualQuat.w, 0.0001f);
+	EXPECT_NEAR(expectedArray[0], actualQuat.x, 0.0001f);
+	EXPECT_NEAR(expectedArray[1], actualQuat.y, 0.0001f);
+	EXPECT_NEAR(expectedArray[2], actualQuat.z, 0.0001f);
+}
+
+#if !defined(NDEBUG)
+TEST(QuaternionDeathTest, NormalizeEstZeroQuaternionAsserts)
+{
+	Quaternion quat(0.f, 0.f, 0.f, 0.f);
+
+	ASSERT_DEATH(Quaternion actualQuat = MMQuaternionNormalize(quat), "");
+}
+#else
+TEST(Quaternion, NormalizeEstZeroQuaternionDoesntCrash)
+{
+	Quaternion quat(0.f, 0.f, 0.f, 0.f);
+
+	Quaternion actualQuat = MMQuaternionNormalize(quat);
+
+	//Woot woot, we pass
+}
+#endif
+
 TEST(Quaternion, MagnitudeReturnsAppropriateValue)
 {
 	float valueArray[4];
@@ -383,7 +427,7 @@ TEST(Quaternion, ConjugateReturnsAppropriateQuaternion)
 	expectedArray[3] = valueArray[3];
 	for (size_t i = 0; i < 3; ++i)
 	{
-		expectedArray[i] = -valueArray[3];
+		expectedArray[i] = -valueArray[i];
 	}
 	Quaternion quat = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
 
