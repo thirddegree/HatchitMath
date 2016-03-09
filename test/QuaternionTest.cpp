@@ -360,10 +360,10 @@ TEST(Quaternion, NormalizeEstReturnsNormalizedQuaternion)
 
 	Quaternion actualQuat = MMQuaternionNormalizeEst(quat);
 
-	EXPECT_NEAR(expectedArray[3], actualQuat.w, 0.00012f);
-	EXPECT_NEAR(expectedArray[0], actualQuat.x, 0.00012f);
-	EXPECT_NEAR(expectedArray[1], actualQuat.y, 0.00012f);
-	EXPECT_NEAR(expectedArray[2], actualQuat.z, 0.00012f);
+	EXPECT_NEAR(expectedArray[3], actualQuat.w, 0.0002f);
+	EXPECT_NEAR(expectedArray[0], actualQuat.x, 0.0002f);
+	EXPECT_NEAR(expectedArray[1], actualQuat.y, 0.0002f);
+	EXPECT_NEAR(expectedArray[2], actualQuat.z, 0.0002f);
 }
 
 #if !defined(NDEBUG)
