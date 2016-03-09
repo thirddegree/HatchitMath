@@ -21,9 +21,9 @@ using namespace Math;
 
 TEST(Vector3, DefaultConstructorFillsZeros) {
   Vector3 vector;
-  ASSERT_EQ(vector.x, 0, FLT_EPSILON);
-  ASSERT_EQ(vector.y, 0, FLT_EPSILON);
-  ASSERT_EQ(vector.z, 0, FLT_EPSILON);
+  EXPECT_FLOAT_EQ(vector.x, 0.f);
+  EXPECT_FLOAT_EQ(vector.y, 0.f);
+  EXPECT_FLOAT_EQ(vector.z, 0.f);
 }
 
 TEST(Vector3, SingleValueConstructor) {

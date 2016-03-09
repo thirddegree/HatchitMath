@@ -260,58 +260,59 @@ TEST(Matrix4Static, OrthographicProjection)
 TEST(Matrix4Static, GetPerspectiveProjection)
 {
   float fov = HalfPi;
-  float aspect = 16.0f / 9.0f;
+  float width = 16.0f;
+  float height = 9.0f;
   float _near = 0.1f;
   float _far = 100.0f;
 
-  Matrix4 persp = MMMatrixPerspProj(fov, aspect, _near, _far);
+  Matrix4 persp = MMMatrixPerspProj(fov, width, height, _near, _far);
 
-  ASSERT_NEAR(persp[0][0], 1.77778f, 0.00001f);
-  ASSERT_NEAR(persp[0][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[0][2], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[0][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[0][0], 0.5625f);
+  EXPECT_FLOAT_EQ(persp[0][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[0][2], 0.0f);
+  EXPECT_FLOAT_EQ(persp[0][3], 0.0f);
 
-  ASSERT_NEAR(persp[1][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][1], 1.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][2], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[1][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[1][1], 1.0f);
+  EXPECT_FLOAT_EQ(persp[1][2], 0.0f);
+  EXPECT_FLOAT_EQ(persp[1][3], 0.0f);
 
-  ASSERT_NEAR(persp[2][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[2][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[2][2], -1.002002f, 0.00001f);
-  ASSERT_NEAR(persp[2][3], -1.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[2][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[2][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[2][2], -1.002002f);
+  EXPECT_FLOAT_EQ(persp[2][3], -0.2002002f);
 
-  ASSERT_NEAR(persp[3][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[3][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[3][2], -0.2002f, 0.00001f);
-  ASSERT_NEAR(persp[3][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[3][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[3][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[3][2], -1.0f);
+  EXPECT_FLOAT_EQ(persp[3][3], 0.0f);
 }
 
 TEST(Matrix4Static, GetLookAtView)
 {
-  Vector3 eye(5,5,5);
-  Vector3 center(15,20,25);
-  Vector3 up(0,1,0);
+  Vector3 eye(5.f, 10.f, 15.f);
+  Vector3 target(15.f, 15.f, 15.f);
+  Vector3 up(0.f, 1.f, 0.f);
 
-  Matrix4 lookAt = MMMatrixLookAt(eye,center,up);
+  Matrix4 lookAt = MMMatrixLookAt(eye, target, up);
 
-  ASSERT_NEAR(lookAt[0][0], -0.894427f, 0.00001f);
-  ASSERT_NEAR(lookAt[0][1], -0.249136f, 0.00001f);
-  ASSERT_NEAR(lookAt[0][2], -0.371391f, 0.00001f);
-  ASSERT_NEAR(lookAt[0][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[0][0], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[0][1], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[0][2], -1.f);
+  EXPECT_FLOAT_EQ(lookAt[0][3], 15.f);
 
-  ASSERT_NEAR(lookAt[1][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(lookAt[1][1], 0.830455f, 0.00001f);
-  ASSERT_NEAR(lookAt[1][2], -0.557086f, 0.00001f);
-  ASSERT_NEAR(lookAt[1][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[1][0], -0.447213590f);
+  EXPECT_FLOAT_EQ(lookAt[1][1], 0.894427180f);
+  EXPECT_FLOAT_EQ(lookAt[1][2], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[1][3], -6.70820427f);
 
-  ASSERT_NEAR(lookAt[2][0], 0.447214f, 0.00001f);
-  ASSERT_NEAR(lookAt[2][1], -0.498273f, 0.00001f);
-  ASSERT_NEAR(lookAt[2][2], -0.742781f, 0.00001f);
-  ASSERT_NEAR(lookAt[2][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[2][0], -0.894427180f);
+  EXPECT_FLOAT_EQ(lookAt[2][1], -0.447213590f);
+  EXPECT_FLOAT_EQ(lookAt[2][2], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[2][3], 8.94427204f);
 
-  ASSERT_NEAR(lookAt[3][0], 2.236068f, 0.00001f);
-  ASSERT_NEAR(lookAt[3][1], -0.415227f, 0.00001f);
-  ASSERT_NEAR(lookAt[3][2], 8.356291f, 0.00001f);
-  ASSERT_NEAR(lookAt[3][3], 1.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[3][0], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[3][1], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[3][2], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[3][3], 1.0f);
 }
