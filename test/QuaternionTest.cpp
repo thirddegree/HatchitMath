@@ -58,13 +58,13 @@ TEST(Quaternion, AxisAngleConstructorCreatesAppropriateQuaternion)
 
 	Quaternion quat(axis, angle);
 
-	EXPECT_FLOAT_EQ(quat.w, 0.7071f);
-	EXPECT_FLOAT_EQ(quat.x, 0.7071f);
+	EXPECT_FLOAT_EQ(quat.w, 0.70710683f);
+	EXPECT_FLOAT_EQ(quat.x, 0.70710683f);
 	EXPECT_FLOAT_EQ(quat.y, 0.0f);
 	EXPECT_FLOAT_EQ(quat.z, 0.0f);
 }
 
-TEST(Quaterion, EulerAnglesConstructorCreatesAppropriateQuaternion)
+TEST(Quaternion, EulerAnglesConstructorCreatesAppropriateQuaternion)
 {
   //90 deg x, 0 deg y, 90 deg z
   //Vector3 euler(M_PI/2,0,M_PI/2);
@@ -73,7 +73,7 @@ TEST(Quaterion, EulerAnglesConstructorCreatesAppropriateQuaternion)
   EXPECT_FLOAT_EQ(quat.w, .5f);
   EXPECT_FLOAT_EQ(quat.x, .5f);
   EXPECT_FLOAT_EQ(quat.y, .5f);
-  EXPECT_FLOAT_EQ(quat.z, .5f);
+  EXPECT_FLOAT_EQ(quat.z, -.5f);
 }
 
 TEST(Quaternion, ExistingM128ConstructorCreatesAppropriateQuaternion)
