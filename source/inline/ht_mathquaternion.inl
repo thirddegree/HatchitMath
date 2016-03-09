@@ -21,12 +21,12 @@ namespace Hatchit {
         inline Quaternion::Quaternion(float roll, float pitch, float yaw) : m_quaternion()
         {
             //TODO: Who wants to make this intrinsic?  Anyone?
-            float cosRoll = cosf(roll);
-            float cosPitch = cosf(pitch);
-            float cosYaw = cosf(yaw);
-            float sinRoll = sinf(roll);
-            float sinPitch = sinf(pitch);
-            float sinYaw = sinf(yaw);
+            float cosRoll = cosf(roll * 0.5f);
+            float cosPitch = cosf(pitch * 0.5f);
+            float cosYaw = cosf(yaw * 0.5f);
+            float sinRoll = sinf(roll * 0.5f);
+            float sinPitch = sinf(pitch * 0.5f);
+            float sinYaw = sinf(yaw * 0.5f);
 
             __m128 vecA = MMVectorSet(sinPitch, sinPitch, cosPitch, cosPitch);
             __m128 vecB = MMVectorSet(sinYaw, cosYaw, sinYaw, cosYaw);
@@ -239,7 +239,7 @@ namespace Hatchit {
         */
         inline Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q)
         {
-            static const __m128 signMask = _mm_setr_ps(1.f, -1.f, -1.f, -1.f));
+            static const __m128 signMask = _mm_setr_ps(1.f, -1.f, -1.f, -1.f);
             return Quaternion(_mm_mul_ps(q.m_quaternion, signMask));
         }
     }
