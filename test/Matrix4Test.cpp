@@ -267,25 +267,25 @@ TEST(Matrix4Static, GetPerspectiveProjection)
 
   Matrix4 persp = MMMatrixPerspProj(fov, width, height, _near, _far);
 
-  ASSERT_NEAR(persp[0][0], 1.77778f, 0.00001f);
-  ASSERT_NEAR(persp[0][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[0][2], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[0][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[0][0], 0.5625f);
+  EXPECT_FLOAT_EQ(persp[0][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[0][2], 0.0f);
+  EXPECT_FLOAT_EQ(persp[0][3], 0.0f);
 
-  ASSERT_NEAR(persp[1][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][1], 1.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][2], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[1][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[1][1], 1.0f);
+  EXPECT_FLOAT_EQ(persp[1][2], 0.0f);
+  EXPECT_FLOAT_EQ(persp[1][3], 0.0f);
 
-  ASSERT_NEAR(persp[2][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[2][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[2][2], -1.002002f, 0.00001f);
-  ASSERT_NEAR(persp[2][3], -1.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[2][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[2][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[2][2], -1.002002f);
+  EXPECT_FLOAT_EQ(persp[2][3], -1.0f);
 
-  ASSERT_NEAR(persp[3][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[3][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[3][2], -0.2002f, 0.00001f);
-  ASSERT_NEAR(persp[3][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[3][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[3][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[3][2], -0.2002f);
+  EXPECT_FLOAT_EQ(persp[3][3], 0.0f);
 }
 
 TEST(Matrix4Static, GetLookAtView)
