@@ -168,15 +168,26 @@ TEST(Quaternion, SubtractionSubtractsQuaternionsAppropriately)
 
 TEST(Quaternion, MultiplicationReturnsAppropriateQuaternion)
 {
-	Quaternion quatA(2.f, 3.f, 4.f, 1.f);
-	Quaternion quatB(6.f, 7.f, 8.f, 5.f);
+    float valueArray[8];
+    for (size_t i = 0; i < 8; ++i)
+    {
+        valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+    }
+    float expectedArray[4];
+    expectedArray[3] = valueArray[3] * valueArray[7] - valueArray[0] * valueArray[4] - valueArray[1] * valueArray[5] - valueArray[2] * valueArray[6];
+    expectedArray[0] = valueArray[3] * valueArray[4] + valueArray[0] * valueArray[7] + valueArray[1] * valueArray[6] - valueArray[2] * valueArray[5];
+    expectedArray[1] = valueArray[3] * valueArray[5] - valueArray[0] * valueArray[6] + valueArray[1] * valueArray[7] + valueArray[2] * valueArray[4];
+    expectedArray[2] = valueArray[3] * valueArray[6] + valueArray[0] * valueArray[5] - valueArray[1] * valueArray[4] + valueArray[2] * valueArray[7];
 
-	Quaternion actualQuat = quatA * quatB;
+    Quaternion quatA(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+    Quaternion quatB(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
 
-	EXPECT_FLOAT_EQ(-60.f, actualQuat.w);
-	EXPECT_FLOAT_EQ(12.f, actualQuat.x);
-	EXPECT_FLOAT_EQ(30.f, actualQuat.y);
-	EXPECT_FLOAT_EQ(24.f, actualQuat.z);
+    Quaternion actualQuat = quatA * quatB;
+
+    EXPECT_FLOAT_EQ(expectedArray[3], actualQuat.w);
+    EXPECT_FLOAT_EQ(expectedArray[0], actualQuat.x);
+    EXPECT_FLOAT_EQ(expectedArray[1], actualQuat.y);
+    EXPECT_FLOAT_EQ(expectedArray[2], actualQuat.z);
 }
 
 TEST(Quaternion, AddEqualsModifiesQuaternionAppropriately)
@@ -338,10 +349,10 @@ TEST(Quaternion, NormalizeEstReturnsNormalizedQuaternion)
 
 	Quaternion actualQuat = MMQuaternionNormalizeEst(quat);
 
-	EXPECT_NEAR(expectedArray[3], actualQuat.w, 0.0001f);
-	EXPECT_NEAR(expectedArray[0], actualQuat.x, 0.0001f);
-	EXPECT_NEAR(expectedArray[1], actualQuat.y, 0.0001f);
-	EXPECT_NEAR(expectedArray[2], actualQuat.z, 0.0001f);
+	EXPECT_NEAR(expectedArray[3], actualQuat.w, 0.00012f);
+	EXPECT_NEAR(expectedArray[0], actualQuat.x, 0.00012f);
+	EXPECT_NEAR(expectedArray[1], actualQuat.y, 0.00012f);
+	EXPECT_NEAR(expectedArray[2], actualQuat.z, 0.00012f);
 }
 
 #if !defined(NDEBUG)
