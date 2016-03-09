@@ -260,11 +260,12 @@ TEST(Matrix4Static, OrthographicProjection)
 TEST(Matrix4Static, GetPerspectiveProjection)
 {
   float fov = HalfPi;
-  float aspect = 16.0f / 9.0f;
+  float width = 16.0f;
+  float height = 9.0f;
   float _near = 0.1f;
   float _far = 100.0f;
 
-  Matrix4 persp = MMMatrixPerspProj(fov, aspect, _near, _far);
+  Matrix4 persp = MMMatrixPerspProj(fov, width, height, _near, _far);
 
   ASSERT_NEAR(persp[0][0], 1.77778f, 0.00001f);
   ASSERT_NEAR(persp[0][1], 0.0f, 0.00001f);
