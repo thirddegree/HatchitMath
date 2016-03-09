@@ -384,6 +384,25 @@ namespace Hatchit {
             return Vector2(_mm_div_ps(static_cast<__m128>(v), _mm_sqrt_ps(vecSum)));
         }
 
+		/** Compares the magnitue of a Vector2 to a float
+		* \param s the float
+		* \param v the vector
+		* \return True if the vector has a lesser magnitude than the float
+		*/
+		inline bool operator>(const float s, const Vector2 & v)
+		{
+			return s > MMVector2Magnitude(v);
+		}
+
+		/** Compares the magnitue of a Vector2 to a float
+		* \param s the float
+		* \param v the vector
+		* \return True if the vector has a greater magnitude than the float
+		*/
+		inline bool operator<(const float s, const Vector2 & v)
+		{
+			return s < MMVector2Magnitude(v);
+		}
 
 		/** An insertion operator for a Vector2 to interface with an ostream
 		* \param output the ostream to output to

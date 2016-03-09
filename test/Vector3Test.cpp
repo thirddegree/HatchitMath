@@ -28,21 +28,21 @@ TEST(Vector3, DefaultConstructorFillsZeros) {
 
 TEST(Vector3, SingleValueConstructor) {
 	Vector3 vector(3);
-	ASSERT_EQ(vector.x, 3);
+	EXPECT_FLOAT_EQ(vector.x, 3);
 }
 
 TEST(Vector3, Vector2AndFloatConstructor) {
 	Vector3 vector(Vector2(3, 4), 5);
-	ASSERT_EQ(vector.x, 3);
-	ASSERT_EQ(vector.y, 4);
-	ASSERT_EQ(vector.z, 5);
+	EXPECT_FLOAT_EQ(vector.x, 3);
+	EXPECT_FLOAT_EQ(vector.y, 4);
+	EXPECT_FLOAT_EQ(vector.z, 5);
 }
 
 TEST(Vector3, ThreeParameterConstructor) {
   Vector3 vector(5, 3, 1);
-  ASSERT_EQ(vector.x, 5);
-  ASSERT_EQ(vector.y, 3);
-  ASSERT_EQ(vector.z, 1);
+  EXPECT_FLOAT_EQ(vector.x, 5);
+  EXPECT_FLOAT_EQ(vector.y, 3);
+  EXPECT_FLOAT_EQ(vector.z, 1);
 }
 
 TEST(Vector3, CopyConstructor)
@@ -50,9 +50,9 @@ TEST(Vector3, CopyConstructor)
   Vector3 vector1(6,7,8);
   Vector3 vector2(vector1);
 
-  ASSERT_EQ(vector2.x, vector1.x);
-  ASSERT_EQ(vector2.y, vector1.y);
-  ASSERT_EQ(vector2.z, vector1.z);
+  EXPECT_FLOAT_EQ(vector2.x, vector1.x);
+  EXPECT_FLOAT_EQ(vector2.y, vector1.y);
+  EXPECT_FLOAT_EQ(vector2.z, vector1.z);
 }
 
 TEST(Vector3, SettingElementValues)
@@ -62,9 +62,9 @@ TEST(Vector3, SettingElementValues)
   vector.y = 7;
   vector.z = 8;
 
-  ASSERT_EQ(vector.x, 6);
-  ASSERT_EQ(vector.y, 7);
-  ASSERT_EQ(vector.z, 8);
+  EXPECT_FLOAT_EQ(vector.x, 6);
+  EXPECT_FLOAT_EQ(vector.y, 7);
+  EXPECT_FLOAT_EQ(vector.z, 8);
 }
 
 TEST(Vector3, FloatAdditionOperator)
@@ -72,9 +72,9 @@ TEST(Vector3, FloatAdditionOperator)
 	Vector3 vector(1, 2, 3);
 	Vector3 result = vector + 2;
 
-	ASSERT_EQ(result.x, 3);
-	ASSERT_EQ(result.y, 4);
-	ASSERT_EQ(result.z, 5);
+	EXPECT_FLOAT_EQ(result.x, 3);
+	EXPECT_FLOAT_EQ(result.y, 4);
+	EXPECT_FLOAT_EQ(result.z, 5);
 }
 
 TEST(Vector3, FloatAdditionAssignmentOperator)
@@ -82,9 +82,9 @@ TEST(Vector3, FloatAdditionAssignmentOperator)
 	Vector3 vector(1, 2, 3);
 	vector += 2;
 
-	ASSERT_EQ(vector.x, 3);
-	ASSERT_EQ(vector.y, 4);
-	ASSERT_EQ(vector.z, 5);
+	EXPECT_FLOAT_EQ(vector.x, 3);
+	EXPECT_FLOAT_EQ(vector.y, 4);
+	EXPECT_FLOAT_EQ(vector.z, 5);
 }
 
 TEST(Vector3, FloatSubtractionOperator)
@@ -92,9 +92,9 @@ TEST(Vector3, FloatSubtractionOperator)
 	Vector3 vector(2, 4, 6);
 	Vector3 result = vector - 2;
 
-	ASSERT_EQ(result.x, 0);
-	ASSERT_EQ(result.y, 2);
-	ASSERT_EQ(result.z, 4);
+	EXPECT_FLOAT_EQ(result.x, 0);
+	EXPECT_FLOAT_EQ(result.y, 2);
+	EXPECT_FLOAT_EQ(result.z, 4);
 }
 
 TEST(Vector3, FloatSubtractionAssignmentOperator)
@@ -102,9 +102,9 @@ TEST(Vector3, FloatSubtractionAssignmentOperator)
 	Vector3 vector(2, 4, 6);
 	vector -= 2;
 
-	ASSERT_EQ(vector.x, 0);
-	ASSERT_EQ(vector.y, 2);
-	ASSERT_EQ(vector.z, 4);
+	EXPECT_FLOAT_EQ(vector.x, 0);
+	EXPECT_FLOAT_EQ(vector.y, 2);
+	EXPECT_FLOAT_EQ(vector.z, 4);
 }
 
 TEST(Vector3, FloatMultiplicationOperator)
@@ -112,9 +112,9 @@ TEST(Vector3, FloatMultiplicationOperator)
   Vector3 vector(1,2,3);
   Vector3 result = vector * 2;
 
-  ASSERT_EQ(result.x, 2);
-  ASSERT_EQ(result.y, 4);
-  ASSERT_EQ(result.z, 6);
+  EXPECT_FLOAT_EQ(result.x, 2);
+  EXPECT_FLOAT_EQ(result.y, 4);
+  EXPECT_FLOAT_EQ(result.z, 6);
 }
 
 TEST(Vector3, FloatMultiplicationAssignmentOperator)
@@ -122,9 +122,9 @@ TEST(Vector3, FloatMultiplicationAssignmentOperator)
 	Vector3 vector(1, 2, 3);
 	vector *= 2;
 
-	ASSERT_EQ(vector.x, 2);
-	ASSERT_EQ(vector.y, 4);
-	ASSERT_EQ(vector.z, 6);
+	EXPECT_FLOAT_EQ(vector.x, 2);
+	EXPECT_FLOAT_EQ(vector.y, 4);
+	EXPECT_FLOAT_EQ(vector.z, 6);
 }
 
 TEST(Vector3, FloatDivisionOperator)
@@ -132,9 +132,9 @@ TEST(Vector3, FloatDivisionOperator)
   Vector3 vector(2,4,6);
   Vector3 result = vector / 2;
 
-  ASSERT_EQ(result.x, 1);
-  ASSERT_EQ(result.y, 2);
-  ASSERT_EQ(result.z, 3);
+  EXPECT_FLOAT_EQ(result.x, 1);
+  EXPECT_FLOAT_EQ(result.y, 2);
+  EXPECT_FLOAT_EQ(result.z, 3);
 }
 
 TEST(Vector3, FloatDivisionAssignmentOperator)
@@ -142,9 +142,9 @@ TEST(Vector3, FloatDivisionAssignmentOperator)
 	Vector3 vector(2, 4, 6);
 	vector /= 2;
 
-	ASSERT_EQ(vector.x, 1);
-	ASSERT_EQ(vector.y, 2);
-	ASSERT_EQ(vector.z, 3);
+	EXPECT_FLOAT_EQ(vector.x, 1);
+	EXPECT_FLOAT_EQ(vector.y, 2);
+	EXPECT_FLOAT_EQ(vector.z, 3);
 }
 
 
@@ -154,9 +154,9 @@ TEST(Vector3, VectorAdditionOperator)
 	Vector3 vector2(4, 5, 6);
 	Vector3 result = vector1 + vector2;
 
-	ASSERT_EQ(result.x, 5);
-	ASSERT_EQ(result.y, 7);
-	ASSERT_EQ(result.z, 9);
+	EXPECT_FLOAT_EQ(result.x, 5);
+	EXPECT_FLOAT_EQ(result.y, 7);
+	EXPECT_FLOAT_EQ(result.z, 9);
 }
 
 TEST(Vector3, VectorAdditionAssignmentOperator)
@@ -165,9 +165,9 @@ TEST(Vector3, VectorAdditionAssignmentOperator)
 	Vector3 vector2(4, 5, 6);
 	vector1 += vector2;
 
-	ASSERT_EQ(vector1.x, 5);
-	ASSERT_EQ(vector1.y, 7);
-	ASSERT_EQ(vector1.z, 9);
+	EXPECT_FLOAT_EQ(vector1.x, 5);
+	EXPECT_FLOAT_EQ(vector1.y, 7);
+	EXPECT_FLOAT_EQ(vector1.z, 9);
 }
 
 TEST(Vector3, VectorSubtractionOperator)
@@ -176,9 +176,9 @@ TEST(Vector3, VectorSubtractionOperator)
 	Vector3 vector2(4, 5, 6);
 	Vector3 result = vector1 - vector2;
 
-	ASSERT_EQ(result.x, -3);
-	ASSERT_EQ(result.y, -3);
-	ASSERT_EQ(result.z, -3);
+	EXPECT_FLOAT_EQ(result.x, -3);
+	EXPECT_FLOAT_EQ(result.y, -3);
+	EXPECT_FLOAT_EQ(result.z, -3);
 }
 
 TEST(Vector3, VectorSubtractionAssignmentOperator)
@@ -187,9 +187,9 @@ TEST(Vector3, VectorSubtractionAssignmentOperator)
 	Vector3 vector2(4, 5, 6);
 	vector1 -= vector2;
 
-	ASSERT_EQ(vector1.x, -3);
-	ASSERT_EQ(vector1.y, -3);
-	ASSERT_EQ(vector1.z, -3);
+	EXPECT_FLOAT_EQ(vector1.x, -3);
+	EXPECT_FLOAT_EQ(vector1.y, -3);
+	EXPECT_FLOAT_EQ(vector1.z, -3);
 }
 
 TEST(Vector3, VectorMultiplicationOperator)
@@ -198,9 +198,9 @@ TEST(Vector3, VectorMultiplicationOperator)
 	Vector3 vector2(4, 5, 6);
 	Vector3 result = vector1 * vector2;
 
-	ASSERT_EQ(result.x, 4);
-	ASSERT_EQ(result.y, 10);
-	ASSERT_EQ(result.z, 18);
+	EXPECT_FLOAT_EQ(result.x, 4);
+	EXPECT_FLOAT_EQ(result.y, 10);
+	EXPECT_FLOAT_EQ(result.z, 18);
 }
 
 TEST(Vector3, VectorMultiplicationAssignmentOperator)
@@ -209,9 +209,9 @@ TEST(Vector3, VectorMultiplicationAssignmentOperator)
 	Vector3 vector2(4, 5, 6);
 	vector1 *= vector2;
 	
-	ASSERT_EQ(vector1.x, 4);
-	ASSERT_EQ(vector1.y, 10);
-	ASSERT_EQ(vector1.z, 18);
+	EXPECT_FLOAT_EQ(vector1.x, 4);
+	EXPECT_FLOAT_EQ(vector1.y, 10);
+	EXPECT_FLOAT_EQ(vector1.z, 18);
 }
 
 TEST(Vector3, VectorDivisionOperator)
@@ -220,9 +220,9 @@ TEST(Vector3, VectorDivisionOperator)
 	Vector3 vector2(2, 3, 4);
 	Vector3 result = vector1 / vector2;
 
-	ASSERT_EQ(result.x, 2);
-	ASSERT_EQ(result.y, 3);
-	ASSERT_EQ(result.z, 4);
+	EXPECT_FLOAT_EQ(result.x, 2);
+	EXPECT_FLOAT_EQ(result.y, 3);
+	EXPECT_FLOAT_EQ(result.z, 4);
 }
 
 TEST(Vector3, VectorDivisionAssignmentOperator)
@@ -231,16 +231,22 @@ TEST(Vector3, VectorDivisionAssignmentOperator)
 	Vector3 vector2(2, 3, 4);
 	vector1 /= vector2;
 
-	ASSERT_EQ(vector1.x, 2);
-	ASSERT_EQ(vector1.y, 3);
-	ASSERT_EQ(vector1.z, 4);
+	EXPECT_FLOAT_EQ(vector1.x, 2);
+	EXPECT_FLOAT_EQ(vector1.y, 3);
+	EXPECT_FLOAT_EQ(vector1.z, 4);
 }
 
 TEST(Vector3, FloatCompareOperators)
 {
-	Vector3 vector(3, 4, 5);
-	ASSERT_TRUE(vector > 7.0);
-	ASSERT_TRUE(vector < 8.0);
+	Vector3 vector(3.f, 4.f, 5.f);
+	ASSERT_TRUE(vector > 7.f);
+	ASSERT_TRUE(vector < 8.f);
+	ASSERT_TRUE(7.f < vector);
+	ASSERT_TRUE(8.f > vector);
+	ASSERT_FALSE(vector < 7.f);
+	ASSERT_FALSE(vector > 8.f);
+	ASSERT_FALSE(7.f > vector);
+	ASSERT_FALSE(8.f < vector);
 }
 
 TEST(Vector3, VectorCompareOperator)
@@ -248,33 +254,40 @@ TEST(Vector3, VectorCompareOperator)
 	Vector3 vector1(3, 4, 5);
 	Vector3 vector2(5, 5, 5);
 
+
 	ASSERT_TRUE(vector1 < vector2);
 	ASSERT_TRUE(vector2 > vector1);
+	ASSERT_FALSE(vector1 > vector2);
+	ASSERT_FALSE(vector2 < vector1);
 }
 
 TEST(Vector3, VectorEqualityOperator)
 {
 	Vector3 vector1(3, 4, 5);
 	Vector3 vector2(3, 4, 5);
+	Vector3 vector3(5, 4, 3);
 
 	ASSERT_TRUE(vector1 == vector2);
+	ASSERT_FALSE(vector1 == vector3);
 }
 
 TEST(Vector3, VectorInequalityOperator)
 {
 	Vector3 vector1(3, 4, 5);
 	Vector3 vector2(4, 4, 5);
+	Vector3 vector3(3, 4, 5);
 
 	ASSERT_TRUE(vector1 != vector2);
+	ASSERT_FALSE(vector1 != vector3);
 }
 
 TEST(Vector3, ArrayNotationOperator)
 {
 	Vector3 vector(3, 4, 5);
 
-	ASSERT_EQ(vector[0], 3);
-	ASSERT_EQ(vector[1], 4);
-	ASSERT_EQ(vector[2], 5);
+	EXPECT_FLOAT_EQ(vector[0], 3);
+	EXPECT_FLOAT_EQ(vector[1], 4);
+	EXPECT_FLOAT_EQ(vector[2], 5);
 }
 
 TEST(Vector3, DotOperator)
@@ -282,7 +295,7 @@ TEST(Vector3, DotOperator)
     Vector3 vector1(1,2,3);
     Vector3 vector2(4,5,6);
 
-    ASSERT_EQ(MMVector3Dot(vector1,vector2), 32);
+    EXPECT_FLOAT_EQ(MMVector3Dot(vector1,vector2), 32);
 }
 
 TEST(Vector3Static, DotProduct)
@@ -290,7 +303,7 @@ TEST(Vector3Static, DotProduct)
     Vector3 vector1(1,2,3);
     Vector3 vector2(4,5,6);
 
-    ASSERT_EQ(MMVector3Dot(vector1, vector2), 32);
+    EXPECT_FLOAT_EQ(MMVector3Dot(vector1, vector2), 32);
 }
 
 TEST(Vector3Static, CrossProduct)
@@ -300,16 +313,16 @@ TEST(Vector3Static, CrossProduct)
 
   Vector3 cross = Vector3::Cross(vector1, vector2);
 
-  ASSERT_EQ(cross.x, -3);
-  ASSERT_EQ(cross.y, 6);
-  ASSERT_EQ(cross.z, -3);
+  EXPECT_FLOAT_EQ(cross.x, -3);
+  EXPECT_FLOAT_EQ(cross.y, 6);
+  EXPECT_FLOAT_EQ(cross.z, -3);
 }
 
 TEST(Vector3, MagnitudeSqr)
 {
 	//Magnitude of this vector should be ~7.07107 according to wolfram alpha
 	Vector3 vector(3, 4, 5);
-	ASSERT_EQ(vector.MagnitudeSquared(), 50);
+	EXPECT_FLOAT_EQ(vector.MagnitudeSquared(), 50);
 }
 
 TEST(Vector3, Magnitude)

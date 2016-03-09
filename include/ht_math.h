@@ -225,6 +225,10 @@ namespace Hatchit {
 				float m_data[2];
 			};
         };
+
+		bool operator>(const float s, const Vector2& v);
+		bool operator<(const float s, const Vector2& v);
+
         std::ostream& operator<< (std::ostream& output, const Vector2& v);
 
 		/////////////////////////////////////////////////////////
@@ -301,6 +305,9 @@ namespace Hatchit {
             };
         };
 
+		bool operator>(const float s, const Vector3& v);
+		bool operator<(const float s, const Vector3& v);
+
         std::ostream& operator<< (std::ostream& output, Vector3& h);
 
         /////////////////////////////////////////////////////////
@@ -316,9 +323,10 @@ namespace Hatchit {
             *****************************************************/
             
             Vector4();
+			Vector4(float xyzw);
+			Vector4(float x, float y, float z, float w);
 			Vector4(const Vector2& xy, float z, float w);
 			Vector4(const Vector3& xyz, float w);
-            Vector4(float x, float y, float z, float w);
             Vector4(const Vector4& other);
             explicit Vector4(__m128 v);
 
