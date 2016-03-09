@@ -140,7 +140,7 @@ namespace Hatchit
             Vector3 xAxis = MMVector3Normalized(MMVector3Cross(zAxis, up));
             Vector3 yAxis = MMVector3Cross(xAxis, zAxis);
 
-            //Create view matrix;
+            //Create view matrix
             return Matrix4(xAxis.x, xAxis.y, xAxis.z, -MMVector3Dot(xAxis, eye),
                            yAxis.x, yAxis.y, yAxis.z, -MMVector3Dot(yAxis, eye),
                            zAxis.x, zAxis.y, zAxis.z, -MMVector3Dot(zAxis, eye),

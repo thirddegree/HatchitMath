@@ -291,10 +291,10 @@ TEST(Matrix4Static, GetPerspectiveProjection)
 TEST(Matrix4Static, GetLookAtView)
 {
   Vector3 eye(5.f, 10.f, 15.f);
-  Vector3 lookAt(15.f, 15.f, 15.f);
+  Vector3 target(15.f, 15.f, 15.f);
   Vector3 up(0.f, 1.f, 0.f);
 
-  Matrix4 lookAt = MMMatrixLookAt(eye, lookAt, up);
+  Matrix4 lookAt = MMMatrixLookAt(eye, target, up);
 
   EXPECT_FLOAT_EQ(lookAt[0][0], 0.f);
   EXPECT_FLOAT_EQ(lookAt[0][1], 0.f);
