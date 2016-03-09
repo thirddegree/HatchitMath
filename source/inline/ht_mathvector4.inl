@@ -51,8 +51,11 @@ namespace Hatchit
         //Create a Vector4 with all 4 elements being 0
         inline Vector4::Vector4() : m_vector(_mm_setzero_ps()) {}
 
+		//Create a Vector4 with the same value in all elements
+		inline Vector4::Vector4(float xyzw) : m_vector(_mm_set_ps1(xyzw)) {}
+
 		//Create a vector4 using x and y from a vector 2 and z and w from floats
-		inline Vector4::Vector4(const Vector2 & xy, float z, float w) : m_vector(_mm_set_ps(xy[0], xy[1], z, w)) {}
+		inline Vector4::Vector4(const Vector2 & xy, float z, float w) : m_vector(MMVectorSet(xy.x, xy.y, z, w)) {}
 
         //Create a Vector4 with the elements x, y and z
 		inline Vector4::Vector4(float x, float y, float z, float w) : m_vector(MMVectorSet(x, y, z, w)) {}

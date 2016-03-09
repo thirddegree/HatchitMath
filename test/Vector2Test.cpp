@@ -56,7 +56,6 @@ TEST(Vector2, SettingElementValues)
 }
 
 
-
 TEST(Vector2, FloatAdditionOperator)
 {
 	Vector2 vector1(1, 2);
@@ -229,6 +228,8 @@ TEST(Vector2, VectorDivisionAssignmentOperator)
 	EXPECT_FLOAT_EQ(vector1.y, 3);
 }
 
+
+
 TEST(Vector2, FloatCompareOperators)
 {
 	Vector2 vector(3, 4);
@@ -257,7 +258,7 @@ TEST(Vector2, VectorEqualityOperator)
 {
 	Vector2 vector1(3, 4);
 	Vector2 vector2(3, 4);
-	Vector2 vector3(4, 4);
+	Vector2 vector3(4, 3);
 
 	ASSERT_TRUE(vector1 == vector2);
 	ASSERT_FALSE(vector1 == vector3);

@@ -323,9 +323,10 @@ namespace Hatchit {
             *****************************************************/
             
             Vector4();
+			Vector4(float xyzw);
+			Vector4(float x, float y, float z, float w);
 			Vector4(const Vector2& xy, float z, float w);
 			Vector4(const Vector3& xyz, float w);
-            Vector4(float x, float y, float z, float w);
             Vector4(const Vector4& other);
             explicit Vector4(__m128 v);
 
