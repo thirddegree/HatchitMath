@@ -16,113 +16,381 @@
 
 #include <gtest/gtest.h>
 #include "ht_math.h"
+#include <random>
 
 using namespace Hatchit;
 using namespace Math;
 
-TEST(Quaternion, DefaultConstructor)
+float GenerateRandomFloat(float min, float max)
+{
+	static std::random_device randomDevice;
+	static std::mt19937 generator(randomDevice());
+	std::uniform_real_distribution<float> distributor(min, max);
+	return distributor(generator);
+}
+
+TEST(Quaternion, DefaultConstructorCreatesIdentityQuaternion)
 {
   Quaternion quat;
 
-  ASSERT_EQ(quat.w, 1);
-  ASSERT_EQ(quat.x, 0);
-  ASSERT_EQ(quat.y, 0);
-  ASSERT_EQ(quat.z, 0);
+  EXPECT_FLOAT_EQ(quat.w, 1);
+  EXPECT_FLOAT_EQ(quat.x, 0);
+  EXPECT_FLOAT_EQ(quat.y, 0);
+  EXPECT_FLOAT_EQ(quat.z, 0);
 }
 
-TEST(Quaternion, ParamaterizedFloatConstructor)
+TEST(Quaternion, ParamaterizedFloatConstructorCreatesAppropriateQuaternion)
 {
-  Quaternion quat(4,3,2,1);
+  Quaternion quat(3,2,1,4);
 
-  ASSERT_EQ(quat.w, 4);
-  ASSERT_EQ(quat.x, 3);
-  ASSERT_EQ(quat.y, 2);
-  ASSERT_EQ(quat.z, 1);
+  EXPECT_FLOAT_EQ(quat.w, 4);
+  EXPECT_FLOAT_EQ(quat.x, 3);
+  EXPECT_FLOAT_EQ(quat.y, 2);
+  EXPECT_FLOAT_EQ(quat.z, 1);
 }
 
-TEST(Quaterion, EulerAnglesConstructor)
+TEST(Quaternion, AxisAngleConstructorCreatesAppropriateQuaternion)
+{
+	//Based off: http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/
+
+	float angle = HalfPi; //90 degrees
+	Vector3 axis = Vector3(1.f, 0.f, 0.f);
+
+	Quaternion quat(axis, angle);
+
+	EXPECT_FLOAT_EQ(quat.w, 0.7071f);
+	EXPECT_FLOAT_EQ(quat.x, 0.7071f);
+	EXPECT_FLOAT_EQ(quat.y, 0.0f);
+	EXPECT_FLOAT_EQ(quat.z, 0.0f);
+}
+
+TEST(Quaterion, EulerAnglesConstructorCreatesAppropriateQuaternion)
 {
   //90 deg x, 0 deg y, 90 deg z
   //Vector3 euler(M_PI/2,0,M_PI/2);
-  Quaternion quat(M_PI / 2, 0, M_PI / 2);
+  Quaternion quat(HalfPi, 0, HalfPi);
 
-  ASSERT_NEAR(quat.w, .5f, 0.00001f);
-  ASSERT_NEAR(quat.x, .5f, 0.00001f);
-  ASSERT_NEAR(quat.y, .5f, 0.00001f);
-  ASSERT_NEAR(quat.z, .5f, 0.00001f);
+  EXPECT_FLOAT_EQ(quat.w, .5f);
+  EXPECT_FLOAT_EQ(quat.x, .5f);
+  EXPECT_FLOAT_EQ(quat.y, .5f);
+  EXPECT_FLOAT_EQ(quat.z, .5f);
 }
 
-TEST(Quaternion, AxisAngleConstructor)
+TEST(Quaternion, ExistingM128ConstructorCreatesAppropriateQuaternion)
 {
-  //Based off: http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/
+	__m128 data = MMVectorSet(1.f, 2.f, 3.f, 4.f);
+	
+	Quaternion quat(data);
 
-  float angle = M_PI/2; //90 degrees
-
-  Quaternion quat(1, 0, 0, angle);
-
-  ASSERT_NEAR(quat.w, 0.7071f, 0.00001f);
-  ASSERT_NEAR(quat.x, 0.7071f, 0.00001f);
-  ASSERT_NEAR(quat.y, 0.0f, 0.00001f);
-  ASSERT_NEAR(quat.z, 0.0f, 0.00001f);
+	EXPECT_FLOAT_EQ(quat.w, 4.f);
+	EXPECT_FLOAT_EQ(quat.x, 1.f);
+	EXPECT_FLOAT_EQ(quat.y, 2.f);
+	EXPECT_FLOAT_EQ(quat.z, 3.f);
 }
 
-//TEST(Quaternion, Inversion)
-//{
-//  Quaternion quat(4,3,2,1);
-//  Quaternion inverse = quat.getInverse();
-//
-//  ASSERT_EQ(inverse.w, 4);
-//  ASSERT_EQ(inverse.x, -3);
-//  ASSERT_EQ(inverse.y, -2);
-//  ASSERT_EQ(inverse.z, -1);
-//}
-
-//TEST(Quaterion, GetAxisAngle)
-//{
-//  float angle = M_PI/2; //90 degrees
-//  Vector4 angleAxis(1, 0, 0, angle);
-//
-//  Quaternion quat(angleAxis);
-//
-//  Vector4 resultAA = quat.getAxisAngle();
-//
-//  ASSERT_EQ(angleAxis[0], resultAA[0]);
-//  ASSERT_EQ(angleAxis[1], resultAA[1]);
-//  ASSERT_EQ(angleAxis[2], resultAA[2]);
-//  ASSERT_EQ(angleAxis[3], resultAA[3]);
-//}
-
-//TEST(Quaternion, GetRotationMatrix)
-//{
-//  //Thanks to: http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/
-//  Quaternion quat(0.7071f, 0, 0, 0.7071f);
-//
-//  Matrix3 mat = quat.getRotationMatrix();
-//
-//  ASSERT_NEAR(mat[0][0], 0, 0.0001f);
-//  ASSERT_NEAR(mat[0][1], 1, 0.0001f);
-//  ASSERT_NEAR(mat[0][2], 0, 0.0001f);
-//
-//  ASSERT_NEAR(mat[1][0], -1, 0.0001f);
-//  ASSERT_NEAR(mat[1][1], 0, 0.0001f);
-//  ASSERT_NEAR(mat[1][2], 0, 0.0001f);
-//
-//  ASSERT_NEAR(mat[2][0], 0, 0.0001f);
-//  ASSERT_NEAR(mat[2][1], 0, 0.0001f);
-//  ASSERT_NEAR(mat[2][2], 1, 0.0001f);
-//}
-
-TEST(Quaternion, MultiplicationOperator)
+TEST(Quaternion, EqualityOperatorReturnsTrueOnEqualQuats)
 {
-  Quaternion quat1(-sinf(M_PI),3, 4, 3);
-  Quaternion quat2(4, 3.9f, -1, -3);
+	Quaternion quatA(0.f, 1.f, 0.f, 0.f);
+	Quaternion quatB(0.f, 1.f, 0.f, 0.f);
 
-  Quaternion product = quat1 * quat2;
+	ASSERT_EQ(quatA == quatB, true);
+}
 
-  //std::cout << product << std::endl;
+TEST(Quaternion, EqualityOperatorReturnsFalseOnNonEqualQuats)
+{
+	Quaternion quatA(0.f, 1.f, 0.f, 0.f);
+	Quaternion quatB(1.f, 0.f, 0.f, 0.f);
 
-  ASSERT_NEAR(product.w, 1.3f, 0.00001f);
-  ASSERT_NEAR(product.x, 3.0f, 0.00001f);
-  ASSERT_NEAR(product.y, 36.7f, 0.00001f);
-  ASSERT_NEAR(product.z, -6.6f, 0.00001f);
+	ASSERT_EQ(quatA == quatB, false);
+}
+
+TEST(Quaternion, NonEqualityOperatorReturnsTrueOnNonEqualQuats)
+{
+	Quaternion quatA(0.f, 1.f, 0.f, 0.f);
+	Quaternion quatB(1.f, 0.f, 0.f, 0.f);
+
+	ASSERT_EQ(quatA != quatB, true);
+}
+
+TEST(Quaternion, NonEqualityOperatorReturnsFalseOnEqualQuats)
+{
+	Quaternion quatA(0.f, 1.f, 0.f, 0.f);
+	Quaternion quatB(0.f, 1.f, 0.f, 0.f);
+
+	ASSERT_EQ(quatA != quatB, false);
+}
+
+TEST(Quaternion, AdditionAddsQuaternionsAppropriately)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		expectedArray[i] = valueArray[i] + valueArray[i + 4];
+	}
+	Quaternion quatA(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	Quaternion actualQuat = quatA + quatB;
+
+	EXPECT_FLOAT_EQ(actualQuat.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(actualQuat.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(actualQuat.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(actualQuat.z, expectedArray[2]);
+}
+
+TEST(Quaternion, SubtractionSubtractsQuaternionsAppropriately)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		expectedArray[i] = valueArray[i] - valueArray[i + 4];
+	}
+	Quaternion quatA(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	Quaternion actualQuat = quatA - quatB;
+
+	EXPECT_FLOAT_EQ(actualQuat.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(actualQuat.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(actualQuat.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(actualQuat.z, expectedArray[2]);
+}
+
+TEST(Quaternion, MultiplicationReturnsAppropriateQuaternion)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	expectedArray[3] = valueArray[3] * valueArray[7] - valueArray[0] * valueArray[4] - valueArray[1] * valueArray[5] - valueArray[2] * valueArray[6];
+	expectedArray[0] = valueArray[3] * valueArray[4] + valueArray[0] * valueArray[7] + valueArray[1] * valueArray[6] - valueArray[2] * valueArray[5];
+	expectedArray[1] = valueArray[3] * valueArray[5] - valueArray[0] * valueArray[6] + valueArray[1] * valueArray[7] + valueArray[2] * valueArray[4];
+	expectedArray[2] = valueArray[3] * valueArray[6] + valueArray[0] * valueArray[5] - valueArray[1] * valueArray[4] + valueArray[2] * valueArray[7];
+
+	Quaternion quatA(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	Quaternion actualQuat = quatA * quatB;
+
+	EXPECT_FLOAT_EQ(actualQuat.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(actualQuat.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(actualQuat.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(actualQuat.z, expectedArray[2]);
+}
+
+TEST(Quaternion, AddEqualsModifiesQuaternionAppropriately)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		expectedArray[i] = valueArray[i] + valueArray[i + 4];
+	}
+	Quaternion quatA = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB = Quaternion(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	quatA += quatB;
+
+	EXPECT_FLOAT_EQ(quatA.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(quatA.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(quatA.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(quatA.z, expectedArray[2]);
+}
+
+TEST(Quaternion, SubtractEqualsModifiesQuaternionAppropriately)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		expectedArray[i] = valueArray[i] - valueArray[i + 4];
+	}
+	Quaternion quatA(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	quatA -= quatB;
+
+	EXPECT_FLOAT_EQ(quatA.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(quatA.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(quatA.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(quatA.z, expectedArray[2]);
+}
+
+TEST(Quaternion, MultiplyEqualsModifiesQuaternionAppropriately)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	expectedArray[3] = valueArray[3] * valueArray[7] - valueArray[0] * valueArray[4] - valueArray[1] * valueArray[5] - valueArray[2] * valueArray[6];
+	expectedArray[0] = valueArray[3] * valueArray[4] + valueArray[0] * valueArray[7] + valueArray[1] * valueArray[6] - valueArray[2] * valueArray[5];
+	expectedArray[1] = valueArray[3] * valueArray[5] - valueArray[0] * valueArray[6] + valueArray[1] * valueArray[7] + valueArray[2] * valueArray[4];
+	expectedArray[2] = valueArray[3] * valueArray[6] + valueArray[0] * valueArray[5] - valueArray[1] * valueArray[4] + valueArray[2] * valueArray[7];
+
+	Quaternion quatA = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB = Quaternion(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	quatA *= quatB;
+
+	EXPECT_FLOAT_EQ(quatA.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(quatA.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(quatA.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(quatA.z, expectedArray[2]);
+}
+
+TEST(Quaternion, ConversionOperatorReturnsInternalM128InExpectedOrder)
+{
+	float valueArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	Quaternion quatA = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+
+	__m128 result = static_cast<__m128>(quatA);
+
+	float actualArray[4];
+	_mm_store_ps(actualArray, result);
+	for (size_t i = 0; i < 4; ++i)
+	{
+		EXPECT_FLOAT_EQ(actualArray[i], valueArray[i]);
+	}
+}
+
+TEST(Quaternion, DotProductReturnsExpectedValue)
+{
+	float valueArray[8];
+	for (size_t i = 0; i < 8; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedResult = valueArray[0] * valueArray[4] + valueArray[1] * valueArray[5] + valueArray[2] * valueArray[6] + valueArray[3] * valueArray[7];
+
+	Quaternion quatA = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+	Quaternion quatB = Quaternion(valueArray[4], valueArray[5], valueArray[6], valueArray[7]);
+
+	float actualResult = MMQuaternionDot(quatA, quatB);
+
+	EXPECT_FLOAT_EQ(actualResult, expectedResult);
+}
+
+TEST(Quaternion, NormalizeReturnsNormalizedQuaternion)
+{
+	float valueArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	valueArray[1] = 0.5f; //To assure quaternion passed in does not have magnitude of 0
+	//Calculate expected result
+	float expectedArray[4];
+	float magnitude = sqrtf(valueArray[0] * valueArray[0] + valueArray[1] * valueArray[1] + valueArray[2] * valueArray[2] + valueArray[3] * valueArray[3]);
+	for (size_t i = 0; i < 4; ++i)
+	{
+		expectedArray[i] = valueArray[i] / magnitude;
+	}
+
+	Quaternion quat = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+
+	Quaternion actualQuat = MMQuaternionNormalize(quat);
+
+	EXPECT_FLOAT_EQ(actualQuat.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(actualQuat.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(actualQuat.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(actualQuat.z, expectedArray[2]);
+}
+
+#if !defined(NDEBUG)
+TEST(Quaternion, NormalizingZeroQuaternionAsserts)
+{
+	Quaternion quat(0.f, 0.f, 0.f, 0.f);
+
+	ASSERT_DEATH(Quaternion actualQuat = MMQuaternionNormalize(quat));
+}
+#else
+TEST(Quaternion, NormalizingAZeroQuaternionDoesntCrash)
+{
+	Quaternion quat(0.f, 0.f, 0.f, 0.f);
+
+	Quaternion actualQuat = MMQuaternionNormalize(quat);
+
+	//Woot woot, we pass
+}
+#endif
+
+TEST(Quaternion, MagnitudeReturnsAppropriateValue)
+{
+	float valueArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	Quaternion quat = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+
+	float expectedResult = sqrtf(valueArray[0] * valueArray[0] + valueArray[1] * valueArray[1] + valueArray[2] * valueArray[2] + valueArray[3] * valueArray[3]);
+
+	float actualResult = MMQuaternionMagnitude(quat);
+
+	EXPECT_FLOAT_EQ(actualResult, expectedResult);
+}
+
+TEST(Quaternion, SquareMagnitudeReturnsAppropriateValue)
+{
+	float valueArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	Quaternion quat = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+
+	float expectedResult = valueArray[0] * valueArray[0] + valueArray[1] * valueArray[1] + valueArray[2] * valueArray[2] + valueArray[3] * valueArray[3];
+
+	float actualResult = MMQuaternionMagnitudeSqr(quat);
+
+	EXPECT_FLOAT_EQ(actualResult, expectedResult);
+}
+
+TEST(Quaternion, ConjugateReturnsAppropriateQuaternion)
+{
+	float valueArray[4];
+	for (size_t i = 0; i < 4; ++i)
+	{
+		valueArray[i] = GenerateRandomFloat(0.f, 1.f);
+	}
+	float expectedArray[4];
+	expectedArray[3] = valueArray[3];
+	for (size_t i = 0; i < 3; ++i)
+	{
+		expectedArray[i] = -valueArray[3];
+	}
+	Quaternion quat = Quaternion(valueArray[0], valueArray[1], valueArray[2], valueArray[3]);
+
+	Quaternion actualQuat = MMQuaternionConjugate(quat);
+
+	EXPECT_FLOAT_EQ(actualQuat.w, expectedArray[3]);
+	EXPECT_FLOAT_EQ(actualQuat.x, expectedArray[0]);
+	EXPECT_FLOAT_EQ(actualQuat.y, expectedArray[1]);
+	EXPECT_FLOAT_EQ(actualQuat.z, expectedArray[2]);
 }
