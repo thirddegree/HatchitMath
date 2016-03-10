@@ -21,12 +21,12 @@ namespace Hatchit {
         inline Quaternion::Quaternion(float roll, float pitch, float yaw) : m_quaternion()
         {
             //TODO: Who wants to make this intrinsic?  Anyone?
-            float cosRoll = cosf(roll);
-            float cosPitch = cosf(pitch);
-            float cosYaw = cosf(yaw);
-            float sinRoll = sinf(roll);
-            float sinPitch = sinf(pitch);
-            float sinYaw = sinf(yaw);
+            float cosRoll = cosf(roll * 0.5f);
+            float cosPitch = cosf(pitch * 0.5f);
+            float cosYaw = cosf(yaw * 0.5f);
+            float sinRoll = sinf(roll * 0.5f);
+            float sinPitch = sinf(pitch * 0.5f);
+            float sinYaw = sinf(yaw * 0.5f);
 
             __m128 vecA = MMVectorSet(sinPitch, sinPitch, cosPitch, cosPitch);
             __m128 vecB = MMVectorSet(sinYaw, cosYaw, sinYaw, cosYaw);
@@ -111,23 +111,23 @@ namespace Hatchit {
         */
         inline Quaternion Quaternion::operator*(const Quaternion& p_rhs) const
         {
-            static const __m128 maskB = _mm_castsi128_ps(_mm_setr_epi32(-1, 0, -1, 0));
-            static const __m128 maskC = _mm_castsi128_ps(_mm_setr_epi32(-1, 0, 0, -1));
-            static const __m128 maskD = _mm_castsi128_ps(_mm_setr_epi32(-1, -1, 0, 0));
-            __m128 splatA = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
-            __m128 splatB = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
-            __m128 splatC = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
-            __m128 splatD = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
-            
-            splatA = _mm_mul_ps(splatA, p_rhs.m_quaternion);
-            splatB = _mm_mul_ps(_mm_xor_ps(splatB, maskB), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 3, 0, 1)));
-            splatC = _mm_mul_ps(_mm_xor_ps(splatC, maskC), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 0, 3, 2)));
-            splatD = _mm_mul_ps(_mm_xor_ps(splatD, maskD), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 1, 2, 3)));
-            
-            splatA = _mm_add_ps(splatA, splatB);
-            splatC = _mm_add_ps(splatC, splatD);
+            static const __m128 maskX = MMVectorSet(1.f, -1.f, 1.f, -1.f);
+            static const __m128 maskY = MMVectorSet(1.f, 1.f, -1.f, -1.f);
+            static const __m128 maskZ = MMVectorSet(-1.f, 1.f, 1.f, -1.f);
+            __m128 splatX = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
+            __m128 splatY = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
+            __m128 splatZ = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
+            __m128 splatW = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
 
-            return Quaternion(_mm_add_ps(splatA, splatC));
+            splatX = _mm_mul_ps(_mm_mul_ps(splatX, maskX), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 1, 2, 3)));
+            splatY = _mm_mul_ps(_mm_mul_ps(splatY, maskY), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 0, 3, 2)));
+            splatZ = _mm_mul_ps(_mm_mul_ps(splatZ, maskZ), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 3, 0, 1)));
+            splatW = _mm_mul_ps(splatW, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 2, 1, 0)));
+
+            splatX = _mm_add_ps(splatX, splatY);
+            splatZ = _mm_add_ps(splatZ, splatW);
+
+            return Quaternion(_mm_add_ps(splatX, splatZ));
         }
 
         /** Adds the components of the other quaternion into this quaternion
@@ -157,23 +157,23 @@ namespace Hatchit {
         */
         inline Quaternion& Quaternion::operator*=(const Quaternion& p_rhs)
         {
-            static const __m128 maskB = _mm_castsi128_ps(_mm_setr_epi32(-1, 0, -1, 0));
-            static const __m128 maskC = _mm_castsi128_ps(_mm_setr_epi32(-1, 0, 0, -1));
-            static const __m128 maskD = _mm_castsi128_ps(_mm_setr_epi32(-1, -1, 0, 0));
-            __m128 splatA = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
-            __m128 splatB = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
-            __m128 splatC = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
-            __m128 splatD = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
+            static const __m128 maskX = MMVectorSet(1.f, -1.f, 1.f, -1.f);
+            static const __m128 maskY = MMVectorSet(1.f, 1.f, -1.f, -1.f);
+            static const __m128 maskZ = MMVectorSet(-1.f, 1.f, 1.f, -1.f);
+            __m128 splatX = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(0, 0, 0, 0));
+            __m128 splatY = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(1, 1, 1, 1));
+            __m128 splatZ = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(2, 2, 2, 2));
+            __m128 splatW = _mm_shuffle_ps(m_quaternion, m_quaternion, _MM_SHUFFLE(3, 3, 3, 3));
 
-            splatA = _mm_mul_ps(splatA, p_rhs.m_quaternion);
-            splatB = _mm_mul_ps(_mm_xor_ps(splatB, maskB), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 3, 0, 1)));
-            splatC = _mm_mul_ps(_mm_xor_ps(splatC, maskC), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 0, 3, 2)));
-            splatD = _mm_mul_ps(_mm_xor_ps(splatD, maskD), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 1, 2, 3)));
+            splatX = _mm_mul_ps(_mm_mul_ps(splatX, maskX), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(0, 1, 2, 3)));
+            splatY = _mm_mul_ps(_mm_mul_ps(splatY, maskY), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(1, 0, 3, 2)));
+            splatZ = _mm_mul_ps(_mm_mul_ps(splatZ, maskZ), _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(2, 3, 0, 1)));
+            splatW = _mm_mul_ps(splatW, _mm_shuffle_ps(p_rhs.m_quaternion, p_rhs.m_quaternion, _MM_SHUFFLE(3, 2, 1, 0)));
 
-            splatA = _mm_add_ps(splatA, splatB);
-            splatC = _mm_add_ps(splatC, splatD);
+            splatX = _mm_add_ps(splatX, splatY);
+            splatZ = _mm_add_ps(splatZ, splatW);
 
-            m_quaternion = _mm_add_ps(splatA, splatC);
+            m_quaternion = _mm_add_ps(splatX, splatZ);
             return *this;
         }
 
@@ -199,17 +199,28 @@ namespace Hatchit {
             return MMVectorGetX(dotProd);
         }
 
-        /** Creates a copy of given quaternion with unit length
+		inline Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q)
+		{
+			assert(MMQuaternionMagnitudeSqr(q) > 0.f);
+			__m128 dotProd = _mm_mul_ps(q.m_quaternion, q.m_quaternion);
+			dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(2, 3, 0, 1)));
+			dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(0, 1, 2, 3)));
+			dotProd = _mm_sqrt_ps(dotProd);
+			return Quaternion(_mm_div_ps(q.m_quaternion, dotProd));
+		}
+
+        /** Creates a copy of given quaternion with estimated unit length
         * \param q Quaternion to normalize
-        * \return Normalized Quaternion
+        * \return Normalized(estimated) Quaternion
         */
-        inline Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q)
+        inline Quaternion _MM_CALLCONV MMQuaternionNormalizeEst(const Quaternion& q)
         {
+			assert(MMQuaternionMagnitudeSqr(q) > 0.f);
             __m128 dotProd = _mm_mul_ps(q.m_quaternion, q.m_quaternion);
             dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(2, 3, 0, 1)));
             dotProd = _mm_add_ps(dotProd, _mm_shuffle_ps(dotProd, dotProd, _MM_SHUFFLE(0, 1, 2, 3)));
             dotProd = _mm_rsqrt_ps(dotProd);
-            return Quaternion(_mm_div_ps(q.m_quaternion, dotProd));
+            return Quaternion(_mm_mul_ps(q.m_quaternion, dotProd));
         }
 
         /** Calculates the magnitude (length) of the given quaternion
@@ -238,8 +249,8 @@ namespace Hatchit {
         */
         inline Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q)
         {
-            static const __m128 signMask = _mm_castsi128_ps(_mm_setr_epi32(0, -1, -1, -1));
-            return Quaternion(_mm_xor_ps(q.m_quaternion, signMask));
+            static const __m128 signMask = MMVectorSet(-1.f, -1.f, -1.f, 1.f);
+            return Quaternion(_mm_mul_ps(q.m_quaternion, signMask));
         }
     }
 }

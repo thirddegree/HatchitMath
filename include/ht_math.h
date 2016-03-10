@@ -506,6 +506,7 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         float   _MM_CALLCONV MMQuaternionDot(const Quaternion& q, const Quaternion& r);
         Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q);
+		Quaternion _MM_CALLCONV MMQuaternionNormalizeEst(const Quaternion& q);
         float   _MM_CALLCONV MMQuaternionMagnitude(const Quaternion& q);
         float   _MM_CALLCONV MMQuaternionMagnitudeSqr(const Quaternion& q);
         Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q);
