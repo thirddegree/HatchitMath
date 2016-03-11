@@ -328,7 +328,7 @@ TEST(Vector4Static, DotProduct)
 TEST(Vector4, MagnitudeSqr)
 {
 	Vector4 vector(3.f, 4.f, 5.f, 6.f);
-	EXPECT_FLOAT_EQ(vector.MagnitudeSquared(), 86.f);
+	EXPECT_FLOAT_EQ(vector.MagnitudeSqr(), 86.f);
 }
 
 TEST(Vector4, Magnitude)
