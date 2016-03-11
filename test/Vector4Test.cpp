@@ -345,7 +345,7 @@ TEST(Vector4Static, Normalized)
 
     EXPECT_FLOAT_EQ(0.32349831961f, actualVector.x);
     EXPECT_FLOAT_EQ(0.43133109281f, actualVector.y);
-    EXPECT_FLOAT_EQ(0.53916286602f, actualVector.z);
+    EXPECT_FLOAT_EQ(0.53916386602f, actualVector.z);
     EXPECT_FLOAT_EQ(0.64699663922f, actualVector.w);
 }
 
