@@ -126,7 +126,7 @@ namespace Hatchit
         */
         inline Vector4 Vector4::operator*(float s) const
         {
-            return Vector4(_mm_mul_ps(m_vector, _mm_set1_ps(s));
+            return Vector4(_mm_mul_ps(m_vector, _mm_set1_ps(s)));
         }
 
         /** Divides all elements in this Vector4 by a given scalar
