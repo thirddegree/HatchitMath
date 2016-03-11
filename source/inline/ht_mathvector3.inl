@@ -157,7 +157,7 @@ namespace Hatchit {
 		* \param u The other Vector3
 		* \return The product of this * u as a vector
 		*/
-		inline Vector3 Vector3::operator* (const Vector3& u) const
+		inline Vector3 Vector3::operator*(const Vector3& u) const
 		{
 			Vector3 v;
 			v.m_vector = _mm_mul_ps(this->m_vector, u.m_vector);
@@ -210,24 +210,6 @@ namespace Hatchit {
 			return (*this);
 		}
 
-		/** Compares the magnitue of this Vector3 to another given Vector3
-		* \param u The other Vector3
-		* \return True if this Vector3 has a larger magnitude than the other Vector3
-		*/
-		inline bool Vector3::operator>(const Vector3& u) const
-		{
-			return Hatchit::Math::MMVector3Magnitude(*this) > Hatchit::Math::MMVector3Magnitude(u);
-		}
-		/** Compares the magnitue of this Vector3 to another given Vector3
-		* \param u The other Vector3
-		* \return True if this Vector3 has a smaller magnitude than the other Vector3
-		*/
-		inline bool Vector3::operator<(const Vector3& u) const
-		{
-			return MMVector3Magnitude(*this) < MMVector3Magnitude(u);
-		}
-
-
 		/** Compares the values of this Vector3 to another given Vector3
 		* \param u The other Vector3
 		* \return True if this Vector3 has the same values of the other Vector3
@@ -244,11 +226,6 @@ namespace Hatchit {
 		{
 			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
 		}
-
-
-
-
-
 
         /** Fetches an element of this Vector at the index i by reference
         * \param i The index of the element to fetch

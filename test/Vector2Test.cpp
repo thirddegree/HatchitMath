@@ -228,17 +228,6 @@ TEST(Vector2, VectorDivisionAssignmentOperator)
 	EXPECT_FLOAT_EQ(vector1.y, 3);
 }
 
-TEST(Vector2, VectorCompareOperator)
-{
-	Vector2 vector1(3, 4);
-	Vector2 vector2(4, 4);
-
-	ASSERT_TRUE(vector1 < vector2);
-	ASSERT_TRUE(vector2 > vector1);
-	ASSERT_FALSE(vector1 > vector2);
-	ASSERT_FALSE(vector2 < vector1);
-}
-
 TEST(Vector2, VectorEqualityOperator)
 {
 	Vector2 vector1(3, 4);

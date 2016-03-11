@@ -224,22 +224,6 @@ namespace Hatchit {
             return *this;
         }
 
-		/** Compares the magnitue of this Vector2 to another given Vector2
-		* \param u The other Vector2
-		* \return True if this Vector2 has a larger magnitude than the other Vector2
-		*/
-		inline bool Vector2::operator>(const Vector2& u) const
-		{
-			return MMVector2MagnitudeSqr(*this) > MMVector2MagnitudeSqr(u);
-		}
-		/** Compares the magnitue of this Vector2 to another given Vector2
-		* \param u The other Vector2
-		* \return True if this Vector2 has a smaller magnitude than the other Vector2
-		*/
-		inline bool Vector2::operator<(const Vector2& u) const
-		{
-			return MMVector2MagnitudeSqr(*this) < MMVector2MagnitudeSqr(u);
-		}
 		/** Compares the values of this Vector2 to another given Vector2
 		* \param u The other Vector2
 		* \return True if this Vector2 has the same values of the other Vector2
