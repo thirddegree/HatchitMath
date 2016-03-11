@@ -73,7 +73,7 @@ namespace Hatchit
             Matrix4 result;
 
             result.m_rows[0] = _mm_set_ss(scale.x);
-            result.m_rows[3] = _mm_set_ps(0, scale.y, scale.z, 1);
+            result.m_rows[3] = _mm_setr_ps(0, scale.y, scale.z, 1);
             result.m_rows[1] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 0, 1, 0));
             result.m_rows[2] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(0, 2, 0, 0));
             result.m_rows[3] = _mm_shuffle_ps(result.m_rows[3], result.m_rows[3], _MM_SHUFFLE(3, 0, 0, 0));
