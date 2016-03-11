@@ -126,8 +126,7 @@ namespace Hatchit
         */
         inline Vector4 Vector4::operator*(float s) const
         {
-            m_vector = _mm_add_ps(m_vector, _mm_set1_ps(s));
-            return *this;
+            return Vector4(_mm_mul_ps(m_vector, _mm_set1_ps(s));
         }
 
         /** Divides all elements in this Vector4 by a given scalar
@@ -140,10 +139,10 @@ namespace Hatchit
             return Vector4(_mm_div_ps(m_vector, _mm_set1_ps(s)));
         }
 
-        /** Subtracts all elements in this Vector4 by a given scalar
+        /** Adds all elements in this Vector4 by a given scalar
         * This operation affects the elements in this Vector4
-        * \param s The scalar to subtract this Vector4 by
-        * \return This Vector4 after all the elements have been subtracted by s
+        * \param s The scalar to add this Vector4 by
+        * \return This Vector4 after all the elements have been added by s
         */
         inline Vector4& Vector4::operator+=(float s)
         {
@@ -151,10 +150,10 @@ namespace Hatchit
             return *this;
         }
 
-        /** Adds all elements in this Vector4 by a given scalar
+        /** Subtracts all elements in this Vector4 by a given scalar
         * This operation affects the elements in this Vector4
-        * \param s The scalar to add this Vector4 by
-        * \return This Vector4 after all the elements have been added by s
+        * \param s The scalar to subtract this Vector4 by
+        * \return This Vector4 after all the elements have been subtracted by s
         */
         inline Vector4& Vector4::operator-=(float s)
         {
@@ -173,13 +172,14 @@ namespace Hatchit
             return *this;
         }
 
-        /** Subtracts all of the elements from this vector by a given one
-        * \param u The other Vector4
+        /** Divides all of the elements from this vector by a given scalar
+        * This operation affects the elements in this Vector4
+        * \param s Scalar to divide elements by
         * \return This vector with the differences of all the pairs of elements
         */
-        inline Vector4& Vector4::operator-=(const Vector4& rhs)
+        inline Vector4& Vector4::operator/=(float s)
         {
-            m_vector = _mm_sub_ps(m_vector, rhs.m_vector);
+            m_vector = _mm_div_ps(m_vector, _mm_set1_ps(s));
             return *this;
         }
 
