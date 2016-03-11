@@ -339,12 +339,12 @@ TEST(Vector4, Magnitude)
 
 TEST(Vector4Static, Normalize)
 {
-	Vector4 vector(3, 4, 5, 6);
+    Vector4 vector(3, 4, 5, 6);
 
-	Vector4 actualVector = vector.Normalized();
+    Vector4 actualVector = vector.Normalized();
 
-	EXPECT_FLOAT_EQ(actualVector.x, 0.32349831961f);
-	EXPECT_FLOAT_EQ(actualVector.y, 0.43133109281f);
+    EXPECT_FLOAT_EQ(actualVector.x, 0.32349831961f);
+    EXPECT_FLOAT_EQ(actualVector.y, 0.43133109281f);
     EXPECT_FLOAT_EQ(actualVector.z, 0.53916286602f);
     EXPECT_FLOAT_EQ(actualVector.w, 0.64699663922f);
 }

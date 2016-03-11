@@ -249,6 +249,14 @@ namespace Hatchit {
 			return this->m_data[i];
 		}
 
+		//Returns a Vector2 with the fist two elements from this vector
+		inline Vector3::operator Vector2() const
+		{
+			_MM_ALIGN16 float vecArray[4];
+			_mm_store_ps(&vecArray[0], m_vector);
+			return Vector2(vecArray[0], vecArray[1]);
+		}
+
 
 		/** Calculates the cross product of two vectors
 		* \param v, u: vectors used to calculate the cross product

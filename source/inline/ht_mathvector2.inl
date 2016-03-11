@@ -180,7 +180,7 @@ namespace Hatchit {
         }
         /** Divides all of the elements from a given Vector2 to this one
         * \param u The other Vector2
-        * \return A new vector with the ratios of all the pairs of elements
+        * \return A new vector with the quocient of all the pairs of elements
         */
         inline Vector2 Vector2::operator/(const Vector2& u) const
         {
@@ -216,7 +216,7 @@ namespace Hatchit {
         }
         /** Divides all of the elements from a given Vector2 to this one
         * \param u The other Vector2
-        * \return This Vector2 with the ratios of all the pairs of elements
+        * \return This Vector2 with the quocient of all the pairs of elements
         */
         inline Vector2& Vector2::operator/=(const Vector2& u)
         {

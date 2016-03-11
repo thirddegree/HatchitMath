@@ -274,6 +274,7 @@ namespace Hatchit {
             bool    operator!=  (const Vector3& u) const;
             const float&  operator[]  (int i) const;
 			const float&  operator[]  (int i);
+			operator Vector2() const;
 
 			static float Dot(const Vector3& v, const Vector3& u);
 			static Vector3 Cross(const Vector3& v, const Vector3& u);

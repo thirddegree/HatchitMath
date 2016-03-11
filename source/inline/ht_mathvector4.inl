@@ -120,13 +120,14 @@ namespace Hatchit
         }
       
         /** Multiplies all elements in this Vector4 by a given scalar
-        * This operation returns a new Vector4
+        * This operation affects the elements in this Vector4
         * \param s The scalar to multiply this Vector4 by
         * \return A Vector4 after all the elements have been multiplied by s
         */
         inline Vector4 Vector4::operator*(float s) const
         {
-            return Vector4(_mm_mul_ps(m_vector, _mm_set1_ps(s)));
+            m_vector = _mm_add_ps(m_vector, _mm_set1_ps(s));
+            return *this;
         }
 
         /** Divides all elements in this Vector4 by a given scalar
@@ -172,14 +173,13 @@ namespace Hatchit
             return *this;
         }
 
-        /** Divides all elements in this Vector4 by a given scalar
-        * This operation affects the elements in this Vector4
-        * \param s The scalar to divide this Vector4 by
-        * \return This Vector4 after all the elements have been divided by s
+        /** Subtracts all of the elements from this vector by a given one
+        * \param u The other Vector4
+        * \return This vector with the differences of all the pairs of elements
         */
-        inline Vector4& Vector4::operator/=(float s)
+        inline Vector4& Vector4::operator-=(const Vector4& rhs)
         {
-            m_vector = _mm_div_ps(m_vector, _mm_set1_ps(s));
+            m_vector = _mm_sub_ps(m_vector, rhs.m_vector);
             return *this;
         }
 
@@ -303,7 +303,7 @@ namespace Hatchit
             return data[i];
         }
 
-        //Returns a Vector4 with the first three elements from this vector and the last one being 0
+        //Returns a Vector3 with the first three elements from this vector and the last one being 0
         inline Vector4::operator Vector3() const
         {
             _MM_ALIGN16 float vecArray[4];
