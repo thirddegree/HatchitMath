@@ -13,11 +13,23 @@ namespace Hatchit
             __m128 normalizedVec = _mm_mul_ps(v.m_vector, v.m_vector);
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(0, 1, 2, 3)));
+            normalizedVec = _mm_sqrt_ps(normalizedVec);
+            Vector4 val;
+            val.m_vector = _mm_div_ps(v.m_vector, normalizedVec);
+
+            return val; 
+        }
+
+        inline Vector4 _MM_CALLCONV MMVector4NormalizeEst(const Vector4& v)
+        {
+            __m128 normalizedVec = _mm_mul_ps(v.m_vector, v.m_vector);
+            normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
+            normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(0, 1, 2, 3)));
             normalizedVec = _mm_rsqrt_ps(normalizedVec);
             Vector4 val;
             val.m_vector = _mm_mul_ps(v.m_vector, normalizedVec);
 
-            return val; 
+            return val;
         }
 
         
@@ -328,6 +340,11 @@ namespace Hatchit
         inline Vector4 Vector4::Normalized() const
         {
             return MMVector4Normalize(*this);
+        }
+
+        inline Vector4 Vector4::NormalizedEst() const
+        {
+            return MMVector4NormalizeEst(*this);
         }
 
         inline float Vector4::Magnitude() const

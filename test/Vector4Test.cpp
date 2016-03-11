@@ -337,16 +337,28 @@ TEST(Vector4, Magnitude)
 	EXPECT_FLOAT_EQ(vector.Magnitude(), 6.f);
 }
 
-TEST(Vector4Static, Normalize)
+TEST(Vector4Static, Normalized)
 {
     Vector4 vector(3, 4, 5, 6);
 
     Vector4 actualVector = vector.Normalized();
 
-    EXPECT_FLOAT_EQ(actualVector.x, 0.32349831961f);
-    EXPECT_FLOAT_EQ(actualVector.y, 0.43133109281f);
-    EXPECT_FLOAT_EQ(actualVector.z, 0.53916286602f);
-    EXPECT_FLOAT_EQ(actualVector.w, 0.64699663922f);
+    EXPECT_FLOAT_EQ(0.32349831961f, actualVector.x);
+    EXPECT_FLOAT_EQ(0.43133109281f, actualVector.y);
+    EXPECT_FLOAT_EQ(0.53916286602f, actualVector.z);
+    EXPECT_FLOAT_EQ(0.64699663922f, actualVector.w);
+}
+
+TEST(Vector4Static, NormalizedEst)
+{
+    Vector4 vector(3.f, 4.f, 5.f, 6.f);
+    
+    Vector4 actualVector = vector.NormalizedEst();
+    
+    EXPECT_NEAR(0.32349831961f, actualVector.x, 0.0002f);
+    EXPECT_NEAR(0.43133109281f, actualVector.y, 0.0002f);
+    EXPECT_NEAR(0.53916286602f, actualVector.z, 0.0002f);
+    EXPECT_NEAR(0.64699663922f, actualVector.w, 0.0002f);
 }
 
 

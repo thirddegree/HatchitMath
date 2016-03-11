@@ -311,11 +311,11 @@ TEST(Vector3Static, Normalize)
 {
     Vector3 vector(3,4,5);
 
-    vector.Normalized();
+    Vector3 resultVector = vector.Normalized();
 
     float inv = 1.0f / 7.07107f;
 
-    ASSERT_NEAR(vector.x, 3.0f * inv, 0.00001f);
-    ASSERT_NEAR(vector.y, 4.0f * inv, 0.00001f);
-    ASSERT_NEAR(vector.z, 5.0f * inv, 0.00001f);
+    ASSERT_NEAR(3.0f * inv, 0.00001f, resultVector.x);
+    ASSERT_NEAR(4.0f * inv, 0.00001f, resultVector.y);
+    ASSERT_NEAR(5.0f * inv, 0.00001f, resultVector.z);
 }

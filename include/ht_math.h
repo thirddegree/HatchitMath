@@ -361,6 +361,7 @@ namespace Hatchit {
             *****************************************************/
             static float Dot(const Vector4& v, const Vector4& u);
             Vector4 Normalized() const;
+            Vector4 NormalizedEst() const;
             float Magnitude() const;
             float MagnitudeSqr() const;
 
@@ -499,6 +500,7 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         float   _MM_CALLCONV MMVector4Dot(const Vector4& v, const Vector4& u);
         Vector4 _MM_CALLCONV MMVector4Normalize(const Vector4& v);
+        Vector4 _MM_CALLCONV MMVector4NormalizeEst(const Vector4& v);
         float   _MM_CALLCONV MMVector4Magnitude(const Vector4& v);
         float   _MM_CALLCONV MMVector4MagnitudeSqr(const Vector4& v);
 
