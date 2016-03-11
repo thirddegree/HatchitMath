@@ -264,7 +264,7 @@ TEST(Vector4, VectorMultiplicationAssignmentOperator)
 	Vector4 vector1(1, 2, 3, 4);
 	Vector4 vector2(3, 4, 5, 6);
 
-	ASSERT_TRUE(false);//vector1 *= vector2;
+	vector1 *= vector2;
 
 	EXPECT_FLOAT_EQ(vector1.x, 3);
 	EXPECT_FLOAT_EQ(vector1.y, 8);
@@ -277,8 +277,7 @@ TEST(Vector4, VectorDivisionOperator)
 	Vector4 vector1(4, 6, 8, 10);
 	Vector4 vector2(2, 3, 4, 5);
 
-	Vector4 result;// = vector1 / vector2;
-	ASSERT_TRUE(false);
+	Vector4 result = vector1 / vector2;
 
 	EXPECT_FLOAT_EQ(result.x, 2);
 	EXPECT_FLOAT_EQ(result.y, 2);
@@ -291,26 +290,12 @@ TEST(Vector4, VectorDivisionAssignmentOperator)
 	Vector4 vector1(4, 6, 8, 10);
 	Vector4 vector2(2, 3, 4, 5);
 
-	ASSERT_TRUE(false);//vector1 /= vector2;
+	vector1 /= vector2;
 
 	EXPECT_FLOAT_EQ(vector1.x, 2);
 	EXPECT_FLOAT_EQ(vector1.y, 2);
 	EXPECT_FLOAT_EQ(vector1.z, 2);
 	EXPECT_FLOAT_EQ(vector1.w, 2);
-}
-
-
-TEST(Vector4, FloatCompareOperators)
-{
-	Vector4 vector(5, 5, 5, 5);
-	ASSERT_TRUE(vector > 9.5);
-	ASSERT_TRUE(vector < 11.5);
-	ASSERT_TRUE(false);//ASSERT_TRUE(9.5 < vector);
-	ASSERT_TRUE(false);//ASSERT_TRUE(11.5 > vector);
-	ASSERT_FALSE(vector < 9.5);
-	ASSERT_FALSE(vector > 11.5);
-	ASSERT_TRUE(false);//ASSERT_FALSE(9.5 > vector);
-	ASSERT_TRUE(false);//ASSERT_FALSE(11.5 < vector);
 }
 
 TEST(Vector4, VectorCompareOperator)
@@ -359,33 +344,35 @@ TEST(Vector4, ArrayNotationOperator)
 TEST(Vector4Static, DotProduct)
 {
 	Vector4 vector1(1, 2, 3, 4);
-	Vector4 vector2(3, 4);
+	Vector4 vector2(3, 4, 5, 6);
 
-	ASSERT_TRUE(false);//EXPECT_FLOAT_EQ(Vector4::Dot(vector1, vector2), 11);
+	EXPECT_FLOAT_EQ(Vector4::Dot(vector1, vector2), 50);
 }
 
 TEST(Vector4, MagnitudeSqr)
 {
 	Vector4 vector(3, 4, 5, 6);
-	ASSERT_TRUE(false);//ASSERT_NEAR(vector.MagnitudeSquared(), 86, 0.00001f);
+	ASSERT_NEAR(vector.MagnitudeSquared(), 86, 0.00001f);
 }
 
 TEST(Vector4, Magnitude)
 {
 	Vector4 vector(3, 3, 3, 3);
-	ASSERT_TRUE(false);//ASSERT_NEAR(vector.Magnitude(), 6, 0.00001f);
+	ASSERT_NEAR(vector.Magnitude(), 6, 0.00001f);
 }
 
 TEST(Vector4Static, Normalize)
 {
-	Vector4 vector(3, 4);
+	Vector4 vector(3, 4, 5, 6);
 
-	ASSERT_TRUE(false);//vector.Normalize();
+	vector.Normalize();
 
-	float inv = 1.0f / 5.0f;
+	float inv = 1.0f / 9.27361849f;
 
-	ASSERT_NEAR(vector.x, 3.0f * inv, 0.00001f);
-	ASSERT_NEAR(vector.y, 4.0f * inv, 0.00001f);
+	ASSERT_NEAR(vector.x, 3.0f * inv, 0.0001f);
+	ASSERT_NEAR(vector.y, 4.0f * inv, 0.0001f);
+	ASSERT_NEAR(vector.x, 3.0f * inv, 0.0001f);
+	ASSERT_NEAR(vector.y, 4.0f * inv, 0.0001f);
 }
 
 

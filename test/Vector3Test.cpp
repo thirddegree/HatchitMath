@@ -236,19 +236,6 @@ TEST(Vector3, VectorDivisionAssignmentOperator)
 	EXPECT_FLOAT_EQ(vector1.z, 4);
 }
 
-TEST(Vector3, FloatCompareOperators)
-{
-	Vector3 vector(3.f, 4.f, 5.f);
-	ASSERT_TRUE(vector > 7.f);
-	ASSERT_TRUE(vector < 8.f);
-	ASSERT_TRUE(7.f < vector);
-	ASSERT_TRUE(8.f > vector);
-	ASSERT_FALSE(vector < 7.f);
-	ASSERT_FALSE(vector > 8.f);
-	ASSERT_FALSE(7.f > vector);
-	ASSERT_FALSE(8.f < vector);
-}
-
 TEST(Vector3, VectorCompareOperator)
 {
 	Vector3 vector1(3, 4, 5);

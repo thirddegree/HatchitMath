@@ -210,26 +210,6 @@ namespace Hatchit {
 			return (*this);
 		}
 
-
-		/** Compares the magnitue of this Vector3 to a float
-		* \param s the float
-		* \return True if this Vector3 has a larger magnitude the float
-		*/
-		inline bool Vector3::operator>(float s) const
-		{
-			return Hatchit::Math::MMVector3Magnitude(*this) > s;
-		}
-		/** Compares the magnitue of this Vector3 to a float
-		* \param s the float
-		* \return True if this Vector3 has a smaller magnitude than the float
-		*/
-		inline bool Vector3::operator<(float s) const
-		{
-			return MMVector3Magnitude(*this) < s;
-		}
-
-
-
 		/** Compares the magnitue of this Vector3 to another given Vector3
 		* \param u The other Vector3
 		* \return True if this Vector3 has a larger magnitude than the other Vector3
@@ -290,6 +270,14 @@ namespace Hatchit {
 		{
 			assert(i < 3);
 			return this->m_data[i];
+		}
+
+		//Returns a Vector2 with the fist two elements from this vector
+		inline Vector3::operator Vector2() const
+		{
+			_MM_ALIGN16 float vecArray[4];
+			_mm_store_ps(&vecArray[0], m_vector);
+			return Vector2(vecArray[0], vecArray[1]);
 		}
 
 
@@ -416,26 +404,6 @@ namespace Hatchit {
 
             return normalizedVec;
         }
-
-		/** Compares the magnitue of a Vector3 to a float
-		* \param s the float
-		* \param v the vector
-		* \return True if the vector has a lesser magnitude than the float
-		*/
-		inline bool operator>(const float s, const Vector3 & v)
-		{
-			return s > MMVector3Magnitude(v);
-		}
-
-		/** Compares the magnitue of a Vector3 to a float
-		* \param s the float
-		* \param v the vector
-		* \return True if the vector has a greater magnitude than the float
-		*/
-		inline bool operator<(const float s, const Vector3 & v)
-		{
-			return s < MMVector3Magnitude(v);
-		}
 
         /** An outstream operator for a Vector3 to interace with an ostream
         * \param output The ostream to output to

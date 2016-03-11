@@ -180,7 +180,7 @@ namespace Hatchit {
         }
         /** Divides all of the elements from a given Vector2 to this one
         * \param u The other Vector2
-        * \return A new vector with the ratios of all the pairs of elements
+        * \return A new vector with the quocient of all the pairs of elements
         */
         inline Vector2 Vector2::operator/(const Vector2& u) const
         {
@@ -216,31 +216,13 @@ namespace Hatchit {
         }
         /** Divides all of the elements from a given Vector2 to this one
         * \param u The other Vector2
-        * \return This Vector2 with the ratios of all the pairs of elements
+        * \return This Vector2 with the quocient of all the pairs of elements
         */
         inline Vector2& Vector2::operator/=(const Vector2& u)
         {
             m_vector = _mm_div_ps(m_vector, u.m_vector);
             return *this;
         }
-
-		/** Compares the magnitue of this Vector2 to a float
-		* \param s The float
-		* \return True if this Vector2 has a greater magnitude than the float
-		*/
-		inline bool Vector2::operator>(float s) const
-		{
-			return MMVector2Magnitude(*this) > s;
-		}
-
-		/** Compares the magnitue of this Vector2 to a float
-		* \param s The float
-		* \return True if this Vector2 has a lesser magnitude than the float
-		*/
-		inline bool Vector2::operator<(float s) const
-		{
-			return MMVector2Magnitude(*this) < s;
-		}
 
 		/** Compares the magnitue of this Vector2 to another given Vector2
 		* \param u The other Vector2
@@ -383,26 +365,6 @@ namespace Hatchit {
             __m128 vecSum = _mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 2, 0, 1)));
             return Vector2(_mm_div_ps(static_cast<__m128>(v), _mm_sqrt_ps(vecSum)));
         }
-
-		/** Compares the magnitue of a Vector2 to a float
-		* \param s the float
-		* \param v the vector
-		* \return True if the vector has a lesser magnitude than the float
-		*/
-		inline bool operator>(const float s, const Vector2 & v)
-		{
-			return s > MMVector2Magnitude(v);
-		}
-
-		/** Compares the magnitue of a Vector2 to a float
-		* \param s the float
-		* \param v the vector
-		* \return True if the vector has a greater magnitude than the float
-		*/
-		inline bool operator<(const float s, const Vector2 & v)
-		{
-			return s < MMVector2Magnitude(v);
-		}
 
 		/** An insertion operator for a Vector2 to interface with an ostream
 		* \param output the ostream to output to
