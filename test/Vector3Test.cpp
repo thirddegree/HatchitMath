@@ -236,31 +236,6 @@ TEST(Vector3, VectorDivisionAssignmentOperator)
 	EXPECT_FLOAT_EQ(vector1.z, 4);
 }
 
-TEST(Vector3, FloatCompareOperators)
-{
-	Vector3 vector(3.f, 4.f, 5.f);
-	ASSERT_TRUE(vector > 7.f);
-	ASSERT_TRUE(vector < 8.f);
-	ASSERT_TRUE(7.f < vector);
-	ASSERT_TRUE(8.f > vector);
-	ASSERT_FALSE(vector < 7.f);
-	ASSERT_FALSE(vector > 8.f);
-	ASSERT_FALSE(7.f > vector);
-	ASSERT_FALSE(8.f < vector);
-}
-
-TEST(Vector3, VectorCompareOperator)
-{
-	Vector3 vector1(3, 4, 5);
-	Vector3 vector2(5, 5, 5);
-
-
-	ASSERT_TRUE(vector1 < vector2);
-	ASSERT_TRUE(vector2 > vector1);
-	ASSERT_FALSE(vector1 > vector2);
-	ASSERT_FALSE(vector2 < vector1);
-}
-
 TEST(Vector3, VectorEqualityOperator)
 {
 	Vector3 vector1(3, 4, 5);
@@ -303,7 +278,7 @@ TEST(Vector3Static, DotProduct)
     Vector3 vector1(1,2,3);
     Vector3 vector2(4,5,6);
 
-    EXPECT_FLOAT_EQ(MMVector3Dot(vector1, vector2), 32);
+    EXPECT_FLOAT_EQ(Vector3::Dot(vector1, vector2), 32);
 }
 
 TEST(Vector3Static, CrossProduct)
@@ -336,7 +311,7 @@ TEST(Vector3Static, Normalize)
 {
     Vector3 vector(3,4,5);
 
-    vector.Normalize();
+    vector.Normalized();
 
     float inv = 1.0f / 7.07107f;
 
