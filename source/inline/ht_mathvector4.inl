@@ -13,11 +13,23 @@ namespace Hatchit
             __m128 normalizedVec = _mm_mul_ps(v.m_vector, v.m_vector);
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
             normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(0, 1, 2, 3)));
+            normalizedVec = _mm_sqrt_ps(normalizedVec);
+            Vector4 val;
+            val.m_vector = _mm_div_ps(v.m_vector, normalizedVec);
+
+            return val; 
+        }
+
+        inline Vector4 _MM_CALLCONV MMVector4NormalizeEst(const Vector4& v)
+        {
+            __m128 normalizedVec = _mm_mul_ps(v.m_vector, v.m_vector);
+            normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(2, 3, 0, 1)));
+            normalizedVec = _mm_add_ps(normalizedVec, _mm_shuffle_ps(normalizedVec, normalizedVec, _MM_SHUFFLE(0, 1, 2, 3)));
             normalizedVec = _mm_rsqrt_ps(normalizedVec);
             Vector4 val;
             val.m_vector = _mm_mul_ps(v.m_vector, normalizedVec);
 
-            return val; 
+            return val;
         }
 
         
@@ -30,6 +42,15 @@ namespace Hatchit
             val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
             val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(0, 1, 2, 3)));
             val = _mm_sqrt_ps(val);
+
+            return MMVectorGetX(val);
+        }
+
+        inline float _MM_CALLCONV MMVector4MagnitudeSqr(const Vector4& v)
+        {
+            __m128 val = _mm_mul_ps(v.m_vector, v.m_vector);
+            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(2, 3, 0, 1)));
+            val = _mm_add_ps(val, _mm_shuffle_ps(val, val, _MM_SHUFFLE(0, 1, 2, 3)));
 
             return MMVectorGetX(val);
         }
@@ -47,6 +68,9 @@ namespace Hatchit
             return returnValue;
         }
 
+        /****************************************************
+        *	Constructors
+        *****************************************************/
 
         //Create a Vector4 with all 4 elements being 0
         inline Vector4::Vector4() : m_vector(_mm_setzero_ps()) {}
@@ -54,19 +78,17 @@ namespace Hatchit
 		//Create a Vector4 with the same value in all elements
 		inline Vector4::Vector4(float xyzw) : m_vector(_mm_set_ps1(xyzw)) {}
 
+        //Create a Vector4 with the elements x, y and z
+        inline Vector4::Vector4(float x, float y, float z, float w) : m_vector(MMVectorSet(x, y, z, w)) {}
+
 		//Create a vector4 using x and y from a vector 2 and z and w from floats
 		inline Vector4::Vector4(const Vector2 & xy, float z, float w) : m_vector(MMVectorSet(xy.x, xy.y, z, w)) {}
 
-        //Create a Vector4 with the elements x, y and z
-		inline Vector4::Vector4(float x, float y, float z, float w) : m_vector(MMVectorSet(x, y, z, w)) {}
+        //Create a Vector4 with the first three elements of a given Vector3 and a fourth given float w
+		inline Vector4::Vector4(const Vector3& v3, float w) : m_vector(MMVectorSetWRaw(static_cast<__m128>(v3), &w)) {}
 
         //Create a copy of an existing Vector4
-		inline Vector4::Vector4(const Vector4& other) : m_vector(other.m_vector) {}
-
-        //Create a Vector4 with the first three elements of a given Vector3 and a fourth given float w
-        //NOTE:
-        // Why is this not allowed to be const?
-		inline Vector4::Vector4(const Vector3& v3, float w) : m_vector(MMVectorSetWRaw(static_cast<__m128>(v3), &w)) {}
+        inline Vector4::Vector4(const Vector4& other) : m_vector(other.m_vector) {}
 
         //Create a Vector4 with an intrinsic vector type.
         inline Vector4::Vector4(__m128 v) : m_vector(std::move(v)) {}
@@ -89,13 +111,32 @@ namespace Hatchit
             return m_vector;
         }
 
+        /** Adds all elements in this Vector4 by a given scalar
+        * This operation returns a new Vector4
+        * \param s The scalar to add this Vector4 by
+        * \return A Vector4 after all the elements have been added by s
+        */
+        inline Vector4 Vector4::operator+(float s) const
+        {
+            return Vector4(_mm_add_ps(m_vector, _mm_set1_ps(s)));
+        }
+
+        /** Subtracts all elements in this Vector4 by a given scalar
+        * This operation returns a new Vector4
+        * \param s The scalar to subtract this Vector4 by
+        * \return A Vector4 after all the elements have been subtracted by s
+        */
+        inline Vector4 Vector4::operator-(float s) const
+        {
+            return Vector4(_mm_sub_ps(m_vector, _mm_set1_ps(s)));
+        }
       
         /** Multiplies all elements in this Vector4 by a given scalar
-        * This operation returns a new Vector4
+        * This operation affects the elements in this Vector4
         * \param s The scalar to multiply this Vector4 by
         * \return A Vector4 after all the elements have been multiplied by s
         */
-        inline Vector4 Vector4::operator* (float s) const
+        inline Vector4 Vector4::operator*(float s) const
         {
             return Vector4(_mm_mul_ps(m_vector, _mm_set1_ps(s)));
         }
@@ -110,24 +151,26 @@ namespace Hatchit
             return Vector4(_mm_div_ps(m_vector, _mm_set1_ps(s)));
         }
 
-        /** Subtracts all elements in this Vector4 by a given scalar
-        * This operation returns a new Vector4
-        * \param s The scalar to subtract this Vector4 by
-        * \return A Vector4 after all the elements have been subtracted by s
+        /** Adds all elements in this Vector4 by a given scalar
+        * This operation affects the elements in this Vector4
+        * \param s The scalar to add this Vector4 by
+        * \return This Vector4 after all the elements have been added by s
         */
-        inline Vector4 Vector4::operator-(float s) const
+        inline Vector4& Vector4::operator+=(float s)
         {
-            return Vector4(_mm_sub_ps(m_vector, _mm_set1_ps(s)));
+            m_vector = _mm_add_ps(m_vector, _mm_set1_ps(s));
+            return *this;
         }
 
-        /** Adds all elements in this Vector4 by a given scalar
-        * This operation returns a new Vector4
-        * \param s The scalar to add this Vector4 by
-        * \return A Vector4 after all the elements have been added by s
+        /** Subtracts all elements in this Vector4 by a given scalar
+        * This operation affects the elements in this Vector4
+        * \param s The scalar to subtract this Vector4 by
+        * \return This Vector4 after all the elements have been subtracted by s
         */
-        inline Vector4 Vector4::operator+(float s) const
+        inline Vector4& Vector4::operator-=(float s)
         {
-            return Vector4(_mm_add_ps(m_vector, _mm_set1_ps(s)));
+            m_vector = _mm_sub_ps(m_vector, _mm_set1_ps(s));
+            return *this;
         }
 
         /** Multiplies all elements in this Vector4 by a given scalar
@@ -137,59 +180,19 @@ namespace Hatchit
         */
         inline Vector4& Vector4::operator*=(float s)
         {
-            m_vector = _mm_add_ps(m_vector, _mm_set1_ps(s));
+            m_vector = _mm_mul_ps(m_vector, _mm_set1_ps(s));
             return *this;
         }
 
-        /** Divides all elements in this Vector4 by a given scalar
+        /** Divides all of the elements from this vector by a given scalar
         * This operation affects the elements in this Vector4
-        * \param s The scalar to divide this Vector4 by
-        * \return This Vector4 after all the elements have been divided by s
+        * \param s Scalar to divide elements by
+        * \return This vector with the differences of all the pairs of elements
         */
         inline Vector4& Vector4::operator/=(float s)
         {
             m_vector = _mm_div_ps(m_vector, _mm_set1_ps(s));
             return *this;
-        }
-
-        /** Subtracts all elements in this Vector4 by a given scalar
-        * This operation affects the elements in this Vector4
-        * \param s The scalar to subtract this Vector4 by
-        * \return This Vector4 after all the elements have been subtracted by s
-        */
-        inline Vector4& Vector4::operator+=(float s)
-        {
-            m_vector = _mm_add_ps(m_vector, _mm_set1_ps(s));
-            return *this;
-        }
-
-        /** Adds all elements in this Vector4 by a given scalar
-        * This operation affects the elements in this Vector4
-        * \param s The scalar to add this Vector4 by
-        * \return This Vector4 after all the elements have been added by s
-        */
-        inline Vector4& Vector4::operator-=(float s)
-        {
-            m_vector = _mm_sub_ps(m_vector, _mm_set1_ps(s));
-            return *this;
-        }
-
-        /** Compares the magnitue of this Vector4 to another given Vector4
-        * \param u The other Vector4
-        * \return True if this Vector4 has a larger magnitude than the other Vector4
-        */
-        inline bool Vector4::operator>(const Vector4& rhs) const
-        {
-            return MMVector4Magnitude(*this) > MMVector4Magnitude(rhs);
-        }
-
-        /** Compares the magnitue of this Vector4 to another given Vector4
-        * \param u The other Vector4
-        * \return True if this Vector4 has a smaller magnitude than the other Vector4
-        */
-        inline bool Vector4::operator<(const Vector4& rhs) const
-        {
-            return MMVector4Magnitude(*this) < MMVector4Magnitude(rhs);
         }
 
         /** Compares the values of this Vector4 to another given Vector4
@@ -214,15 +217,6 @@ namespace Hatchit
             return !operator==(rhs);
         }
 
-        /** Executes memberwise multiplication on this Vector4
-        * \param u The other Vector4
-        * \return The product of this * u as a float
-        */
-        inline Vector4 Vector4::operator*(const Vector4& rhs) const
-        {
-            return Vector4(_mm_mul_ps(m_vector, rhs.m_vector));
-        }
-
         /** Adds all of the elements from a given vector to this one
         * \param u The other Vector4
         * \return A new vector with the sums of all the pairs of elements
@@ -239,6 +233,24 @@ namespace Hatchit
         inline Vector4 Vector4::operator-(const Vector4& u) const
         {
             return Vector4(_mm_sub_ps(m_vector, u.m_vector));
+        }
+
+        /** Executes memberwise multiplication on this Vector4
+        * \param u The other Vector4
+        * \return The products of this * u as a Vector4
+        */
+        inline Vector4 Vector4::operator*(const Vector4& rhs) const
+        {
+            return Vector4(_mm_mul_ps(m_vector, rhs.m_vector));
+        }
+
+        /** Executes memberwise division on this Vector4
+        * \param u The Vector4 with the values to divide by
+        * \return The quotients of this / u as a Vector4.
+        */
+        inline Vector4 Vector4::operator/(const Vector4& rhs) const
+        {
+            return Vector4(_mm_div_ps(m_vector, rhs.m_vector));
         }
 
         /** Adds all of the elements from a given vector to this one
@@ -258,6 +270,28 @@ namespace Hatchit
         inline Vector4& Vector4::operator-=(const Vector4& rhs)
         {
             m_vector = _mm_sub_ps(m_vector, rhs.m_vector);
+            return *this;
+        }
+
+        /** Multiplies all of the elements of this vector by a given one
+        * \param u The Vector4 which to multiply the elements by
+        * \return This vector with the products of this vector's 
+        * elements and the given vector's elements.
+        */
+        inline Vector4& Vector4::operator*=(const Vector4& rhs)
+        {
+            m_vector = _mm_mul_ps(m_vector, rhs.m_vector);
+            return *this;
+        }
+
+        /** Divides all the elements of this vector by the elements of a given vector
+        * \param u The Vector4 which to divide this vector4's elements by
+        * \return This vector with the elements of this vector divided by
+        * the elements of the given vector's elements.
+        */
+        inline Vector4& Vector4::operator/=(const Vector4& rhs)
+        {
+            m_vector = _mm_div_ps(m_vector, rhs.m_vector);
             return *this;
         }
 
@@ -281,7 +315,7 @@ namespace Hatchit
             return data[i];
         }
 
-        //Returns a Vector4 with the first three elements from this vector and the last one being 0
+        //Returns a Vector3 with the first three elements from this vector and the last one being 0
         inline Vector4::operator Vector3() const
         {
             _MM_ALIGN16 float vecArray[4];
@@ -295,6 +329,32 @@ namespace Hatchit
             _MM_ALIGN16 float vecArray[4];
             _mm_store_ps(&vecArray[0], m_vector);
             return Vector2(vecArray[0], vecArray[1]);
+        }
+
+
+        inline float Vector4::Dot(const Vector4& v, const Vector4& u)
+        {
+            return MMVector4Dot(v, u);
+        }
+
+        inline Vector4 Vector4::Normalized() const
+        {
+            return MMVector4Normalize(*this);
+        }
+
+        inline Vector4 Vector4::NormalizedEst() const
+        {
+            return MMVector4NormalizeEst(*this);
+        }
+
+        inline float Vector4::Magnitude() const
+        {
+            return MMVector4Magnitude(*this);
+        }
+
+        inline float Vector4::MagnitudeSqr() const
+        {
+            return MMVector4MagnitudeSqr(*this);
         }
 
         /** An insertion operator for a Vector4 to interace with an ostream
