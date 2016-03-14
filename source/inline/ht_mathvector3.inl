@@ -157,7 +157,7 @@ namespace Hatchit {
 		* \param u The other Vector3
 		* \return The product of this * u as a vector
 		*/
-		inline Vector3 Vector3::operator* (const Vector3& u) const
+		inline Vector3 Vector3::operator*(const Vector3& u) const
 		{
 			Vector3 v;
 			v.m_vector = _mm_mul_ps(this->m_vector, u.m_vector);
@@ -210,22 +210,6 @@ namespace Hatchit {
 			return (*this);
 		}
 
-		/** Compares the magnitue of this Vector3 to another given Vector3
-		* \param u The other Vector3
-		* \return True if this Vector3 has a larger magnitude than the other Vector3
-		*/
-		inline bool Vector3::operator>(const Vector3& u) const
-		{
-			return Hatchit::Math::MMVector3Magnitude(*this) > Hatchit::Math::MMVector3Magnitude(u);
-		}
-		/** Compares the magnitue of this Vector3 to another given Vector3
-		* \param u The other Vector3
-		* \return True if this Vector3 has a smaller magnitude than the other Vector3
-		*/
-		inline bool Vector3::operator<(const Vector3& u) const
-		{
-			return MMVector3Magnitude(*this) < MMVector3Magnitude(u);
-		}
 		/** Compares the values of this Vector3 to another given Vector3
 		* \param u The other Vector3
 		* \return True if this Vector3 has the same values of the other Vector3
@@ -242,6 +226,7 @@ namespace Hatchit {
 		{
 			return _mm_movemask_ps(_mm_cmpeq_ps(m_vector, u.m_vector)) != 15;
 		}
+
         /** Fetches an element of this Vector at the index i by reference
         * \param i The index of the element to fetch
         * \return A float that is stored in this Vector3 at the index i
@@ -252,6 +237,7 @@ namespace Hatchit {
             assert(i < 3);
             return this->m_data[i];
         }
+
 		/** Fetches an element of this Vector at the index i by reference
 		* \param i The index of the element to fetch
 		* \return A float that is stored in this Vector3 at the index i
@@ -263,17 +249,89 @@ namespace Hatchit {
 			return this->m_data[i];
 		}
 
-        /** Fetches an element of this Vector at the index i
-        * \param i The index of the element to fetch
-        * \return A float that is stored in this Vector3 at the index i
-        * This will throw an index out of range exception if you go beyond an index if 1
-        */
-        /*inline float Vector3::operator[](int i) const
-        {
-            assert(i < 3);
+		//Returns a Vector2 with the fist two elements from this vector
+		inline Vector3::operator Vector2() const
+		{
+			_MM_ALIGN16 float vecArray[4];
+			_mm_store_ps(&vecArray[0], m_vector);
+			return Vector2(vecArray[0], vecArray[1]);
+		}
 
-            return this->m_data[i];
-        }*/
+
+		/** Calculates the cross product of two vectors
+		* \param v, u: vectors used to calculate the cross product
+		* \return cross product as a vector3
+		*/
+		inline Vector3 Vector3::Cross(const Vector3 & v, const Vector3 & u)
+		{
+			return MMVector3Cross(v, u);
+		}
+
+		/** Calculates the dot product of two vectors
+		* \param v, u: vectors used to calculate the dot product
+		* \return dot product as a float
+		*/
+		inline float Vector3::Dot(const Vector3 & v, const Vector3 & u)
+		{
+			return MMVector3Dot(v, u);
+		}
+
+		/** Calculates the magnitude squared of this vector
+		* \return magnitude squared as a float
+		*/
+		inline float Vector3::MagnitudeSquared() const
+		{
+			return MMVector3MagnitudeSqr(*this);
+		}
+
+		/** Calculates the magnitude of this vector
+		* \return magnitude as a float
+		*/
+		inline float Vector3::Magnitude() const
+		{
+			return MMVector3Magnitude(*this);
+		}
+
+		/** Calculates a normalized copy of this float
+		* \return the copy
+		*/
+		inline Vector3 Vector3::Normalized() const
+		{
+			return MMVector3Normalized(*this);
+		}
+
+		/** Normalizes this vector in place
+		* \return the same vector
+		*/
+		inline Vector3 Vector3::Normalize()
+		{
+			*this = MMVector3Normalized(*this);
+			return *this;
+		}
+
+		/** Executes the cross product on two given Vector3s as v X u
+		* \param v The first Vector3
+		* \param u The second Vector3
+		* \return The cross product of v and u as a Vector3
+		*/
+		inline Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u)
+		{
+			Vector3 output;
+
+			__m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+			__m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+			__m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
+			__m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+
+			x00 = _mm_mul_ps(x00, x10);
+			x11 = _mm_mul_ps(x01, x11);
+
+			__m128 val = _mm_sub_ps(x00, x11);
+
+			output.m_vector = val;
+			return output;
+		}
+
 
         /** Executes the Dot product on two Vector3s as v * u
         * \param v The first Vector3
@@ -290,34 +348,28 @@ namespace Hatchit {
             return Hatchit::Math::MMVectorGetX(temp);
         }
 
-        /** Executes the cross product on two given Vector3s as v X u
-        * \param v The first Vector3
-        * \param u The second Vector3
-        * \return The cross product of v and u as a Vector3
-        */
-        inline Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u)
-        {
-            Vector3 output;
 
-            __m128 x00 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
-            __m128 x10 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
-            __m128 x01 = _mm_shuffle_ps(v.m_vector, v.m_vector, _MM_SHUFFLE(3, 1, 0, 2));
-            __m128 x11 = _mm_shuffle_ps(u.m_vector, u.m_vector, _MM_SHUFFLE(3, 0, 2, 1));
+		/** Returns the magnitude of the vector
+		* \return The magnitude as a float
+		*/
+		inline float _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v)
+		{
+			return MMVector3Dot(v, v);
+		}
 
-            x00 = _mm_mul_ps(x00, x10);
-            x11 = _mm_mul_ps(x01, x11);
-
-            __m128 val = _mm_sub_ps(x00, x11);
-
-            output.m_vector = val;
-            return output;
-        }
+		/** Returns the magnitude of the vector
+		* \return The magnitude as a float
+		*/
+		inline float _MM_CALLCONV MMVector3Magnitude(const Vector3& v)
+		{
+			return sqrtf(MMVector3Dot(v, v));
+		}
 
         /** Normalizes a Vector3
         * \param v The Vector3 to normalize
         * \return A normalized version of v
         */
-        inline Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v)
+        inline Vector3 _MM_CALLCONV MMVector3Normalized(const Vector3& v)
         {
             assert(MMVector3MagnitudeSqr(v) > 0.0f);
             Vector3 normalizedVec;
@@ -330,22 +382,6 @@ namespace Hatchit {
             return normalizedVec;
         }
 
-        /** Returns the magnitude of the vector
-        * \return The magnitude as a float
-        */
-        inline float _MM_CALLCONV MMVector3Magnitude(const Vector3& v)
-        {
-            return sqrtf(MMVector3Dot(v, v));
-        }
-
-		/** Returns the magnitude of the vector
-		* \return The magnitude as a float
-		*/
-		inline float _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v)
-		{
-			return MMVector3Dot(v, v);
-		}
-
         /** An outstream operator for a Vector3 to interace with an ostream
         * \param output The ostream to output to
         * \param h The Vector3 to interface with the ostream
@@ -354,16 +390,6 @@ namespace Hatchit {
         {
             output << v.x << " " << v.y << " " << v.z;
             return output;
-        }
-
-        /** An insertion operator for a Vector3 to interace with an ostream
-        * \param output The ostream to output to
-        * \param h The Vector3 to interface with the ostream
-        */
-        inline std::istream& operator>>(std::istream& input, Vector3& v)
-        {
-            input >> v.x >> v.y >> v.z;
-            return input;
         }
     }
 }

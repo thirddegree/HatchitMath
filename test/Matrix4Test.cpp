@@ -28,9 +28,9 @@ TEST(Matrix4, DefaultConstructor)
     for(int j = 0; j < 4; j++)
     {
       if(i == j)
-        ASSERT_EQ(matrix[i][j], 1);
+        EXPECT_FLOAT_EQ(matrix[i][j], 1);
       else
-        ASSERT_EQ(matrix[i][j], 0);
+        EXPECT_FLOAT_EQ(matrix[i][j], 0);
     }
   }
 }
@@ -46,7 +46,7 @@ TEST(Matrix4, ArrayConstructor)
   {
     for(int j = 0; j < 4; j++)
     {
-        ASSERT_EQ(matrix[i][j], array[index]);
+        EXPECT_FLOAT_EQ(matrix[i][j], array[index]);
         index++;
     }
   }
@@ -65,7 +65,7 @@ TEST(Matrix4, FloatConstructor)
     for(int j = 0; j < 4; j++)
     {
         value++;
-        ASSERT_EQ(matrix[i][j], value);
+        EXPECT_FLOAT_EQ(matrix[i][j], value);
     }
   }
 }
@@ -96,11 +96,11 @@ TEST(Matrix4, Vector3Constructor)
     {
       //Special cases when testing the last column
       if(j == 3 && i == 3)
-        ASSERT_EQ(matrix[i][j], 1);
+        EXPECT_FLOAT_EQ(matrix[i][j], 1);
       else if(j == 3)
-        ASSERT_EQ(matrix[i][j], 0);
+        EXPECT_FLOAT_EQ(matrix[i][j], 0);
       else
-        ASSERT_EQ(matrix[i][j], row[j]);
+        EXPECT_FLOAT_EQ(matrix[i][j], row[j]);
     }
   }
 }
@@ -121,7 +121,7 @@ TEST(Matrix4, Vector4Constructor)
   {
     Vector4 row = rows[i];
     for(int j = 0; j < 4; j++)
-        ASSERT_EQ(matrix[i][j], row[j]);
+        EXPECT_FLOAT_EQ(matrix[i][j], row[j]);
   }
 }
 
@@ -135,25 +135,25 @@ TEST(Matrix4, Transposition)
 
   //Result taken from wolfram alpha
   //http://www.wolframalpha.com/input/?i=matrix+transpose&a=*C.matrix+transpose-_*Calculator.dflt-&f2={{1%2C2%2C3%2C4}%2C{4%2C3%2C2%2C1}%2C{3%2C2%2C4%2C1}%2C{3%2C1%2C4%2C2}}&f=MatrixOperations.theMatrix_{{1%2C2%2C3%2C4}%2C{4%2C3%2C2%2C1}%2C{3%2C2%2C4%2C1}%2C{3%2C1%2C4%2C2}}
-  ASSERT_EQ(transpose[0][0], 1);
-  ASSERT_EQ(transpose[0][1], 4);
-  ASSERT_EQ(transpose[0][2], 3);
-  ASSERT_EQ(transpose[0][3], 3);
+  EXPECT_FLOAT_EQ(transpose[0][0], 1);
+  EXPECT_FLOAT_EQ(transpose[0][1], 4);
+  EXPECT_FLOAT_EQ(transpose[0][2], 3);
+  EXPECT_FLOAT_EQ(transpose[0][3], 3);
 
-  ASSERT_EQ(transpose[1][0], 2);
-  ASSERT_EQ(transpose[1][1], 3);
-  ASSERT_EQ(transpose[1][2], 2);
-  ASSERT_EQ(transpose[1][3], 1);
+  EXPECT_FLOAT_EQ(transpose[1][0], 2);
+  EXPECT_FLOAT_EQ(transpose[1][1], 3);
+  EXPECT_FLOAT_EQ(transpose[1][2], 2);
+  EXPECT_FLOAT_EQ(transpose[1][3], 1);
 
-  ASSERT_EQ(transpose[2][0], 3);
-  ASSERT_EQ(transpose[2][1], 2);
-  ASSERT_EQ(transpose[2][2], 4);
-  ASSERT_EQ(transpose[2][3], 4);
+  EXPECT_FLOAT_EQ(transpose[2][0], 3);
+  EXPECT_FLOAT_EQ(transpose[2][1], 2);
+  EXPECT_FLOAT_EQ(transpose[2][2], 4);
+  EXPECT_FLOAT_EQ(transpose[2][3], 4);
 
-  ASSERT_EQ(transpose[3][0], 4);
-  ASSERT_EQ(transpose[3][1], 1);
-  ASSERT_EQ(transpose[3][2], 1);
-  ASSERT_EQ(transpose[3][3], 2);
+  EXPECT_FLOAT_EQ(transpose[3][0], 4);
+  EXPECT_FLOAT_EQ(transpose[3][1], 1);
+  EXPECT_FLOAT_EQ(transpose[3][2], 1);
+  EXPECT_FLOAT_EQ(transpose[3][3], 2);
 }
 
 TEST(Matrix4, Inversion)
@@ -188,25 +188,25 @@ TEST(Matrix4, Matrix4MultiplicationOperator)
 
   Matrix4 result = mat1 * mat2;
 
-  ASSERT_EQ(result[0][0], 60);
-  ASSERT_EQ(result[0][1], 48);
-  ASSERT_EQ(result[0][2], 65);
-  ASSERT_EQ(result[0][3], 47);
+  EXPECT_FLOAT_EQ(result[0][0], 60);
+  EXPECT_FLOAT_EQ(result[0][1], 48);
+  EXPECT_FLOAT_EQ(result[0][2], 65);
+  EXPECT_FLOAT_EQ(result[0][3], 47);
 
-  ASSERT_EQ(result[1][0], 55);
-  ASSERT_EQ(result[1][1], 52);
-  ASSERT_EQ(result[1][2], 60);
-  ASSERT_EQ(result[1][3], 53);
+  EXPECT_FLOAT_EQ(result[1][0], 55);
+  EXPECT_FLOAT_EQ(result[1][1], 52);
+  EXPECT_FLOAT_EQ(result[1][2], 60);
+  EXPECT_FLOAT_EQ(result[1][3], 53);
 
-  ASSERT_EQ(result[2][0], 56);
-  ASSERT_EQ(result[2][1], 51);
-  ASSERT_EQ(result[2][2], 63);
-  ASSERT_EQ(result[2][3], 50);
+  EXPECT_FLOAT_EQ(result[2][0], 56);
+  EXPECT_FLOAT_EQ(result[2][1], 51);
+  EXPECT_FLOAT_EQ(result[2][2], 63);
+  EXPECT_FLOAT_EQ(result[2][3], 50);
 
-  ASSERT_EQ(result[3][0], 55);
-  ASSERT_EQ(result[3][1], 49);
-  ASSERT_EQ(result[3][2], 65);
-  ASSERT_EQ(result[3][3], 51);
+  EXPECT_FLOAT_EQ(result[3][0], 55);
+  EXPECT_FLOAT_EQ(result[3][1], 49);
+  EXPECT_FLOAT_EQ(result[3][2], 65);
+  EXPECT_FLOAT_EQ(result[3][3], 51);
 }
 
 TEST(Matrix4, Vector4MultiplicationOperator)
@@ -219,10 +219,10 @@ TEST(Matrix4, Vector4MultiplicationOperator)
 
   Vector4 result = matrix * vector;
 
-  ASSERT_EQ(result[0], 30);
-  ASSERT_EQ(result[1], 20);
-  ASSERT_EQ(result[2], 23);
-  ASSERT_EQ(result[3], 25);
+  EXPECT_FLOAT_EQ(result[0], 30);
+  EXPECT_FLOAT_EQ(result[1], 20);
+  EXPECT_FLOAT_EQ(result[2], 23);
+  EXPECT_FLOAT_EQ(result[3], 25);
 }
 
 TEST(Matrix4Static, OrthographicProjection)
@@ -259,59 +259,60 @@ TEST(Matrix4Static, OrthographicProjection)
 
 TEST(Matrix4Static, GetPerspectiveProjection)
 {
-  float fov = PiDiv2;
-  float aspect = 16.0f / 9.0f;
+  float fov = HalfPi;
+  float width = 16.0f;
+  float height = 9.0f;
   float _near = 0.1f;
   float _far = 100.0f;
 
-  Matrix4 persp = MMMatrixPerspProj(fov, aspect, _near, _far);
+  Matrix4 persp = MMMatrixPerspProj(fov, width, height, _near, _far);
 
-  ASSERT_NEAR(persp[0][0], 1.77778f, 0.00001f);
-  ASSERT_NEAR(persp[0][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[0][2], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[0][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[0][0], 0.5625f);
+  EXPECT_FLOAT_EQ(persp[0][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[0][2], 0.0f);
+  EXPECT_FLOAT_EQ(persp[0][3], 0.0f);
 
-  ASSERT_NEAR(persp[1][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][1], 1.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][2], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[1][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[1][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[1][1], 1.0f);
+  EXPECT_FLOAT_EQ(persp[1][2], 0.0f);
+  EXPECT_FLOAT_EQ(persp[1][3], 0.0f);
 
-  ASSERT_NEAR(persp[2][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[2][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[2][2], -1.002002f, 0.00001f);
-  ASSERT_NEAR(persp[2][3], -1.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[2][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[2][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[2][2], -1.002002f);
+  EXPECT_FLOAT_EQ(persp[2][3], -0.2002002f);
 
-  ASSERT_NEAR(persp[3][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[3][1], 0.0f, 0.00001f);
-  ASSERT_NEAR(persp[3][2], -0.2002f, 0.00001f);
-  ASSERT_NEAR(persp[3][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(persp[3][0], 0.0f);
+  EXPECT_FLOAT_EQ(persp[3][1], 0.0f);
+  EXPECT_FLOAT_EQ(persp[3][2], -1.0f);
+  EXPECT_FLOAT_EQ(persp[3][3], 0.0f);
 }
 
 TEST(Matrix4Static, GetLookAtView)
 {
-  Vector3 eye(5,5,5);
-  Vector3 center(15,20,25);
-  Vector3 up(0,1,0);
+  Vector3 eye(5.f, 10.f, 15.f);
+  Vector3 target(15.f, 15.f, 15.f);
+  Vector3 up(0.f, 1.f, 0.f);
 
-  Matrix4 lookAt = MMMatrixLookAt(eye,center,up);
+  Matrix4 lookAt = MMMatrixLookAt(eye, target, up);
 
-  ASSERT_NEAR(lookAt[0][0], -0.894427f, 0.00001f);
-  ASSERT_NEAR(lookAt[0][1], -0.249136f, 0.00001f);
-  ASSERT_NEAR(lookAt[0][2], -0.371391f, 0.00001f);
-  ASSERT_NEAR(lookAt[0][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[0][0], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[0][1], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[0][2], -1.f);
+  EXPECT_FLOAT_EQ(lookAt[0][3], 15.f);
 
-  ASSERT_NEAR(lookAt[1][0], 0.0f, 0.00001f);
-  ASSERT_NEAR(lookAt[1][1], 0.830455f, 0.00001f);
-  ASSERT_NEAR(lookAt[1][2], -0.557086f, 0.00001f);
-  ASSERT_NEAR(lookAt[1][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[1][0], -0.447213590f);
+  EXPECT_FLOAT_EQ(lookAt[1][1], 0.894427180f);
+  EXPECT_FLOAT_EQ(lookAt[1][2], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[1][3], -6.70820427f);
 
-  ASSERT_NEAR(lookAt[2][0], 0.447214f, 0.00001f);
-  ASSERT_NEAR(lookAt[2][1], -0.498273f, 0.00001f);
-  ASSERT_NEAR(lookAt[2][2], -0.742781f, 0.00001f);
-  ASSERT_NEAR(lookAt[2][3], 0.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[2][0], -0.894427180f);
+  EXPECT_FLOAT_EQ(lookAt[2][1], -0.447213590f);
+  EXPECT_FLOAT_EQ(lookAt[2][2], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[2][3], 8.94427204f);
 
-  ASSERT_NEAR(lookAt[3][0], 2.236068f, 0.00001f);
-  ASSERT_NEAR(lookAt[3][1], -0.415227f, 0.00001f);
-  ASSERT_NEAR(lookAt[3][2], 8.356291f, 0.00001f);
-  ASSERT_NEAR(lookAt[3][3], 1.0f, 0.00001f);
+  EXPECT_FLOAT_EQ(lookAt[3][0], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[3][1], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[3][2], 0.f);
+  EXPECT_FLOAT_EQ(lookAt[3][3], 1.0f);
 }

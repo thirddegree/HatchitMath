@@ -57,14 +57,26 @@ namespace Hatchit {
     namespace Math {
 
         constexpr float Pi = 3.1415926535897932384626433832795f;
-        constexpr float PiDiv2 = Pi / 2.0f;
-        constexpr float PiDiv4 = Pi / 4.0f;
-        constexpr float PiMul2 = Pi * 2.0f;
+        constexpr float HalfPi = Pi * .5f;
+        constexpr float QuarterPi = Pi * .25f;
+        constexpr float TwoPi = Pi * 2.0f;
 
         class Vector2;
         class Vector3;
         class Vector4;
         class Matrix4;
+
+		struct Float2
+		{
+			float x;
+			float y;
+
+			Float2() = default;
+			Float2(float _x, float _y) : x(_x), y(_y) {}
+			explicit Float2(const float *pArray) : x(pArray[0]), y(pArray[1]) {}
+
+			Float2& operator= (const Float2& other) { x = other.x; y = other.y; return *this; }
+		};
 
         struct Float3
         {
@@ -139,84 +151,78 @@ namespace Hatchit {
             };
         };
         std::ostream& operator<< (std::ostream& output, Matrix4& h);
-        std::istream& operator>> (std::istream& input,  Matrix4& h);
 
         /////////////////////////////////////////////////////////
         // Vector2 definition
         /////////////////////////////////////////////////////////
 
-        class _MM_ALIGN16 Vector2
-        {
-        public:
-            /****************************************************
-            *	Constructors
-            *****************************************************/
-            Vector2();
+		class _MM_ALIGN16 Vector2
+		{
+		public:
+			/****************************************************
+			*	Constructors
+			*****************************************************/
+			Vector2();
 			Vector2(float xy);
-            Vector2(float x, float y);
-            Vector2(const Vector2& other);
-            explicit Vector2(const __m128& vector);
-            explicit Vector2(__m128&& vector);
+			Vector2(float x, float y);
+			Vector2(const Vector2& other);
+			explicit Vector2(const __m128& vector);
+			explicit Vector2(__m128&& vector);
 
-            /****************************************************
-            *	 Custom allocation/deallocation
-            *****************************************************/
-            void* operator new(size_t _size);
-            void  operator delete(void* p);
-            void* operator new[](size_t size);
-            void  operator delete[](void* p);
+			/****************************************************
+			*	 Custom allocation/deallocation
+			*****************************************************/
+			void* operator new(size_t _size);
+			void  operator delete(void* p);
+			void* operator new[](size_t size);
+			void  operator delete[](void* p);
 
-            /****************************************************
-            *	Operators
-            *****************************************************/
+			/****************************************************
+			*	Operators
+			*****************************************************/
 
-                explicit    operator __m128(void)           const;
-            Vector2         operator+   (float s)           const;
-            Vector2         operator-   (float s)           const;
-            Vector2         operator*   (float s)           const;
-            Vector2         operator/   (float s)           const;
-            Vector2&        operator+=  (float s);
-            Vector2&        operator-=  (float s);
-            Vector2&        operator*=  (float s);
-            Vector2&        operator/=  (float s);
-            Vector2         operator+   (const Vector2& u)  const;
-            Vector2         operator-   (const Vector2& u)  const;
-            Vector2         operator*   (const Vector2& u)  const;
-            Vector2         operator/   (const Vector2& u)  const;
-            Vector2&        operator+=  (const Vector2& u);
-            Vector2&        operator-=  (const Vector2& u);
-            Vector2&        operator*=  (const Vector2& u);
-            Vector2&        operator/=  (const Vector2& u);
+			explicit    operator __m128(void)           const;
+			Vector2         operator+   (float s)           const;
+			Vector2         operator-   (float s)           const;
+			Vector2         operator*   (float s)           const;
+			Vector2         operator/   (float s)           const;
+			Vector2&        operator+=  (float s);
+			Vector2&        operator-=  (float s);
+			Vector2&        operator*=  (float s);
+			Vector2&        operator/=  (float s);
+			Vector2         operator+   (const Vector2& u)  const;
+			Vector2         operator-   (const Vector2& u)  const;
+			Vector2         operator*   (const Vector2& u)  const;
+			Vector2         operator/   (const Vector2& u)  const;
+			Vector2&        operator+=  (const Vector2& u);
+			Vector2&        operator-=  (const Vector2& u);
+			Vector2&        operator*=  (const Vector2& u);
+			Vector2&        operator/=  (const Vector2& u);
 
-			bool            operator>   (const Vector2& u)  const;
-			bool            operator<   (const Vector2& u)  const;
 			bool            operator==  (const Vector2& u)  const;
 			bool            operator!=  (const Vector2& u)  const;
-            const float&    operator[]  (size_t i)          const;
-            float&          operator[]  (size_t i);
+			const float&    operator[]  (size_t i)          const;
+			float&          operator[]  (size_t i);
 
-        private:
-            union
-            {
-                __m128 m_vector;
-                struct
-                {
-                    float x;
-                    float y;
-                };
-                float m_data[2];
-            };
+			static float Dot(const Vector2& v, const Vector2& u);
+			float MagnitudeSquared() const;
+			float Magnitude() const;
+			Vector2 Normalized() const;
+			Vector2 Normalize();
+
+		public:
+			union
+			{
+				__m128 m_vector;
+				struct
+				{
+					float x, y;
+				};
+				float m_data[2];
+			};
         };
-        /** An insertion operator for a Vector2 to interface with an ostream
-        * \param output the ostream to output to
-        * \param v the Vector2 to interface with the ostream
-        */
+
         std::ostream& operator<< (std::ostream& output, const Vector2& v);
-        /** An extraction operator for a Vector2 to interface with an istream
-        * \param input The istream to grab input from
-        * \param v The Vector2 to interface with the istream
-        */
-        std::istream& operator>> (std::istream& input, const Vector2& v);
 
 		/////////////////////////////////////////////////////////
         // Vector3 definition
@@ -264,14 +270,20 @@ namespace Hatchit {
 			Vector3 operator*=  (const Vector3& u);
 			Vector3 operator/=  (const Vector3& u);
 
-            bool    operator>   (const Vector3& u) const;
-            bool    operator<   (const Vector3& u) const;
             bool    operator==  (const Vector3& u) const;
             bool    operator!=  (const Vector3& u) const;
             const float&  operator[]  (int i) const;
 			const float&  operator[]  (int i);
-          
+			operator Vector2() const;
 
+			static float Dot(const Vector3& v, const Vector3& u);
+			static Vector3 Cross(const Vector3& v, const Vector3& u);
+			float MagnitudeSquared() const;
+			float Magnitude() const;
+			Vector3 Normalized() const;
+			Vector3 Normalize();
+          
+		public:
             union
             {
                 struct
@@ -284,7 +296,6 @@ namespace Hatchit {
         };
 
         std::ostream& operator<< (std::ostream& output, Vector3& h);
-        std::istream& operator>> (std::istream& input,  Vector3& h);
 
         /////////////////////////////////////////////////////////
         // MM Vector4 Definition
@@ -299,9 +310,10 @@ namespace Hatchit {
             *****************************************************/
             
             Vector4();
+			Vector4(float xyzw);
+			Vector4(float x, float y, float z, float w);
 			Vector4(const Vector2& xy, float z, float w);
 			Vector4(const Vector3& xyz, float w);
-            Vector4(float x, float y, float z, float w);
             Vector4(const Vector4& other);
             explicit Vector4(__m128 v);
 
@@ -315,28 +327,43 @@ namespace Hatchit {
             /****************************************************
             *	Operators
             *****************************************************/
-            explicit operator __m128(void) const;  
+            explicit operator __m128(void) const; 
+            Vector4 operator+   (float s) const;
+            Vector4 operator-   (float s) const;
             Vector4 operator*   (float s) const; 
             Vector4 operator/   (float s) const;  
-            Vector4 operator-   (float s) const;
-            Vector4 operator+   (float s) const;  
+            
+            Vector4& operator+= (float s);
+            Vector4& operator-= (float s);
             Vector4& operator*= (float s);
             Vector4& operator/= (float s);
-            Vector4& operator-= (float s);
-            Vector4& operator+= (float s);
-            bool operator>      (const Vector4& u) const;
-            bool operator<      (const Vector4& u) const;
+            
             bool operator==     (const Vector4& u) const;
             bool operator!=     (const Vector4& u) const;
-            Vector4 operator*   (const Vector4& u) const;
+
             Vector4 operator+   (const Vector4& u) const;
             Vector4 operator-   (const Vector4& u) const;
+            Vector4 operator*   (const Vector4& u) const;
+            Vector4 operator/   (const Vector4& u) const;
+
             Vector4& operator+= (const Vector4& u);
             Vector4& operator-= (const Vector4& u);
+            Vector4& operator*= (const Vector4& u);
+            Vector4& operator/= (const Vector4& u);
+
             float& operator[]   (size_t i);
             const float& operator[] (size_t i) const;
             operator Vector3() const;
             operator Vector2() const;
+
+            /****************************************************
+            *	Static Functions
+            *****************************************************/
+            static float Dot(const Vector4& v, const Vector4& u);
+            Vector4 Normalized() const;
+            Vector4 NormalizedEst() const;
+            float Magnitude() const;
+            float MagnitudeSqr() const;
 
         public:
             union
@@ -350,7 +377,6 @@ namespace Hatchit {
             };
         };
         std::ostream& operator<< (std::ostream& output, Vector4& h);
-        std::istream& operator>> (std::istream& input,  Vector4& h);
 
         /////////////////////////////////////////////////////////
         // MM Quaternion Definition
@@ -432,8 +458,6 @@ namespace Hatchit {
         __m128 _MM_CALLCONV MMVectorSetZ(__m128 v, float z);
         __m128 _MM_CALLCONV MMVectorSetW(__m128 v, float w);
 
-        __m128 _MM_CALLCONV MMVectorSetXRaw(__m128 v, const float* x);
-
         bool   _MM_CALLCONV MMVectorEqual(__m128 v, __m128 u);
 
 
@@ -447,18 +471,18 @@ namespace Hatchit {
 		Matrix4 _MM_CALLCONV MMMatrixRotationXYZ(const Vector3& r);
 		Matrix4 _MM_CALLCONV MMMatrixScale(const Vector3& scale);
         Matrix4 _MM_CALLCONV MMMatrixOrthoProj(float left, float right, float bottom, float top, float znear, float zfar);
-        Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float aspect, float znear, float zfar);
+        Matrix4 _MM_CALLCONV MMMatrixPerspProj(float fov, float width, float height, float znear, float zfar);
         Matrix4 _MM_CALLCONV MMMatrixLookAt(const Vector3& lookAt, const Vector3& center, const Vector3& up);
         Matrix4 _MM_CALLCONV MMMatrixTranspose(const Matrix4& m);
         Matrix4 _MM_CALLCONV MMMatrixInverse(const Matrix4& m);
+
         //////////////////////////////////////////////////////////
         // MM Vector2 Operations
         //////////////////////////////////////////////////////////
-
         float _MM_CALLCONV MMVector2Dot(const Vector2& v, const Vector2& u);
-        Vector2 _MM_CALLCONV MMVector2Normalize(const Vector2& v);
-        float _MM_CALLCONV MMVector2Magnitude(const Vector2& v);
-        float _MM_CALLCONV MMVector2MagnitudeSqr(const Vector2& v);
+		float _MM_CALLCONV MMVector2MagnitudeSqr(const Vector2& v);
+		float _MM_CALLCONV MMVector2Magnitude(const Vector2& v);
+        Vector2 _MM_CALLCONV MMVector2Normalized(const Vector2& v);
 
         //////////////////////////////////////////////////////////
         // MM Vector3 Operations
@@ -466,9 +490,9 @@ namespace Hatchit {
         
         Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u);
         float	_MM_CALLCONV MMVector3Dot(const Vector3& v, const Vector3& u);
-        Vector3 _MM_CALLCONV MMVector3Normalize(const Vector3& v);
-        float   _MM_CALLCONV MMVector3Magnitude(const Vector3& v);
 		float   _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v);
+        float   _MM_CALLCONV MMVector3Magnitude(const Vector3& v);
+		Vector3 _MM_CALLCONV MMVector3Normalized(const Vector3& v);
 
         
         //////////////////////////////////////////////////////////
@@ -476,7 +500,9 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         float   _MM_CALLCONV MMVector4Dot(const Vector4& v, const Vector4& u);
         Vector4 _MM_CALLCONV MMVector4Normalize(const Vector4& v);
+        Vector4 _MM_CALLCONV MMVector4NormalizeEst(const Vector4& v);
         float   _MM_CALLCONV MMVector4Magnitude(const Vector4& v);
+        float   _MM_CALLCONV MMVector4MagnitudeSqr(const Vector4& v);
 
 
         //////////////////////////////////////////////////////////
@@ -484,6 +510,7 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         float   _MM_CALLCONV MMQuaternionDot(const Quaternion& q, const Quaternion& r);
         Quaternion _MM_CALLCONV MMQuaternionNormalize(const Quaternion& q);
+		Quaternion _MM_CALLCONV MMQuaternionNormalizeEst(const Quaternion& q);
         float   _MM_CALLCONV MMQuaternionMagnitude(const Quaternion& q);
         float   _MM_CALLCONV MMQuaternionMagnitudeSqr(const Quaternion& q);
         Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q);

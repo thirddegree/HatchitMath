@@ -15,7 +15,7 @@ namespace Hatchit {
 
         inline __m128 _MM_CALLCONV MMVectorSetInt(uint32_t x, uint32_t y, uint32_t z, uint32_t w)
         {
-            __m128i v = _mm_set_epi32(w, z, y, z);
+            __m128i v = _mm_set_epi32(w, z, y, x);
 
             return _mm_castsi128_ps(v);
         }
