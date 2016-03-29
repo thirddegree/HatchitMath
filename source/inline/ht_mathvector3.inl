@@ -243,7 +243,7 @@ namespace Hatchit {
 		* \return A float that is stored in this Vector3 at the index i
 		* This will throw an index out of range exception if you go beyond an index if 1
 		*/
-		inline const float& Vector3::operator[](int i)
+		inline float& Vector3::operator[](int i)
 		{
 			assert(i < 3);
 			return this->m_data[i];
