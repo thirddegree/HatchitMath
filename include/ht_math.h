@@ -147,7 +147,7 @@ namespace Hatchit {
 
             explicit Float16(const float* _array)
             {
-                std::memcpy(m_data, _array, sizeof(float) * 16);
+                memcpy(m_data, _array, sizeof(float) * 16);
             }
         };
 
