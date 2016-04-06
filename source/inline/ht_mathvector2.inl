@@ -30,6 +30,9 @@ namespace Hatchit {
         //Create a Vector2 with both elements being 0
         inline Vector2::Vector2() : m_vector(_mm_setzero_ps()) {}
 
+        //Create a Vector2 with rawArray for data
+        inline Vector2::Vector2(const float rawArray[]) : m_vector(MMVectorSet(rawArray[0], rawArray[1], 0.0f, 0.0f)) {}
+
 		//Create a Vector2 with both elements being x
 		inline Vector2::Vector2(float x) : m_vector(_mm_set_ps1(x)) {}
 
@@ -359,5 +362,13 @@ namespace Hatchit {
 			output << v.x << " " << v.y;
 			return output;
 		}
+
+        /** Stores values from SIMD registers into Float2
+        * \return Float2 with Vector2 data.
+        */
+        inline Float2 Vector2::ToFloat2() const
+        {
+            return Float2(m_data);
+        }
     }
 }
