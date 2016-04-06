@@ -75,6 +75,9 @@ namespace Hatchit
         //Create a Vector4 with all 4 elements being 0
         inline Vector4::Vector4() : m_vector(_mm_setzero_ps()) {}
 
+        //Create a Vector4 populated with rawArray data
+        inline Vector4::Vector4(const float rawArray[]) : m_vector(MMVectorSet(rawArray[0], rawArray[1], rawArray[2], rawArray[3])) {}
+
 		//Create a Vector4 with the same value in all elements
 		inline Vector4::Vector4(float xyzw) : m_vector(_mm_set_ps1(xyzw)) {}
 
@@ -302,7 +305,7 @@ namespace Hatchit
         */
         inline float& Vector4::operator[](size_t i)
         {
-            return data[i];
+            return m_data[i];
         }
 
         /** Fetches an element of this Vector at the index i
@@ -312,7 +315,7 @@ namespace Hatchit
         */
         inline const float& Vector4::operator[](size_t i) const
         {
-            return data[i];
+            return m_data[i];
         }
 
         //Returns a Vector3 with the first three elements from this vector and the last one being 0
@@ -365,6 +368,14 @@ namespace Hatchit
         {
             output << v.x << " " << v.y << " " << v.z << " " << v.w;
             return output;
+        }
+
+        /** Stores values from SIMD registers into Float4
+        * \return Float4 with Vector4 data.
+        */
+        inline Float4 Vector4::ToFloat4() const
+        {
+            return Float4(m_data);
         }
     }
 }

@@ -354,7 +354,7 @@ namespace Hatchit
         }
 
         //Creates a 4x4 matrix from an array of 16 values
-        inline Matrix4::Matrix4(float rawArray[])
+        inline Matrix4::Matrix4(const float rawArray[])
         {
             this->m_rows[0] = _mm_load_ps(rawArray);
             this->m_rows[1] = _mm_load_ps(rawArray + 4);
@@ -541,7 +541,7 @@ namespace Hatchit
 
         inline float* Matrix4::operator[] (int row)
         {
-            return data + sizeof(float) * row;
+            return m_data + sizeof(float) * row;
         }
 
         /** An outstream operator for a Matrix4 to interace with an ostream
@@ -556,6 +556,14 @@ namespace Hatchit
                    << m.wx << " " << m.wy << " " << m.wz << " " << m.ww;
 
             return output;
+        }
+
+        /** A conversion operator to extract Float16 from SIMD registers
+        * \return Float16 populated with Matrix data
+        */
+        inline Float16 Matrix4::ToFloat16() const
+        {
+            return Float16(m_data);
         }
     }
 }

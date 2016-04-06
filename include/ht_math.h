@@ -68,27 +68,38 @@ namespace Hatchit {
 
 		struct Float2
 		{
-			float x;
-			float y;
+            union
+            {
+                struct
+                {
+                    float x;
+                    float y;
+                };
+                float m_data[2];
+            };
 
 			Float2() = default;
 			Float2(float _x, float _y) : x(_x), y(_y) {}
 			explicit Float2(const float *pArray) : x(pArray[0]), y(pArray[1]) {}
-
-			Float2& operator= (const Float2& other) { x = other.x; y = other.y; return *this; }
 		};
 
         struct Float3
         {
-            float x;
-            float y;
-            float z;
+            union
+            {
+                struct
+                {
+                    float x;
+                    float y;
+                    float z;
+                };
+                float m_data[3];
+            };
+            
 
             Float3() = default;
             Float3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
             explicit Float3(const float *pArray) : x(pArray[0]), y(pArray[1]), z(pArray[2]) {}
-
-            Float3& operator= (const Float3& other) { x = other.x; y = other.y; z = other.z; return *this; }
         };
 
         struct Float4
@@ -97,17 +108,47 @@ namespace Hatchit {
             {
                 struct
                 {
-                    float x, y, z, w;
+                    float x;
+                    float y;
+                    float z;
+                    float w;
                 };
-                float data[4];
+                float m_data[4];
             };
 
             Float4() = default;
             Float4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w){}
             explicit Float4(const float *pArray) : x(pArray[0]), y(pArray[1]), z(pArray[2]), w(pArray[3]) {}
+        };
 
-            Float4& operator= (const Float4& other) { x = other.x; y = other.y; z = other.z; w = other.w; return *this; }
+        struct Float16
+        {
+            union
+            {
+                struct
+                {
+                    float xx, xy, xz, xw;
+                    float yx, yy, yz, yw;
+                    float zx, zy, zz, zw;
+                    float wx, wy, wz, ww;
+                };
+                float m_data[16];
+            };
 
+            Float16() = default;
+            Float16(float _xx, float _xy, float _xz, float _xw,
+                    float _yx, float _yy, float _yz, float _yw,
+                    float _zx, float _zy, float _zz, float _zw,
+                    float _wx, float _wy, float _wz, float _ww)
+                :   xx(_xx), xy(_xy), xz(_xz), xw(_xw),
+                    yx(_yx), yy(_yy), yz(_yz), yw(_yw),
+                    zx(_zx), zy(_zy), zz(_zz), zw(_zw),
+                    wx(_wx), wy(_wy), wz(_wz), ww(_ww) {}
+
+            explicit Float16(const float* _array)
+            {
+                std::memcpy(m_data, _array, sizeof(float) * 16);
+            }
         };
 
         class Matrix4
@@ -118,7 +159,7 @@ namespace Hatchit {
             *****************************************************/
 
             Matrix4();
-            Matrix4(float rawArray[]);
+            Matrix4(const float rawArray[]);
             Matrix4(float xx, float xy, float xz, float xw,
                 float yx, float yy, float yz, float yw,
                 float zx, float zy, float zz, float zw,
@@ -134,7 +175,9 @@ namespace Hatchit {
 			//matrix4 vector3 multiplication has been removed for pressing cerimonial reasons.
             //Vector3 operator*   (const Vector3& vec) const;
             Vector4 operator*   (const Vector4& vec) const;
-            float*  operator[]  (int row);          
+            float*  operator[]  (int row);  
+
+            Float16 ToFloat16() const;
 
         public:
             union
@@ -147,7 +190,7 @@ namespace Hatchit {
                           zx, zy, zz, zw,
                           wx, wy, wz, ww;
                 };
-                float data[16];
+                float m_data[16];
             };
         };
         std::ostream& operator<< (std::ostream& output, Matrix4& h);
@@ -163,6 +206,7 @@ namespace Hatchit {
 			*	Constructors
 			*****************************************************/
 			Vector2();
+            Vector2(const float rawArray[]);
 			Vector2(float xy);
 			Vector2(float x, float y);
 			Vector2(const Vector2& other);
@@ -210,6 +254,8 @@ namespace Hatchit {
 			Vector2 Normalized() const;
 			Vector2 Normalize();
 
+            Float2 ToFloat2() const;
+
 		public:
 			union
 			{
@@ -237,6 +283,7 @@ namespace Hatchit {
             *	Constructors
             *****************************************************/
             Vector3();
+            Vector3(const float rawArray[]);
 			Vector3(float xyz);
 			Vector3(const Vector2& xy, float z);
             Vector3(float x, float y, float z);
@@ -282,6 +329,8 @@ namespace Hatchit {
 			float Magnitude() const;
 			Vector3 Normalized() const;
 			Vector3 Normalize();
+
+            Float3 ToFloat3() const;
           
 		public:
             union
@@ -310,6 +359,7 @@ namespace Hatchit {
             *****************************************************/
             
             Vector4();
+            Vector4(const float rawArray[]);
 			Vector4(float xyzw);
 			Vector4(float x, float y, float z, float w);
 			Vector4(const Vector2& xy, float z, float w);
@@ -365,6 +415,8 @@ namespace Hatchit {
             float Magnitude() const;
             float MagnitudeSqr() const;
 
+            Float4 ToFloat4() const;
+
         public:
             union
             {
@@ -373,7 +425,7 @@ namespace Hatchit {
                 {
                     float x, y, z, w;
                 };
-                float data[4];
+                float m_data[4];
             };
         };
         std::ostream& operator<< (std::ostream& output, Vector4& h);
@@ -391,6 +443,7 @@ namespace Hatchit {
             *****************************************************/
 
             Quaternion();
+            Quaternion(const float rawArray[]);
             Quaternion(const Vector3& axis, float angle);
             Quaternion(float x, float y, float z, float w);
             Quaternion(float roll, float pitch, float yaw);
@@ -422,6 +475,8 @@ namespace Hatchit {
 
             explicit operator __m128() const;
 
+            Float4 ToFloat4() const;
+
         public:
             union
             {
@@ -430,7 +485,7 @@ namespace Hatchit {
                 {
                     float x, y, z, w;
                 };
-                float data[4];
+                float m_data[4];
             };
         };
 

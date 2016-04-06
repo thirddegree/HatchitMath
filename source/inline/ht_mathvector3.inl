@@ -13,6 +13,9 @@ namespace Hatchit {
         //Create a Vector3 with all 3 elements being 0
         inline Vector3::Vector3() : m_vector(_mm_setzero_ps()) {}
 
+        //Create a Vector3 populated with rawArray data
+        inline Vector3::Vector3(const float rawArray[]) : m_vector(MMVectorSet(rawArray[0], rawArray[1], rawArray[2], 0.0f)) {}
+
 		//Create a Vector3 with the same value in all elements
 		inline Vector3::Vector3(float xyz) : m_vector(_mm_set_ps1(xyz)) {}
 
@@ -390,6 +393,14 @@ namespace Hatchit {
         {
             output << v.x << " " << v.y << " " << v.z;
             return output;
+        }
+
+        /** Stores values from SIMD registers into Float3
+        * \return Float3 with Vector3 data.
+        */
+        inline Float3 Vector3::ToFloat3() const
+        {
+            return Float3(m_data);
         }
     }
 }
