@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <cmath>
 #include <sstream>
+#include <cstring>
 
 #ifdef _WIN32
     //Visual C++ compiler warning C4251 disable
