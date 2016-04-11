@@ -69,8 +69,9 @@ namespace Hatchit
 
         inline Matrix4 _MM_CALLCONV MMMatrixRotationQuaternion(const Quaternion& q)
         {
-            Quaternion qNorm = MMQuaternionNormalize(q);
+            assert(MMQuaternionMagnitudeSqr(q) > 0.0f);
 
+            Quaternion qNorm = MMQuaternionNormalize(q);
             float wSqr = qNorm.w * qNorm.w;
             float xSqr = qNorm.x * qNorm.x;
             float ySqr = qNorm.y * qNorm.y;
