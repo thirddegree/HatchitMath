@@ -12,3 +12,32 @@
 **
 **/
 
+#pragma once
+#include <ht_math.h>
+
+namespace Hatchit
+{
+    namespace Math
+    {
+        //////////////////////////////////////////////////////////
+        // Angle Conversion Operations
+        //////////////////////////////////////////////////////////
+
+        /* Converts degrees to radians
+        * \return A float with the given degrees now converted to radians
+        */
+        constexpr inline float _MM_CALLCONV MMDegreesToRadians(float degrees)
+        {
+            return degrees * 0.01745329f;
+        }
+
+        /* Converts radians to degrees
+        * \return A float with the given radians now converted to degrees
+        */
+        constexpr inline float _MM_CALLCONV MMRadiansToDegrees(float radians)
+        { 
+            return radians * 57.2957795f; 
+        }
+
+    }
+}
