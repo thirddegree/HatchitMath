@@ -582,8 +582,8 @@ namespace Hatchit {
         //////////////////////////////////////////////////////////
         // Angle Conversion Operations
         //////////////////////////////////////////////////////////
-        constexpr float _MM_CALLCONV MMDegreesToRadians(float degrees) { return degrees * 0.01745329; }
-        constexpr float _MM_CALLCONV MMRadiansToDegrees(float radians) { return radians * 57.2957795; }
+        constexpr float _MM_CALLCONV MMDegreesToRadians(float degrees) { return degrees * 0.01745329f; }
+        constexpr float _MM_CALLCONV MMRadiansToDegrees(float radians) { return radians * 57.2957795f; }
     }
 }
 
