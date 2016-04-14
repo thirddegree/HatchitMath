@@ -578,6 +578,12 @@ namespace Hatchit {
         float   _MM_CALLCONV MMQuaternionMagnitude(const Quaternion& q);
         float   _MM_CALLCONV MMQuaternionMagnitudeSqr(const Quaternion& q);
         Quaternion _MM_CALLCONV MMQuaternionConjugate(const Quaternion& q);
+
+        //////////////////////////////////////////////////////////
+        // Angle Conversion Operations
+        //////////////////////////////////////////////////////////
+        constexpr float _MM_CALLCONV MMDegreesToRadians(float degrees) { return degrees * 0.01745329; }
+        constexpr float _MM_CALLCONV MMRadiansToDegrees(float radians) { return radians * 57.2957795; }
     }
 }
 
