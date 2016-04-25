@@ -582,7 +582,7 @@ namespace Hatchit {
 }
 
 
-
+#include <ht_math.inl>
 #include <ht_mathmm.inl>
 #include <ht_mathconvert.inl>
 #include <ht_mathvector2.inl>
