@@ -1,3 +1,18 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+#pragma once
 #include <ht_math.h>
 
 namespace Hatchit
@@ -65,6 +80,22 @@ namespace Hatchit
         inline Matrix4 _MM_CALLCONV MMMatrixRotationXYZ(const Vector3 & r)
         {
             return (MMMatrixRotationY(r.y) * MMMatrixRotationX(r.x)) * MMMatrixRotationZ(r.z);
+        }
+
+        inline Matrix4 _MM_CALLCONV MMMatrixRotationQuaternion(const Quaternion& q)
+        {
+            assert(MMQuaternionMagnitudeSqr(q) > 0.0f);
+
+            Quaternion qNorm = MMQuaternionNormalize(q);
+            float wSqr = qNorm.w * qNorm.w;
+            float xSqr = qNorm.x * qNorm.x;
+            float ySqr = qNorm.y * qNorm.y;
+            float zSqr = qNorm.z * qNorm.z;
+
+            return Matrix4(wSqr + xSqr - ySqr - zSqr, (2 * qNorm.x * qNorm.y) - (2 * qNorm.w * qNorm.z), (2 * qNorm.x * qNorm.z) + (2 * qNorm.w * qNorm.y), 0,
+                          (2 * qNorm.x * qNorm.y) + (2 * qNorm.w * qNorm.z), wSqr - xSqr + ySqr - zSqr, (2 * qNorm.y * qNorm.z) - (2 * qNorm.w * qNorm.x), 0,
+                          (2 * qNorm.x * qNorm.z) - (2 * qNorm.w * qNorm.y), (2 * qNorm.y * qNorm.z) + (2 * qNorm.w * qNorm.x), wSqr - xSqr - ySqr + zSqr, 0,
+                          0, 0, 0, 1);
         }
 
 
@@ -343,6 +374,83 @@ namespace Hatchit
             return result;
         }
 
+        /** Generates the inverse translation matrix from the given vector
+        * \param v Translation vector to derive inverse from
+        * \return The inverse translation matrix
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseTranslation(const Vector3& v)
+        {
+            return Matrix4(1, 0, 0, -v.x,
+                           0, 1, 0, -v.y,
+                           0, 0, 1, -v.z,
+                           0, 0, 0, 1);
+        }
+
+        /** Generates the inverse of a given Translation matrix 
+        * \param m Translation matrix to derive inverse from
+        * \return The inverse of m
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseTranslation(const Matrix4& m)
+        {
+            return Matrix4(1, 0, 0, -m.xw,
+                           0, 1, 0, -m.yw,
+                           0, 0, 1, -m.zw,
+                           0, 0, 0, 1);
+        }
+
+        /** Generates the inverse rotation matrix from the given vector
+        * \param v Roll, pitch, yaw vector
+        * \return The inverse rotation matrix
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseRotation(const Vector3& v)
+        {
+            Matrix4 rotation = MMMatrixRotationXYZ(v);
+            return MMMatrixTranspose(rotation);
+        }
+
+        /** Generates the inverse of a given Rotation matrix
+        * \param m Rotation matrix to derive inverse from
+        * \return The inverse of m
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseRotation(const Matrix4& m)
+        {
+            return MMMatrixTranspose(m);
+        }
+
+        /** Generates the inverse rotation matrix from the given quaternion
+        * \param q Quaternion to derive inverse from
+        * \return The inverse rotation matrix
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseRotation(const Quaternion& q)
+        {
+            Matrix4 rotation = MMMatrixRotationQuaternion(q);
+            return MMMatrixTranspose(rotation);
+        }
+
+        /** Generates the inverse rotation matrix from the given vector
+        * \param v Scale vector to derive inverse from
+        * \return The inverse scale matrix
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseScale(const Vector3& v)
+        {
+            return Matrix4(1 / v.x, 0, 0, 0,
+                           0, 1 / v.y, 0, 0,
+                           0, 0, 1 / v.z, 0,
+                           0, 0, 0, 1);
+        }
+
+        /** Generates the inverse of a given Scale matrix
+        * \param m Scale matrix to derive inverse from
+        * \return The inverse of m
+        */
+        inline Matrix4 _MM_CALLCONV MMMatrixInverseScale(const Matrix4& m)
+        {
+            return Matrix4(1 / m.xx, 0, 0, 0,
+                           0, 1 / m.yy, 0, 0,
+                           0, 0, 1 / m.zz, 0,
+                           0, 0, 0, 1);
+        }
+
         //Creates a 4x4 identity matrix
         inline Matrix4::Matrix4()
         {
@@ -354,7 +462,7 @@ namespace Hatchit
         }
 
         //Creates a 4x4 matrix from an array of 16 values
-        inline Matrix4::Matrix4(float rawArray[])
+        inline Matrix4::Matrix4(const float rawArray[])
         {
             this->m_rows[0] = _mm_load_ps(rawArray);
             this->m_rows[1] = _mm_load_ps(rawArray + 4);
@@ -541,7 +649,7 @@ namespace Hatchit
 
         inline float* Matrix4::operator[] (int row)
         {
-            return data + sizeof(float) * row;
+            return m_data + sizeof(float) * row;
         }
 
         /** An outstream operator for a Matrix4 to interace with an ostream
@@ -556,6 +664,14 @@ namespace Hatchit
                    << m.wx << " " << m.wy << " " << m.wz << " " << m.ww;
 
             return output;
+        }
+
+        /** A conversion operator to extract Float16 from SIMD registers
+        * \return Float16 populated with Matrix data
+        */
+        inline Float16 Matrix4::ToFloat16() const
+        {
+            return Float16(m_data);
         }
     }
 }

@@ -1,3 +1,18 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+#pragma once
 #include <ht_math.h>
 
 namespace Hatchit {
@@ -5,11 +20,14 @@ namespace Hatchit {
     namespace Math {
 
         //////////////////////////////////////////////////////////////////////
-        // MMVECTOR3 Implementation
+        // MMQuaternion Implementation
         //////////////////////////////////////////////////////////////////////
 
         //Create an identity Quaternion
         inline Quaternion::Quaternion() : m_quaternion(MMVectorSet(0.0f, 0.0f, 0.0f, 1.0f)) {}
+
+        //Create Quaternion from array of floats
+        inline Quaternion::Quaternion(const float rawArray[]) : m_quaternion(MMVectorSet(rawArray[0], rawArray[1], rawArray[2], rawArray[3])) {}
 
         //Create a Quaternion with elements x, y, z, w (q = w + xi + yj + zk)
         inline Quaternion::Quaternion(float x, float y, float z, float w) : m_quaternion(MMVectorSet(x, y, z, w)) {}
@@ -251,6 +269,14 @@ namespace Hatchit {
         {
             static const __m128 signMask = MMVectorSet(-1.f, -1.f, -1.f, 1.f);
             return Quaternion(_mm_mul_ps(q.m_quaternion, signMask));
+        }
+
+        /** Stores values of Quaternion into Float4 type
+        * \return Float4 poplulated with Quaternion data
+        */
+        inline Float4 Quaternion::ToFloat4() const
+        {
+            return Float4(m_data);
         }
     }
 }

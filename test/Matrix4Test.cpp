@@ -164,8 +164,8 @@ TEST(Matrix4, Inversion)
                  3,1,4,2);
   Matrix4 inversion = MMMatrixInverse(matrix);
 
-  float* result = (inversion * matrix).data;
-  float* identity = Matrix4().data;
+  float* result = (inversion * matrix).m_data;
+  float* identity = Matrix4().m_data;
 
   // A matrix multiplied by its inverse should be an identity matrix
   for(int i = 0; i < 16; i++)

@@ -1,3 +1,18 @@
+/**
+**    Hatchit Engine
+**    Copyright(c) 2015 Third-Degree
+**
+**    GNU Lesser General Public License
+**    This file may be used under the terms of the GNU Lesser
+**    General Public License version 3 as published by the Free
+**    Software Foundation and appearing in the file LICENSE.LGPLv3 included
+**    in the packaging of this file. Please review the following information
+**    to ensure the GNU Lesser General Public License requirements
+**    will be met: https://www.gnu.org/licenses/lgpl.html
+**
+**/
+
+#pragma once
 
 #include <ht_math.h>
 #include <cassert>
@@ -12,6 +27,9 @@ namespace Hatchit {
 
         //Create a Vector3 with all 3 elements being 0
         inline Vector3::Vector3() : m_vector(_mm_setzero_ps()) {}
+
+        //Create a Vector3 populated with rawArray data
+        inline Vector3::Vector3(const float rawArray[]) : m_vector(MMVectorSet(rawArray[0], rawArray[1], rawArray[2], 0.0f)) {}
 
 		//Create a Vector3 with the same value in all elements
 		inline Vector3::Vector3(float xyz) : m_vector(_mm_set_ps1(xyz)) {}
@@ -243,7 +261,7 @@ namespace Hatchit {
 		* \return A float that is stored in this Vector3 at the index i
 		* This will throw an index out of range exception if you go beyond an index if 1
 		*/
-		inline const float& Vector3::operator[](int i)
+		inline float& Vector3::operator[](int i)
 		{
 			assert(i < 3);
 			return this->m_data[i];
@@ -390,6 +408,14 @@ namespace Hatchit {
         {
             output << v.x << " " << v.y << " " << v.z;
             return output;
+        }
+
+        /** Stores values from SIMD registers into Float3
+        * \return Float3 with Vector3 data.
+        */
+        inline Float3 Vector3::ToFloat3() const
+        {
+            return Float3(m_data);
         }
     }
 }
