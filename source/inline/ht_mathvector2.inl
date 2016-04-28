@@ -275,6 +275,34 @@ namespace Hatchit {
 			return MMVector2Dot(v, u);
 		}
 
+        /** Calculates the angle between two vectors
+        *
+        * \param v: First Vector2 used to calculate angle
+        * \param u: Second Vector2 used to calculate angle
+        *
+        * \return The angle between v and u as a float
+        */
+        inline float Vector2::Angle(const Vector2& v, const Vector2& u)
+        {
+            float dot = MMVector2Dot(v, u);
+            float vMag = MMVector2Magnitude(v);
+            float uMag = MMVector2Magnitude(u);
+
+            return acosf(dot / (vMag * uMag));
+        }
+
+        /** Calculates the distance between two vectors
+        *
+        * \param v: First Vector2 used to calculate distance
+        * \param u: Second Vector2 used to calculate distance
+        *
+        * \return The distance between v and u as a float
+        */
+        inline float Vector2::Distance(const Vector2& v, const Vector2& u)
+        {
+            return MMVector2Magnitude(v - u);
+        }
+
 		/** Calculates the magnitude squared of this vector
 		* \return magnitude squared as a float
 		*/
@@ -317,6 +345,34 @@ namespace Hatchit {
         {
             __m128 vecMul = _mm_mul_ps(static_cast<__m128>(v), static_cast<__m128>(u));
             return MMVectorGetX(_mm_add_ps(vecMul, _mm_shuffle_ps(vecMul, vecMul, _MM_SHUFFLE(3, 2, 0, 1))));
+        }
+
+        /** Calculates the angle between two vectors
+        *
+        * \param v: First Vector2 used to calculate angle
+        * \param u: Second Vector2 used to calculate angle
+        *
+        * \return The angle between v and u as a float
+        */
+        inline float _MM_CALLCONV MMVector2Angle(const Vector2& v, const Vector2& u)
+        {
+            float dot = MMVector2Dot(v, u);
+            float vMag = MMVector2Magnitude(v);
+            float uMag = MMVector2Magnitude(u);
+
+            return acosf(dot / (vMag * uMag));
+        }
+
+        /** Calculates the distance between two vectors
+        *
+        * \param v: First Vector2 used to calculate distance
+        * \param u: Second Vector2 used to calculate distance
+        *
+        * \return The distance between v and u as a float
+        */
+        inline float _MM_CALLCONV MMVector2Distance(const Vector2& v, const Vector2& u)
+        {
+            return MMVector2Magnitude(v - u);
         }
 
 

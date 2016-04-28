@@ -250,6 +250,8 @@ namespace Hatchit {
             float&          operator[]  (size_t i);
 
             static float Dot(const Vector2& v, const Vector2& u);
+            static float Angle(const Vector2& v, const Vector2& u);
+            static float Distance(const Vector2& v, const Vector2& u);
             float MagnitudeSquared() const;
             float Magnitude() const;
             Vector2 Normalized() const;
@@ -324,8 +326,10 @@ namespace Hatchit {
             float&  operator[]  (int i);
             operator Vector2() const;
 
-            static float Dot(const Vector3& v, const Vector3& u);
             static Vector3 Cross(const Vector3& v, const Vector3& u);
+            static float Dot(const Vector3& v, const Vector3& u);
+            static float Angle(const Vector3& v, const Vector3& u);
+            static float Distance(const Vector3& v, const Vector3& u);
             float MagnitudeSquared() const;
             float Magnitude() const;
             Vector3 Normalized() const;
@@ -544,6 +548,8 @@ namespace Hatchit {
         // MM Vector2 Operations
         //////////////////////////////////////////////////////////
         float _MM_CALLCONV MMVector2Dot(const Vector2& v, const Vector2& u);
+        float _MM_CALLCONV MMVector2Angle(const Vector2& v, const Vector2& u);
+        float _MM_CALLCONV MMVector2Distance(const Vector2& v, const Vector2& u);
         float _MM_CALLCONV MMVector2MagnitudeSqr(const Vector2& v);
         float _MM_CALLCONV MMVector2Magnitude(const Vector2& v);
         Vector2 _MM_CALLCONV MMVector2Normalized(const Vector2& v);
@@ -554,6 +560,8 @@ namespace Hatchit {
         
         Vector3 _MM_CALLCONV MMVector3Cross(const Vector3& v, const Vector3& u);
         float	_MM_CALLCONV MMVector3Dot(const Vector3& v, const Vector3& u);
+        float	_MM_CALLCONV MMVector3Angle(const Vector3& v, const Vector3& u);
+        float	_MM_CALLCONV MMVector3Distance(const Vector3& v, const Vector3& u);
         float   _MM_CALLCONV MMVector3MagnitudeSqr(const Vector3& v);
         float   _MM_CALLCONV MMVector3Magnitude(const Vector3& v);
         Vector3 _MM_CALLCONV MMVector3Normalized(const Vector3& v);
