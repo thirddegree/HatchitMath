@@ -1,6 +1,6 @@
 /**
 **    Hatchit Engine
-**    Copyright(c) 2015 Third-Degree
+**    Copyright(c) 2015-2016 Third-Degree
 **
 **    GNU Lesser General Public License
 **    This file may be used under the terms of the GNU Lesser
@@ -294,6 +294,34 @@ namespace Hatchit {
 			return MMVector3Dot(v, u);
 		}
 
+        /** Calculates the angle between two vectors
+        *
+        * \param v: First Vector3 used to calculate angle
+        * \param u: Second Vector3 used to calculate angle
+        *
+        * \return The angle between v and u as a float
+        */
+        inline float Vector3::Angle(const Vector3& v, const Vector3& u)
+        {
+            float dot = MMVector3Dot(v, u);
+            float vMag = MMVector3Magnitude(v);
+            float uMag = MMVector3Magnitude(u);
+
+            return acosf(dot / (vMag * uMag));
+        }
+
+        /** Calculates the distance between two vectors
+        *
+        * \param v: First Vector3 used to calculate distance
+        * \param u: Second Vector3 used to calculate distance
+        *
+        * \return The distance between v and u as a float
+        */
+        inline float Vector3::Distance(const Vector3& v, const Vector3& u)
+        {
+            return MMVector3Magnitude(v - u);
+        }
+
 		/** Calculates the magnitude squared of this vector
 		* \return magnitude squared as a float
 		*/
@@ -364,6 +392,34 @@ namespace Hatchit {
             temp = _mm_add_ps(temp, _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(3, 0, 2, 1)));
 
             return Hatchit::Math::MMVectorGetX(temp);
+        }
+
+        /** Calculates the angle between two vectors
+        *
+        * \param v: First Vector3 used to calculate angle
+        * \param u: Second Vector3 used to calculate angle
+        *
+        * \return The angle between v and u as a float
+        */
+        inline float _MM_CALLCONV MMVector3Angle(const Vector3& v, const Vector3& u)
+        {
+            float dot = MMVector3Dot(v, u);
+            float vMag = MMVector3Magnitude(v);
+            float uMag = MMVector3Magnitude(u);
+
+            return acosf(dot / (vMag * uMag));
+        }
+
+        /** Calculates the distance between two vectors
+        *
+        * \param v: First Vector3 used to calculate distance
+        * \param u: Second Vector3 used to calculate distance
+        *
+        * \return The distance between v and u as a float
+        */
+        inline float _MM_CALLCONV MMVector3Distance(const Vector3& v, const Vector3& u)
+        {
+            return MMVector3Magnitude(v - u);
         }
 
 
